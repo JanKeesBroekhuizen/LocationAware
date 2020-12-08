@@ -41,4 +41,16 @@ public class OpenRouteServiceConnection {
         call.enqueue(callback);
         return call;
     }
+
+    public Call getCoordinatesOfAddress(String key, String address, String city, Callback callback){
+        final String url = "https://api.openrouteservice.org/geocode/search/structured?" +
+                "api_key=" + key +
+                "&address=" + address +
+                "&locality=" + city;
+        //final String url = "https://api.openrouteservice.org/geocode/search/structured?api_key=5b3ce3597851110001cf62487e88103431e54b0a846066f367b0b015&address=Reigerstraat26&locality=Bleskensgraaf";
+        final Request request = new Request.Builder().url(url).build();
+        Call call = client.newCall(request);
+        call.enqueue(callback);
+        return call;
+    }
 }

@@ -45,6 +45,7 @@ public class MapScreenActivity extends AppCompatActivity {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView mapView = null;
     private boolean finished = false;
+    private GeoPoint geoPoint = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,8 +75,8 @@ public class MapScreenActivity extends AppCompatActivity {
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mapController.setCenter(new GeoPoint(51.874249, 4.781676));
-                mapController.setZoom(15.0);
+                mapController.setCenter(geoPoint);
+                mapController.setZoom(18.0);
             }
         });
         ArrayList<GeoPoint> geoPoints = new ArrayList<>();
@@ -130,6 +131,31 @@ public class MapScreenActivity extends AppCompatActivity {
             }
         });
         mapView.getOverlayManager().add(line);
+
+        OpenRouteServiceConnection.getInstance().getCoordinatesOfAddress(
+                "5b3ce3597851110001cf62487e88103431e54b0a846066f367b0b015",
+                "Reigerstraat 26",
+                "Bleskensgraaf",
+                new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Log.d(MapScreenActivity.class.getName(), e.getLocalizedMessage());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                JSONObject responseJson = null;
+                try {
+                    responseJson = new JSONObject(response.body().string());
+                    double[] coordinates = jsonArrayToArray(responseJson.getJSONArray("features").getJSONObject(0).getJSONObject("geometry").getJSONArray("coordinates"));
+
+                    System.out.println(coordinates[0] + " " + coordinates[1]);
+                    geoPoint = new GeoPoint(coordinates[1], coordinates[0]);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override
@@ -181,5 +207,17 @@ public class MapScreenActivity extends AppCompatActivity {
                     permissionsToRequest.toArray(new String[0]),
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
+    }
+
+    public double[] jsonArrayToArray(JSONArray array){
+        final double[] coordinatesArray = new double[2];
+        for (int jsonArrayIndex = 0; jsonArrayIndex < array.length(); jsonArrayIndex++){
+            try {
+                coordinatesArray[jsonArrayIndex] = array.getDouble(jsonArrayIndex);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return coordinatesArray;
     }
 }
