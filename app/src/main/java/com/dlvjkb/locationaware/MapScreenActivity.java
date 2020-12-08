@@ -4,35 +4,52 @@ import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 
+import com.dlvjkb.locationaware.data.Route;
+
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Polyline;
+import org.osmdroid.views.overlay.infowindow.BasicInfoWindow;
+import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
+import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+
 public class MapScreenActivity extends AppCompatActivity {
 
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView mapView = null;
+    private boolean finished = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Context ctx = getApplicationContext();
-
-        Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
-
         setContentView(R.layout.activity_mapscreen);
-
-        mapView = findViewById(R.id.osmMap);
-        mapView.setTileSource(TileSourceFactory.MAPNIK);
 
         requestPermissionsIfNecessary(new String[] {
                 // if you need to show the current location, uncomment the line below
@@ -41,6 +58,78 @@ public class MapScreenActivity extends AppCompatActivity {
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
         });
+
+        Configuration.getInstance().setUserAgentValue("com.dlvjkb.locationaware");
+
+        mapView = findViewById(R.id.osmMap);
+        mapView.setTileSource(TileSourceFactory.MAPNIK);
+        mapView.setDestroyMode(false);
+        mapView.setTag("mapView");
+
+
+
+        IMapController mapController = mapView.getController();
+        mapController.setZoom(9.5);
+        ImageButton imageButton = findViewById(R.id.ibGPSLocation);
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mapController.setCenter(new GeoPoint(51.874249, 4.781676));
+                mapController.setZoom(15.0);
+            }
+        });
+        ArrayList<GeoPoint> geoPoints = new ArrayList<>();
+        OpenRouteServiceConnection.getInstance().getRouteInfo(
+                "5b3ce3597851110001cf62487e88103431e54b0a846066f367b0b015",
+                "2.681495,44.41461",
+                "4.781676,51.874249",
+                TravelType.DRIVING_CAR,
+                new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Log.d(MapScreenActivity.class.getName(), e.getLocalizedMessage());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                JSONObject responseJson = null;
+                try {
+                    responseJson = new JSONObject(response.body().string());
+                    Route route = new Route(responseJson);
+                    ArrayList<double[]> coordinates = route.features.get(0).geometry.coordinates;
+
+                    for (double[] coordinate : coordinates){
+                        geoPoints.add(new GeoPoint(coordinate[1], coordinate[0]));
+                    }
+                    System.out.println("GeoPoints: " + geoPoints.size() + " Coordinates: " + coordinates.size());
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                finished = true;
+            }
+        });
+
+        while(!finished){}
+
+        mapController.setCenter(geoPoints.get(0));
+        Polyline line = new Polyline();
+        line.setTitle("Road back home");
+        line.setSubDescription(Polyline.class.getCanonicalName());
+        //line.setWidth(20f);
+        line.getOutlinePaint().setStrokeWidth(20f);
+        line.getOutlinePaint().setColor(Color.RED);
+        line.setPoints(geoPoints);
+        line.setGeodesic(true);
+        line.setInfoWindow(new BasicInfoWindow(R.layout.bonuspack_bubble, mapView));
+        line.setOnClickListener(new Polyline.OnClickListener() {
+            @Override
+            public boolean onClick(Polyline polyline, MapView mapView, GeoPoint eventPos) {
+                Toast.makeText(getApplicationContext(), "JOEJOE", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+        mapView.getOverlayManager().add(line);
     }
 
     @Override
