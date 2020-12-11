@@ -3,6 +3,7 @@ package com.dlvjkb.locationaware;
 import android.util.Log;
 
 import org.json.JSONObject;
+import org.osmdroid.util.GeoPoint;
 
 import java.io.IOException;
 
@@ -29,13 +30,16 @@ public class OpenRouteServiceConnection {
         client = new OkHttpClient();
     }
 
-    public Call getRouteInfo(String key, String start, String end, TravelType travelType, Callback callback){
+    public Call getRouteInfo(String key, GeoPoint start, GeoPoint end, TravelType travelType, Callback callback){
+        Log.d(TAG, "Start: " + start + ", End: " + end);
+
         final String url = "https://api.openrouteservice.org/v2/directions/" +
                 TravelType.getTravelType(travelType) +
                 "?api_key=" + key +
-                "&start=" + start +
-                "&end=" + end;
+                "&start=" + start.getLongitude() + "," + start.getLatitude() +
+                "&end=" + end.getLongitude() + "," + end.getLatitude();
 
+        Log.d(TAG, url);
         final Request request = new Request.Builder().url(url).build();
         Call call = client.newCall(request);
         call.enqueue(callback);
