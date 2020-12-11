@@ -2,6 +2,7 @@ package com.dlvjkb.locationaware;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -15,7 +16,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.preference.PreferenceManager;
 
 import com.dlvjkb.locationaware.data.Route;
 
@@ -208,6 +208,21 @@ public class MapScreenActivity extends AppCompatActivity {
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
     }
+
+    public void onButtonCurrentLocationClicked(View view){
+        Toast.makeText(getApplicationContext(),"CURRENT LOCATION",Toast.LENGTH_LONG).show();
+    }
+
+    public void onButtonInformationClicked(View view){
+        Toast.makeText(getApplicationContext(),"INFORMATION POP UP",Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(MapScreenActivity.this, RouteInformationPopup.class);
+        startActivity(intent);
+    }
+
+    public void onButtonSearchClicked(View view){
+        Toast.makeText(getApplicationContext(),"SEARCH",Toast.LENGTH_LONG).show();
+    }
+
 
     public double[] jsonArrayToArray(JSONArray array){
         final double[] coordinatesArray = new double[2];
