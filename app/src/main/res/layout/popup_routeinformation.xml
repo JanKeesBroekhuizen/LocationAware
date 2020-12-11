@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparant_dark_grey"
+    tools:context=".RouteInformationPopup">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/imageButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_block"
+                android:scaleType="center"
+                android:tint="@color/white"
+                android:src="@drawable/icon_traveltype_walking"/>
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Walk"
+                android:textAlignment="center"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/imageButton2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_block"
+                android:tint="@color/white"
+                android:src="@drawable/icon_traveltype_bike" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cycle"
+                android:textAlignment="center"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/imageButton3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_block"
+                android:tint="@color/white"
+                android:src="@drawable/icon_traveltype_car" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Car"
+                android:textAlignment="center"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/vDeviderPopUpOne"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/startingPointLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/halfrounded_transparant_block"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vDeviderPopUpOne">
+
+        <View
+            android:id="@+id/vstartingPointBackground"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/rounded_block"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/etStartAddressStreet"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:ems="10"
+            android:hint="Streetname"
+            android:inputType="textPersonName"
+            android:textColor="@color/white"
+            android:textColorHint="@color/greyish_white"
+            app:layout_constraintBottom_toBottomOf="@+id/vstartingPointBackground"
+            app:layout_constraintEnd_toStartOf="@+id/etStartAddressNumber"
+            app:layout_constraintTop_toTopOf="@+id/vstartingPointBackground" />
+
+        <EditText
+            android:id="@+id/etStartAddressNumber"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:ems="10"
+            android:hint="195"
+            android:inputType="number"
+            android:textColor="@color/white"
+            android:textColorHint="@color/greyish_white"
+            app:layout_constraintBottom_toBottomOf="@+id/vstartingPointBackground"
+            app:layout_constraintEnd_toEndOf="@id/vstartingPointBackground"
+            app:layout_constraintTop_toTopOf="@+id/vstartingPointBackground" />
+
+        <EditText
+            android:id="@+id/etStartAddressCity"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:ems="10"
+            android:hint="City"
+            android:inputType="textPersonName"
+            android:textColor="@color/white"
+            android:textColorHint="@color/greyish_white"
+            app:layout_constraintBottom_toBottomOf="@+id/vstartingPointBackground"
+            app:layout_constraintEnd_toStartOf="@+id/etStartAddressStreet"
+            app:layout_constraintStart_toStartOf="@+id/vstartingPointBackground"
+            app:layout_constraintTop_toTopOf="@+id/vstartingPointBackground" />
+
+        <TextView
+            android:id="@+id/tvStartingPointText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Starting point:"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toTopOf="@+id/vstartingPointBackground"
+            app:layout_constraintStart_toStartOf="@+id/vstartingPointBackground"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/endingPointLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/halfrounded_transparant_block"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/startingPointLayout">
+
+        <View
+            android:id="@+id/vEndingPointBackground"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/rounded_block"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/etEndAddressStreet"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:ems="10"
+            android:hint="Streetname"
+            android:inputType="textPersonName"
+            android:textColor="@color/white"
+            android:textColorHint="@color/greyish_white"
+            app:layout_constraintBottom_toBottomOf="@+id/vEndingPointBackground"
+            app:layout_constraintEnd_toStartOf="@+id/etEndAddressNumber"
+            app:layout_constraintTop_toTopOf="@+id/vEndingPointBackground" />
+
+        <EditText
+            android:id="@+id/etEndAddressNumber"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:ems="10"
+            android:hint="195"
+            android:inputType="number"
+            android:textColor="@color/white"
+            android:textColorHint="@color/greyish_white"
+            app:layout_constraintBottom_toBottomOf="@+id/vEndingPointBackground"
+            app:layout_constraintEnd_toEndOf="@id/vEndingPointBackground"
+            app:layout_constraintTop_toTopOf="@+id/vEndingPointBackground" />
+
+        <EditText
+            android:id="@+id/etEndAddressCity"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:ems="10"
+            android:hint="City"
+            android:inputType="textPersonName"
+            android:textColor="@color/white"
+            android:textColorHint="@color/greyish_white"
+            app:layout_constraintBottom_toBottomOf="@+id/vEndingPointBackground"
+            app:layout_constraintEnd_toStartOf="@+id/etEndAddressStreet"
+            app:layout_constraintStart_toStartOf="@+id/vEndingPointBackground"
+            app:layout_constraintTop_toTopOf="@+id/vEndingPointBackground" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ending point:"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toTopOf="@+id/vEndingPointBackground"
+            app:layout_constraintStart_toStartOf="@+id/vEndingPointBackground"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Button
+        android:id="@+id/btnSearchRoute"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/greyish_white"
+        android:text="Button"
+        android:onClick="onButtonOwnRouteClicked"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/endingPointLayout" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
