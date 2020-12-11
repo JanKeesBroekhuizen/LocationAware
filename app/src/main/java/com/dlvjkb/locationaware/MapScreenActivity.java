@@ -38,6 +38,7 @@ import okhttp3.Response;
 
 public class MapScreenActivity extends AppCompatActivity {
 
+    public static String APIKEY = "5b3ce3597851110001cf62487e88103431e54b0a846066f367b0b015";
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView mapView = null;
     private boolean finished = false;
@@ -77,7 +78,7 @@ public class MapScreenActivity extends AppCompatActivity {
 
         ArrayList<GeoPoint> geoPoints = new ArrayList<>();
         OpenRouteServiceConnection.getInstance().getRouteInfo(
-                "5b3ce3597851110001cf62487e88103431e54b0a846066f367b0b015",
+                APIKEY,
                 "2.681495,44.41461",
                 "4.781676,51.874249",
                 TravelType.DRIVING_CAR,

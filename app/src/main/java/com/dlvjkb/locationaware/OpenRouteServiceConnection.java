@@ -3,6 +3,7 @@ package com.dlvjkb.locationaware;
 import android.util.Log;
 
 import org.json.JSONObject;
+import org.osmdroid.util.GeoPoint;
 
 import java.io.IOException;
 
