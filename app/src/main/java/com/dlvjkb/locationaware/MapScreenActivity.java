@@ -1,16 +1,13 @@
 package com.dlvjkb.locationaware;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageButton;
-import android.widget.ImageView;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,10 +25,9 @@ import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.infowindow.BasicInfoWindow;
-import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
-import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -45,7 +41,12 @@ public class MapScreenActivity extends AppCompatActivity {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView mapView = null;
     private boolean finished = false;
-    private GeoPoint geoPoint = null;
+    private GeoPoint currentGeoPoint = null;
+    private EditText etSearchCityName;
+    private EditText etSearchStreetName;
+    private EditText etSearchStreetNumber;
+    private IMapController mapController;
+    private Boolean getCoordinatesFinished = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,19 +67,14 @@ public class MapScreenActivity extends AppCompatActivity {
         mapView.setTileSource(TileSourceFactory.MAPNIK);
         mapView.setDestroyMode(false);
         mapView.setTag("mapView");
-
-
-
-        IMapController mapController = mapView.getController();
+        etSearchCityName = findViewById(R.id.etSearchAddressCity);
+        etSearchStreetName = findViewById(R.id.etSearchAddressName);
+        etSearchStreetNumber = findViewById(R.id.etSearchAddressNumber);
+        mapController = mapView.getController();
         mapController.setZoom(9.5);
-        ImageButton imageButton = findViewById(R.id.ibGPSLocation);
-        imageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mapController.setCenter(geoPoint);
-                mapController.setZoom(18.0);
-            }
-        });
+        currentGeoPoint = new GeoPoint(0.0,0.0);
+
+
         ArrayList<GeoPoint> geoPoints = new ArrayList<>();
         OpenRouteServiceConnection.getInstance().getRouteInfo(
                 "5b3ce3597851110001cf62487e88103431e54b0a846066f367b0b015",
@@ -132,30 +128,7 @@ public class MapScreenActivity extends AppCompatActivity {
         });
         mapView.getOverlayManager().add(line);
 
-        OpenRouteServiceConnection.getInstance().getCoordinatesOfAddress(
-                "5b3ce3597851110001cf62487e88103431e54b0a846066f367b0b015",
-                "Reigerstraat 26",
-                "Bleskensgraaf",
-                new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Log.d(MapScreenActivity.class.getName(), e.getLocalizedMessage());
-            }
 
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                JSONObject responseJson = null;
-                try {
-                    responseJson = new JSONObject(response.body().string());
-                    double[] coordinates = jsonArrayToArray(responseJson.getJSONArray("features").getJSONObject(0).getJSONObject("geometry").getJSONArray("coordinates"));
-
-                    System.out.println(coordinates[0] + " " + coordinates[1]);
-                    geoPoint = new GeoPoint(coordinates[1], coordinates[0]);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
     }
 
     @Override
@@ -211,6 +184,8 @@ public class MapScreenActivity extends AppCompatActivity {
 
     public void onButtonCurrentLocationClicked(View view){
         Toast.makeText(getApplicationContext(),"CURRENT LOCATION",Toast.LENGTH_LONG).show();
+        mapController.setCenter(currentGeoPoint);
+        mapController.setZoom(18.0);
     }
 
     public void onButtonInformationClicked(View view){
@@ -221,6 +196,40 @@ public class MapScreenActivity extends AppCompatActivity {
 
     public void onButtonSearchClicked(View view){
         Toast.makeText(getApplicationContext(),"SEARCH",Toast.LENGTH_LONG).show();
+        OpenRouteServiceConnection.getInstance().getCoordinatesOfAddress(
+                "5b3ce3597851110001cf62487e88103431e54b0a846066f367b0b015",
+                etSearchStreetName.getText().toString() + " " + etSearchStreetNumber.getText().toString(),
+                etSearchCityName.getText().toString(),
+                new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        Log.d(MapScreenActivity.class.getName(), e.getLocalizedMessage());
+                    }
+
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        JSONObject responseJson = null;
+                        try {
+                            responseJson = new JSONObject(response.body().string());
+                            double[] coordinates = jsonArrayToArray(responseJson.getJSONArray("features").getJSONObject(0).getJSONObject("geometry").getJSONArray("coordinates"));
+                            System.out.println(coordinates[0] + " " + coordinates[1]);
+                            currentGeoPoint.setLatitude(coordinates[1]);
+                            currentGeoPoint.setLongitude(coordinates[0]);
+                        }catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        getCoordinatesFinished = true;
+                    }
+                });
+        while (!getCoordinatesFinished){}
+
+        mapController.setCenter(currentGeoPoint);
+        mapController.setZoom(18.0);
+
+        Marker marker = new Marker(mapView);
+        marker.setPosition(currentGeoPoint);
+        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        mapView.getOverlays().add(marker);
     }
 
 

@@ -3,7 +3,9 @@ package com.dlvjkb.locationaware;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 public class RouteInformationPopup extends Activity {
 
@@ -26,5 +28,9 @@ public class RouteInformationPopup extends Activity {
         params.y = -20;
 
         getWindow().setAttributes(params);
+    }
+
+    public void onButtonOwnRouteClicked(View view){
+        Toast.makeText(getApplicationContext(), "HELLO TEST", Toast.LENGTH_LONG).show();
     }
 }

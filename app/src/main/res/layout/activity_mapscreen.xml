@@ -100,20 +100,46 @@
             app:layout_constraintTop_toTopOf="@+id/vSearchBackground" />
 
         <EditText
-            android:id="@+id/etSearchLocation"
-            android:layout_width="0dp"
+            android:id="@+id/etSearchAddressName"
+            android:layout_width="140dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"
             android:ems="10"
-            android:hint="Search for a place or address"
+            android:hint="Streetname"
             android:inputType="textPersonName"
             android:textColor="@color/white"
             android:textColorHint="@color/greyish_white"
             app:layout_constraintBottom_toBottomOf="@+id/vSearchBackground"
-            app:layout_constraintEnd_toEndOf="@+id/vSearchBackground"
+            app:layout_constraintEnd_toStartOf="@+id/etSearchAddressNumber"
+            app:layout_constraintTop_toTopOf="@+id/vSearchBackground" />
+
+        <EditText
+            android:id="@+id/etSearchAddressNumber"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:ems="10"
+            android:hint="195"
+            android:inputType="number"
+            android:textColor="@color/white"
+            android:textColorHint="@color/greyish_white"
+            app:layout_constraintBottom_toBottomOf="@+id/vSearchBackground"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/vSearchBackground" />
+
+        <EditText
+            android:id="@+id/etSearchAddressCity"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:ems="10"
+            android:hint="City"
+            android:inputType="textPersonName"
+            android:textColor="@color/white"
+            android:textColorHint="@color/greyish_white"
+            app:layout_constraintBottom_toBottomOf="@+id/vSearchBackground"
+            app:layout_constraintEnd_toStartOf="@+id/etSearchAddressName"
             app:layout_constraintStart_toEndOf="@+id/ivSearchIcon"
             app:layout_constraintTop_toTopOf="@+id/vSearchBackground" />
 
