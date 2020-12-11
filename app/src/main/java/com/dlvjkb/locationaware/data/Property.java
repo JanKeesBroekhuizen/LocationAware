@@ -4,9 +4,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Property {
+public class Property implements Serializable {
     public ArrayList<Segment> segments;
     public Summary summary;
     public int[] wayPoints;

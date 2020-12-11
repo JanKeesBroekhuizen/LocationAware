@@ -26,6 +26,8 @@ public class RouteInformationPopup extends Activity {
 
     public static GeoPoint routeStartGeoPoint = null;
     public static GeoPoint routeEndGeoPoint = null;
+    public static String routeStartAddress;
+    public static String routeEndAddress;
     private EditText etRouteStartCityName;
     private EditText etRouteStartStreetName;
     private EditText etRouteStartStreetNumber;
@@ -54,6 +56,7 @@ public class RouteInformationPopup extends Activity {
         etRouteEndStreetName = findViewById(R.id.etEndAddressStreet);
         etRouteEndStreetNumber = findViewById(R.id.etEndAddressNumber);
 
+        setTestText();
     }
 
     public void onButtonOwnRouteClicked(View view){
@@ -62,7 +65,8 @@ public class RouteInformationPopup extends Activity {
         routeEndGeoPoint = AddressToGeoPoint(etRouteEndStreetName.getText().toString() + " " + etRouteEndStreetNumber.getText().toString(), etRouteEndCityName.getText().toString());
         Log.d("GEOPOINT START:" , routeStartGeoPoint.getLatitude() + " " + routeStartGeoPoint.getLongitude());
         Log.d("GEOPOINT END:" , routeEndGeoPoint.getLatitude() + " " + routeEndGeoPoint.getLongitude());
-
+        routeStartAddress = etRouteStartStreetName.getText().toString() + " " + etRouteStartStreetNumber.getText().toString() + "\n" + etRouteStartCityName.getText().toString();
+        routeEndAddress = etRouteEndStreetName.getText().toString() + " " + etRouteEndStreetNumber.getText().toString() + "\n" + etRouteEndCityName.getText().toString();
         Intent intent = new Intent(getApplicationContext(), MapScreenActivity.class);
         startActivity(intent);
     }
@@ -105,7 +109,12 @@ public class RouteInformationPopup extends Activity {
         return coordinatesArray;
     }
 
-    public void createRoute(){
-
+    public void setTestText(){
+        etRouteStartCityName.setText("Rotterdam");
+        etRouteStartStreetName.setText("Pascalweg");
+        etRouteStartStreetNumber.setText("147");
+        etRouteEndCityName.setText("Bleskensgraaf");
+        etRouteEndStreetName.setText("Reigerstraat");
+        etRouteEndStreetNumber.setText("26");
     }
 }

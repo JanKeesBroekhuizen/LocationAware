@@ -4,9 +4,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.lang.reflect.Array;
 
-public class Step {
+public class Step implements Serializable {
     public double distance;
     public double duration;
     public int type;

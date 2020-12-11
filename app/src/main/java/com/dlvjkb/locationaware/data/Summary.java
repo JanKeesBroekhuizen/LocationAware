@@ -3,7 +3,9 @@ package com.dlvjkb.locationaware.data;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Summary {
+import java.io.Serializable;
+
+public class Summary implements Serializable {
 
     public double distance;
     public double duration;

@@ -48,6 +48,7 @@ public class MapScreenActivity extends AppCompatActivity {
     private EditText etSearchStreetNumber;
     private IMapController mapController;
     private Boolean getCoordinatesFinished = false;
+    private Route route;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -208,7 +209,9 @@ public class MapScreenActivity extends AppCompatActivity {
         line.setOnClickListener(new Polyline.OnClickListener() {
             @Override
             public boolean onClick(Polyline polyline, MapView mapView, GeoPoint eventPos) {
-                Toast.makeText(getApplicationContext(), "JOEJOE", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MapScreenActivity.this,chosenRouteDetailActivity.class);
+                intent.putExtra("ROUTE",route);
+                startActivity(intent);
                 return false;
             }
         });
@@ -233,7 +236,7 @@ public class MapScreenActivity extends AppCompatActivity {
                         JSONObject responseJson = null;
                         try {
                             responseJson = new JSONObject(response.body().string());
-                            Route route = new Route(responseJson);
+                            route = new Route(responseJson,RouteInformationPopup.routeStartAddress, RouteInformationPopup.routeEndAddress);
                             ArrayList<double[]> coordinates = route.features.get(0).geometry.coordinates;
 
                             for (double[] coordinate : coordinates){

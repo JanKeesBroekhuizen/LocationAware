@@ -6,21 +6,26 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-public class Route {
+public class Route implements Serializable {
     public String type;
     public ArrayList<Feature> features;
     public double[] bbox;
     public Metadata metadata;
+    public String routeStartAddress;
+    public String routeEndAddress;
 
-    public Route(JSONObject jsonObject){
+    public Route(JSONObject jsonObject, String start, String end){
         try{
             this.type = jsonObject.getString("type");
             this.features = jsonArrayToList(jsonObject.getJSONArray("features"));
             this.bbox = jsonArrayToArray(jsonObject.getJSONArray("bbox"));
             this.metadata = new Metadata(jsonObject.getJSONObject("metadata"));
+            this.routeStartAddress = start;
+            this.routeEndAddress = end;
         } catch (JSONException e) {
             e.printStackTrace();
         }

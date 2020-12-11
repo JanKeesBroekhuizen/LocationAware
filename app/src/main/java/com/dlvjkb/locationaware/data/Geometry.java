@@ -4,10 +4,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-public class Geometry {
+public class Geometry  implements Serializable {
 
     public ArrayList<double[]> coordinates;
     public String type;

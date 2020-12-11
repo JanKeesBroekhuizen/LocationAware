@@ -4,9 +4,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Query {
+public class Query implements Serializable {
     public ArrayList<double[]> coordinates;
     public String profile;
     public String format;
