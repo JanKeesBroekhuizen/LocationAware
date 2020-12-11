@@ -1,6 +1,7 @@
 package com.dlvjkb.locationaware;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -23,8 +24,8 @@ import okhttp3.Response;
 
 public class RouteInformationPopup extends Activity {
 
-    private GeoPoint routeStartGeoPoint = null;
-    private GeoPoint routeEndGeoPoint = null;
+    public static GeoPoint routeStartGeoPoint = null;
+    public static GeoPoint routeEndGeoPoint = null;
     private EditText etRouteStartCityName;
     private EditText etRouteStartStreetName;
     private EditText etRouteStartStreetNumber;
@@ -61,6 +62,9 @@ public class RouteInformationPopup extends Activity {
         routeEndGeoPoint = AddressToGeoPoint(etRouteEndStreetName.getText().toString() + " " + etRouteEndStreetNumber.getText().toString(), etRouteEndCityName.getText().toString());
         Log.d("GEOPOINT START:" , routeStartGeoPoint.getLatitude() + " " + routeStartGeoPoint.getLongitude());
         Log.d("GEOPOINT END:" , routeEndGeoPoint.getLatitude() + " " + routeEndGeoPoint.getLongitude());
+
+        Intent intent = new Intent(getApplicationContext(), MapScreenActivity.class);
+        startActivity(intent);
     }
 
     public GeoPoint AddressToGeoPoint(String address, String city){

@@ -73,63 +73,12 @@ public class MapScreenActivity extends AppCompatActivity {
         etSearchStreetNumber = findViewById(R.id.etSearchAddressNumber);
         mapController = mapView.getController();
         mapController.setZoom(9.5);
+
         currentGeoPoint = new GeoPoint(0.0,0.0);
 
-
-        ArrayList<GeoPoint> geoPoints = new ArrayList<>();
-        OpenRouteServiceConnection.getInstance().getRouteInfo(
-                APIKEY,
-                "2.681495,44.41461",
-                "4.781676,51.874249",
-                TravelType.DRIVING_CAR,
-                new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Log.d(MapScreenActivity.class.getName(), e.getLocalizedMessage());
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                JSONObject responseJson = null;
-                try {
-                    responseJson = new JSONObject(response.body().string());
-                    Route route = new Route(responseJson);
-                    ArrayList<double[]> coordinates = route.features.get(0).geometry.coordinates;
-
-                    for (double[] coordinate : coordinates){
-                        geoPoints.add(new GeoPoint(coordinate[1], coordinate[0]));
-                    }
-                    System.out.println("GeoPoints: " + geoPoints.size() + " Coordinates: " + coordinates.size());
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                finished = true;
-            }
-        });
-
-        while(!finished){}
-
-        mapController.setCenter(geoPoints.get(0));
-        Polyline line = new Polyline();
-        line.setTitle("Road back home");
-        line.setSubDescription(Polyline.class.getCanonicalName());
-        //line.setWidth(20f);
-        line.getOutlinePaint().setStrokeWidth(20f);
-        line.getOutlinePaint().setColor(Color.RED);
-        line.setPoints(geoPoints);
-        line.setGeodesic(true);
-        line.setInfoWindow(new BasicInfoWindow(R.layout.bonuspack_bubble, mapView));
-        line.setOnClickListener(new Polyline.OnClickListener() {
-            @Override
-            public boolean onClick(Polyline polyline, MapView mapView, GeoPoint eventPos) {
-                Toast.makeText(getApplicationContext(), "JOEJOE", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        });
-        mapView.getOverlayManager().add(line);
-
-
+        if (RouteInformationPopup.routeStartGeoPoint != null && RouteInformationPopup.routeEndGeoPoint != null){
+            createRoute(RouteInformationPopup.routeStartGeoPoint, RouteInformationPopup.routeEndGeoPoint);
+        }
     }
 
     @Override
@@ -244,5 +193,64 @@ public class MapScreenActivity extends AppCompatActivity {
             }
         }
         return coordinatesArray;
+    }
+
+    public Polyline drawLine(ArrayList<GeoPoint> geoPoints){
+        Polyline line = new Polyline();
+        line.setTitle("Road back home");
+        line.setSubDescription(Polyline.class.getCanonicalName());
+        //line.setWidth(20f);
+        line.getOutlinePaint().setStrokeWidth(20f);
+        line.getOutlinePaint().setColor(Color.RED);
+        line.setPoints(geoPoints);
+        line.setGeodesic(true);
+        line.setInfoWindow(new BasicInfoWindow(R.layout.bonuspack_bubble, mapView));
+        line.setOnClickListener(new Polyline.OnClickListener() {
+            @Override
+            public boolean onClick(Polyline polyline, MapView mapView, GeoPoint eventPos) {
+                Toast.makeText(getApplicationContext(), "JOEJOE", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+        return line;
+    }
+
+    public void createRoute(GeoPoint start, GeoPoint end){
+        ArrayList<GeoPoint> geoPoints = new ArrayList<>();
+        OpenRouteServiceConnection.getInstance().getRouteInfo(
+                APIKEY,
+                start,
+                end,
+                TravelType.DRIVING_CAR,
+                new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        Log.d(MapScreenActivity.class.getName(), e.getLocalizedMessage());
+                    }
+
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        JSONObject responseJson = null;
+                        try {
+                            responseJson = new JSONObject(response.body().string());
+                            Route route = new Route(responseJson);
+                            ArrayList<double[]> coordinates = route.features.get(0).geometry.coordinates;
+
+                            for (double[] coordinate : coordinates){
+                                geoPoints.add(new GeoPoint(coordinate[1], coordinate[0]));
+                            }
+                            System.out.println("GeoPoints: " + geoPoints.size() + " Coordinates: " + coordinates.size());
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        finished = true;
+                    }
+                });
+
+        while(!finished){}
+
+        mapController.setCenter(geoPoints.get(0));
+        mapView.getOverlayManager().add(drawLine(geoPoints));
     }
 }
