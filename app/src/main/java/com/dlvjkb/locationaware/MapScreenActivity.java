@@ -75,6 +75,7 @@ public class MapScreenActivity extends AppCompatActivity {
         etSearchStreetNumber = findViewById(R.id.etSearchAddressNumber);
         mapController = mapView.getController();
         mapController.setZoom(9.5);
+        mapView.setMultiTouchControls(true);
 
         currentGeoPoint = new GeoPoint(0.0,0.0);
 
@@ -104,6 +105,12 @@ public class MapScreenActivity extends AppCompatActivity {
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //Configuration.getInstance().save(this, prefs);
         mapView.onPause();  //needed for compass, my location overlays, v6.0.0 and up
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mapView.onDetach();
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.dlvjkb.locationaware;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dlvjkb.locationaware.data.Route;
-import com.dlvjkb.locationaware.recyclerview.RouteDirectionsAdapter;
+import com.dlvjkb.locationaware.recyclerview.routedetail.RouteDirectionsAdapter;
 
 public class ChosenRouteDetailActivity extends AppCompatActivity {
 

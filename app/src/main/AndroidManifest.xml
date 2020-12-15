@@ -23,13 +23,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".RouteInformationPopup" android:theme="@style/Theme.LocationAware.popUp"/>
-        <activity android:name=".ChosenRouteDetailActivity">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
-        </activity>
+        <activity android:name=".ChosenRouteDetailActivity"/>
     </application>
 
 </manifest>

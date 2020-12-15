@@ -274,18 +274,79 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <Button
-        android:id="@+id/btnSearchRoute"
+    <TextView
+        android:id="@+id/tvPresetRoutes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Presets"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="@+id/vDeviderPopUpOne"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPresetRoutes"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:background="@color/greyish_white"
-        android:text="Button"
-        android:onClick="onButtonOwnRouteClicked"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/endingPointLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/tvPresetRoutes" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Saved"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="@+id/tvPresetRoutes"
+        app:layout_constraintTop_toBottomOf="@+id/rvPresetRoutes" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSavedRoutes"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:showDividers="middle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/endingPointLayout">
+
+        <Button
+            android:id="@+id/btnSearchRoute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:background="@drawable/rounded_block_selected"
+            android:onClick="onButtonSearchRouteClicked"
+            android:text="Search" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:background="@drawable/rounded_block_selected"
+            android:text="Save" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

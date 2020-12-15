@@ -1,4 +1,4 @@
-package com.dlvjkb.locationaware.recyclerview;
+package com.dlvjkb.locationaware.recyclerview.routedetail;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -13,7 +13,7 @@ import com.dlvjkb.locationaware.data.Step;
 
 import java.util.ArrayList;
 
-public class RouteDirectionsAdapter extends RecyclerView.Adapter<RouteDirectionsViewHolder> {
+public class RouteDirectionsAdapter extends RecyclerView.Adapter<PresetRoutesViewHolder> {
 
 
     private ArrayList<Step> steps;
@@ -26,14 +26,14 @@ public class RouteDirectionsAdapter extends RecyclerView.Adapter<RouteDirections
 
     @NonNull
     @Override
-    public RouteDirectionsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public PresetRoutesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recylerview_item_routedirections,parent,false);
-        RouteDirectionsViewHolder viewHolder = new RouteDirectionsViewHolder(view);
+        PresetRoutesViewHolder viewHolder = new PresetRoutesViewHolder(view);
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RouteDirectionsViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PresetRoutesViewHolder holder, int position) {
         Step step = steps.get(position);
         holder.tvDescription.setText(step.instruction);
         holder.tvDistanceValue.setText(String.format("%.2f",step.distance/1000) + " " + context.getResources().getString(R.string.recyclerview_distance));

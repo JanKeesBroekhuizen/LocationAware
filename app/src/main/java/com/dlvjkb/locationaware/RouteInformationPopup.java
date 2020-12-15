@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -12,11 +13,17 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.dlvjkb.locationaware.recyclerview.popuppreset.PresetRoutesAdapter;
+import com.dlvjkb.locationaware.recyclerview.popupsaved.SavedRoutesAdapter;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -25,6 +32,7 @@ import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
 
 import java.io.IOException;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -37,6 +45,8 @@ public class RouteInformationPopup extends Activity {
     public static String routeStartAddress;
     public static String routeEndAddress;
     public static TravelType travelType;
+    private RecyclerView rvPresetRoutes;
+    private RecyclerView rvSavedRoutes;
     private EditText etRouteStartCityName;
     private EditText etRouteStartStreetName;
     private EditText etRouteStartStreetNumber;
@@ -76,7 +86,7 @@ public class RouteInformationPopup extends Activity {
         setTestText();
     }
 
-    public void onButtonOwnRouteClicked(View view){
+    public void onButtonSearchRouteClicked(View view){
         Toast.makeText(getApplicationContext(), "HELLO TEST", Toast.LENGTH_LONG).show();
         routeStartGeoPoint = AddressToGeoPoint(etRouteStartStreetName.getText().toString() + " " + etRouteStartStreetNumber.getText().toString(), etRouteStartCityName.getText().toString());
         routeEndGeoPoint = AddressToGeoPoint(etRouteEndStreetName.getText().toString() + " " + etRouteEndStreetNumber.getText().toString(), etRouteEndCityName.getText().toString());
@@ -155,5 +165,15 @@ public class RouteInformationPopup extends Activity {
         this.btnWalk.setBackgroundResource(R.drawable.rounded_block);
         this.btnCar.setBackgroundResource(R.drawable.rounded_block);
         travelType = TravelType.CYCLING_REGULAR;
+    }
+
+    private void initRecyclerViews(){
+        rvPresetRoutes = findViewById(R.id.rvPresetRoutes);
+        rvPresetRoutes.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false));
+        rvPresetRoutes.setAdapter(new PresetRoutesAdapter(this,null));
+
+        rvSavedRoutes = findViewById(R.id.rvSavedRoutes);
+        rvSavedRoutes.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false));
+        rvSavedRoutes.setAdapter(new SavedRoutesAdapter(this,null));
     }
 }

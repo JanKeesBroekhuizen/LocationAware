@@ -1,4 +1,4 @@
-package com.dlvjkb.locationaware.recyclerview;
+package com.dlvjkb.locationaware.recyclerview.routedetail;
 
 import android.view.View;
 import android.widget.ImageView;
@@ -9,14 +9,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.dlvjkb.locationaware.R;
 
-public class RouteDirectionsViewHolder extends RecyclerView.ViewHolder {
+public class PresetRoutesViewHolder extends RecyclerView.ViewHolder {
 
     ImageView ivDirections;
     TextView tvDurationValue;
     TextView tvDistanceValue;
     TextView tvDescription;
 
-    public RouteDirectionsViewHolder(@NonNull View itemView) {
+    public PresetRoutesViewHolder(@NonNull View itemView) {
         super(itemView);
         ivDirections = itemView.findViewById(R.id.ivRVDirection);
         tvDurationValue = itemView.findViewById(R.id.tvRVItemTimeValue);
