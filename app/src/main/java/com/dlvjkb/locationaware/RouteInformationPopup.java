@@ -2,13 +2,21 @@ package com.dlvjkb.locationaware;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.graphics.drawable.DrawableCompat;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -28,12 +36,17 @@ public class RouteInformationPopup extends Activity {
     public static GeoPoint routeEndGeoPoint = null;
     public static String routeStartAddress;
     public static String routeEndAddress;
+    public static TravelType travelType;
     private EditText etRouteStartCityName;
     private EditText etRouteStartStreetName;
     private EditText etRouteStartStreetNumber;
     private EditText etRouteEndCityName;
     private EditText etRouteEndStreetName;
     private EditText etRouteEndStreetNumber;
+    private ImageButton btnCar;
+    private ImageButton btnWalk;
+    private ImageButton btnBike;
+    private ImageButton btnSelected;
     private GeoPoint geoPoint;
     private Boolean finished;
 
@@ -55,6 +68,10 @@ public class RouteInformationPopup extends Activity {
         etRouteEndCityName = findViewById(R.id.etEndAddressCity);
         etRouteEndStreetName = findViewById(R.id.etEndAddressStreet);
         etRouteEndStreetNumber = findViewById(R.id.etEndAddressNumber);
+        btnCar = findViewById(R.id.ibCarIcon);
+        btnWalk = findViewById(R.id.ibWalkIcon);
+        btnBike = findViewById(R.id.ibBikeIcon);
+        onButtonWalkClicked(null);
 
         setTestText();
     }
@@ -116,5 +133,27 @@ public class RouteInformationPopup extends Activity {
         etRouteEndCityName.setText("Bleskensgraaf");
         etRouteEndStreetName.setText("Reigerstraat");
         etRouteEndStreetNumber.setText("26");
+    }
+
+    public void onButtonCarClicked(View view){
+        this.btnSelected = btnCar;
+        this.btnCar.setBackgroundResource(R.drawable.rounded_block_selected);
+        this.btnWalk.setBackgroundResource(R.drawable.rounded_block);
+        this.btnBike.setBackgroundResource(R.drawable.rounded_block);
+        travelType = TravelType.DRIVING_CAR;
+    }
+    public void onButtonWalkClicked(View view){
+        this.btnSelected = btnWalk;
+        this.btnWalk.setBackgroundResource(R.drawable.rounded_block_selected);
+        this.btnCar.setBackgroundResource(R.drawable.rounded_block);
+        this.btnBike.setBackgroundResource(R.drawable.rounded_block);
+        travelType = TravelType.FOOT_WALKING;
+    }
+    public void onButtonBikeClicked(View view){
+        this.btnSelected = btnBike;
+        this.btnBike.setBackgroundResource(R.drawable.rounded_block_selected);
+        this.btnWalk.setBackgroundResource(R.drawable.rounded_block);
+        this.btnCar.setBackgroundResource(R.drawable.rounded_block);
+        travelType = TravelType.CYCLING_REGULAR;
     }
 }

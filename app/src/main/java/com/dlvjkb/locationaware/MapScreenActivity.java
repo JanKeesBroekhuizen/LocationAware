@@ -49,6 +49,7 @@ public class MapScreenActivity extends AppCompatActivity {
     private IMapController mapController;
     private Boolean getCoordinatesFinished = false;
     private Route route;
+    private Polyline line;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +79,7 @@ public class MapScreenActivity extends AppCompatActivity {
         currentGeoPoint = new GeoPoint(0.0,0.0);
 
         if (RouteInformationPopup.routeStartGeoPoint != null && RouteInformationPopup.routeEndGeoPoint != null){
-            createRoute(RouteInformationPopup.routeStartGeoPoint, RouteInformationPopup.routeEndGeoPoint);
+            createRoute(RouteInformationPopup.routeStartGeoPoint, RouteInformationPopup.routeEndGeoPoint, RouteInformationPopup.travelType);
         }
     }
 
@@ -90,6 +91,9 @@ public class MapScreenActivity extends AppCompatActivity {
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
         mapView.onResume(); //needed for compass, my location overlays, v6.0.0 and up
+        if (RouteInformationPopup.routeStartGeoPoint == null && RouteInformationPopup.routeEndGeoPoint == null){
+            mapView.getOverlayManager().remove(line);
+        }
     }
 
     @Override
@@ -196,8 +200,8 @@ public class MapScreenActivity extends AppCompatActivity {
         return coordinatesArray;
     }
 
-    public Polyline drawLine(ArrayList<GeoPoint> geoPoints){
-        Polyline line = new Polyline();
+    public void drawLine(ArrayList<GeoPoint> geoPoints){
+        line = new Polyline();
         line.setTitle("Road back home");
         line.setSubDescription(Polyline.class.getCanonicalName());
         //line.setWidth(20f);
@@ -215,16 +219,15 @@ public class MapScreenActivity extends AppCompatActivity {
                 return false;
             }
         });
-        return line;
     }
 
-    public void createRoute(GeoPoint start, GeoPoint end){
+    public void createRoute(GeoPoint start, GeoPoint end, TravelType travelType){
         ArrayList<GeoPoint> geoPoints = new ArrayList<>();
         OpenRouteServiceConnection.getInstance().getRouteInfo(
                 APIKEY,
                 start,
                 end,
-                TravelType.DRIVING_CAR,
+                travelType,
                 new Callback() {
                     @Override
                     public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -254,6 +257,9 @@ public class MapScreenActivity extends AppCompatActivity {
         while(!finished){}
 
         mapController.setCenter(geoPoints.get(0));
-        mapView.getOverlayManager().add(drawLine(geoPoints));
+        drawLine(geoPoints);
+        if (line != null){
+            mapView.getOverlayManager().add(line);
+        }
     }
 }

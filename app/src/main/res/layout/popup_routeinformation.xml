@@ -26,7 +26,7 @@
             android:orientation="vertical">
 
             <ImageButton
-                android:id="@+id/imageButton"
+                android:id="@+id/ibWalkIcon"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="2dp"
@@ -34,6 +34,7 @@
                 android:background="@drawable/rounded_block"
                 android:scaleType="center"
                 android:tint="@color/white"
+                android:onClick="onButtonWalkClicked"
                 android:src="@drawable/icon_traveltype_walking"/>
 
             <TextView
@@ -53,11 +54,12 @@
             android:orientation="vertical">
 
             <ImageButton
-                android:id="@+id/imageButton2"
+                android:id="@+id/ibBikeIcon"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="2dp"
                 android:layout_weight="1"
+                android:onClick="onButtonBikeClicked"
                 android:background="@drawable/rounded_block"
                 android:tint="@color/white"
                 android:src="@drawable/icon_traveltype_bike" />
@@ -78,11 +80,12 @@
             android:orientation="vertical">
 
             <ImageButton
-                android:id="@+id/imageButton3"
+                android:id="@+id/ibCarIcon"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="2dp"
                 android:layout_weight="1"
+                android:onClick="onButtonCarClicked"
                 android:background="@drawable/rounded_block"
                 android:tint="@color/white"
                 android:src="@drawable/icon_traveltype_car" />

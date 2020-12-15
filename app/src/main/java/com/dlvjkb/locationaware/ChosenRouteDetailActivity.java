@@ -38,8 +38,8 @@ public class ChosenRouteDetailActivity extends AppCompatActivity {
 
         tvStartingPoint.setText(chosenRoute.routeStartAddress);
         tvEndingPoint.setText(chosenRoute.routeEndAddress);
-        tvRouteDistance.setText(String.format("%.2f",chosenRoute.features.get(0).property.segments.get(0).distance/1000));
-        tvRouteDuration.setText(String.format("%.2f",chosenRoute.features.get(0).property.segments.get(0).duration/60));
+        tvRouteDistance.setText(String.format("%.2f",chosenRoute.features.get(0).property.segments.get(0).distance/1000) + " KM");
+        tvRouteDuration.setText(setRouteTravelTime());
 
         setTravelTypeIcon();
         initializeRecyclerView();
@@ -57,6 +57,12 @@ public class ChosenRouteDetailActivity extends AppCompatActivity {
         }
     }
 
+    public void onButtonStopClick(View view){
+        RouteInformationPopup.routeStartGeoPoint = null;
+        RouteInformationPopup.routeEndGeoPoint = null;
+        finish();
+    }
+
     public void onButtonReturnClick(View view){
         finish();
     }
@@ -66,5 +72,14 @@ public class ChosenRouteDetailActivity extends AppCompatActivity {
         directionsAdapter = new RouteDirectionsAdapter(this,chosenRoute.features.get(0).property.segments.get(0).steps);
         rvDirections.setLayoutManager(new LinearLayoutManager(this));
         rvDirections.setAdapter(directionsAdapter);
+    }
+
+    private String setRouteTravelTime(){
+        int totalSeconds = (int)chosenRoute.features.get(0).property.segments.get(0).duration;
+        String ss = String.format("%02d",totalSeconds%60);
+        String mm = String.format("%02d",(totalSeconds % 3600)/60);
+        String hh = String.format("%02d",totalSeconds / 3600);
+
+        return hh + ":" + mm + ":" + ss;
     }
 }

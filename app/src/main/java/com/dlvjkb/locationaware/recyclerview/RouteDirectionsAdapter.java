@@ -38,11 +38,64 @@ public class RouteDirectionsAdapter extends RecyclerView.Adapter<RouteDirections
         holder.tvDescription.setText(step.instruction);
         holder.tvDistanceValue.setText(String.format("%.2f",step.distance/1000) + " " + context.getResources().getString(R.string.recyclerview_distance));
         holder.tvDurationValue.setText(String.format("%.2f",step.duration/60) + " "  + context.getResources().getString(R.string.recyclerview_seconds));
+        holder.ivDirections.setImageResource(getDirectionTypeIcon(step.type));
     }
 
 
     @Override
     public int getItemCount() {
         return steps.size();
+    }
+
+    private int getDirectionTypeIcon(int type){
+        int drawablevalue=0;
+        switch (type){
+            case 0:
+                drawablevalue = R.drawable.turn_left;
+                break;
+            case 1:
+                drawablevalue = R.drawable.turn_right;
+                break;
+            case 2:
+                drawablevalue = R.drawable.sharp_left;
+                break;
+            case 3:
+                drawablevalue = R.drawable.sharp_right;
+                break;
+            case 4:
+                drawablevalue = R.drawable.slight_left;
+                break;
+            case 5:
+                drawablevalue = R.drawable.slight_right;
+                break;
+            case 6:
+                drawablevalue = R.drawable.straight;
+                break;
+            case 7:
+                drawablevalue = R.drawable.roundabout;
+                break;
+            case 8:
+                drawablevalue = R.drawable.roundabout;
+                break;
+            case 9:
+                drawablevalue = R.drawable.u_turn;
+                break;
+            case 10:
+                drawablevalue = R.drawable.destination_reached;
+                break;
+            case 11:
+                drawablevalue = R.drawable.depart;
+                break;
+            case 12:
+                drawablevalue = R.drawable.keep_left;
+                break;
+            case 13:
+                drawablevalue = R.drawable.keep_right;
+                break;
+            default:
+                drawablevalue = R.drawable.icon_info;
+                break;
+        }
+        return drawablevalue;
     }
 }

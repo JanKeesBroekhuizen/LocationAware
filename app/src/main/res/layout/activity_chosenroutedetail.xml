@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/transparant_dark_grey"
-    tools:context=".chosenRouteDetailActivity">
+    tools:context=".ChosenRouteDetailActivity">
 
 
     <LinearLayout
@@ -27,6 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:layout_weight="1"
+            android:onClick="onButtonStopClick"
             android:backgroundTint="@android:color/holo_orange_light"
             android:textColor="@color/black"
             android:text="STOP" />
@@ -77,11 +78,11 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
         android:scaleType="fitCenter"
-        android:tint="@color/white"
         app:layout_constraintEnd_toStartOf="@+id/tvRouteDetailEndingPoint"
         app:layout_constraintStart_toEndOf="@+id/tvRouteDetailStartingPoint"
-        app:layout_constraintTop_toBottomOf="@+id/llRouteDetailOne"
-        app:srcCompat="@drawable/icon_traveltype_bike" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/icon_traveltype_bike"
+        app:tint="@color/white" />
 
     <View
         android:id="@+id/vRouteDetailDeviderLine"
@@ -93,14 +94,14 @@
         android:background="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivTravelType" />
+        app:layout_constraintTop_toBottomOf="@+id/llRouteDetailOne" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvRouteDetailDirections"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@+id/llRouteDetailTwo"
@@ -113,7 +114,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:text="Directions"
         android:textColor="@color/white"
@@ -126,11 +127,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@+id/vRouteDetailDeviderLine"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/ivTravelType">
 
         <TextView
             android:id="@+id/tvRouteDetailDistance"
