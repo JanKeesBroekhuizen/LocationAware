@@ -35,7 +35,7 @@ public class Property implements Serializable {
     }
 
     public int[] jsonArrayToArray(JSONArray array){
-        final int[] wayPointsArray = new int[2];
+        final int[] wayPointsArray = new int[array.length()];
         for (int jsonArrayIndex = 0; jsonArrayIndex < array.length(); jsonArrayIndex++){
             try {
                 wayPointsArray[jsonArrayIndex] = array.getInt(jsonArrayIndex);

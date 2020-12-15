@@ -1,0 +1,26 @@
+[
+	{
+		"route_id": 1,
+		"location_id": 1
+	},
+	{
+		"route_id": 1,
+		"location_id": 2
+	},
+	{
+		"route_id": 1,
+		"location_id": 3
+	},
+	{
+		"route_id": 1,
+		"location_id": 4
+	},
+	{
+		"route_id": 1,
+		"location_id": 5
+	},
+	{
+		"route_id": 1,
+		"location_id": 6
+	}
+]

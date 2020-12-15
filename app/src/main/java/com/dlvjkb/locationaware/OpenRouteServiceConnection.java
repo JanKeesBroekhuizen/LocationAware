@@ -2,15 +2,21 @@ package com.dlvjkb.locationaware;
 
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.Credentials;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class OpenRouteServiceConnection {
@@ -53,6 +59,41 @@ public class OpenRouteServiceConnection {
                 "&locality=" + city;
         //final String url = "https://api.openrouteservice.org/geocode/search/structured?api_key=5b3ce3597851110001cf62487e88103431e54b0a846066f367b0b015&address=Reigerstraat26&locality=Bleskensgraaf";
         final Request request = new Request.Builder().url(url).build();
+        Call call = client.newCall(request);
+        call.enqueue(callback);
+        return call;
+    }
+
+    public Call getRouteMultiplePoints(String key, ArrayList<GeoPoint> geoPoints, TravelType travelType, Callback callback){
+        //String json = "{\"coordinates\":[[8.681495,49.41461],[8.686507,49.41943],[8.687872,49.420318]]}";
+        JSONObject jsonObject = new JSONObject();
+        JSONArray coordinatesArray = new JSONArray();
+        JSONArray jsonArray;
+        for (GeoPoint geoPoint : geoPoints){
+            jsonArray = new JSONArray();
+            double latitude = geoPoint.getLatitude();
+            double longitude = geoPoint.getLongitude();
+            try {
+                jsonArray.put(longitude);
+                jsonArray.put(latitude);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            coordinatesArray.put(jsonArray);
+        }
+
+        try {
+            jsonObject.put("coordinates", coordinatesArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("JSONNNN" + jsonObject);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), jsonObject.toString());
+
+        final String url = "https://api.openrouteservice.org/v2/directions/" + TravelType.getTravelType(travelType) + "/geojson";
+        Log.d(TAG, url);
+        final Request request = new Request.Builder().url(url).addHeader("Authorization", key).post(body).build();
         Call call = client.newCall(request);
         call.enqueue(callback);
         return call;

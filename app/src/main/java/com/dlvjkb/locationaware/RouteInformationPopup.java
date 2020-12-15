@@ -22,7 +22,12 @@ import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.dlvjkb.locationaware.database.DB_Location;
+import com.dlvjkb.locationaware.database.Database;
+import com.dlvjkb.locationaware.database.DatabaseManager;
+import com.dlvjkb.locationaware.recyclerview.popuppreset.PresetRouteClickListener;
 import com.dlvjkb.locationaware.recyclerview.popuppreset.PresetRoutesAdapter;
+import com.dlvjkb.locationaware.recyclerview.popupsaved.SavedRouteClickListener;
 import com.dlvjkb.locationaware.recyclerview.popupsaved.SavedRoutesAdapter;
 
 import org.jetbrains.annotations.NotNull;
@@ -32,14 +37,16 @@ import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class RouteInformationPopup extends Activity {
+public class RouteInformationPopup extends Activity implements PresetRouteClickListener, SavedRouteClickListener {
 
+    public static ArrayList<GeoPoint> routePoints;
     public static GeoPoint routeStartGeoPoint = null;
     public static GeoPoint routeEndGeoPoint = null;
     public static String routeStartAddress;
@@ -59,6 +66,7 @@ public class RouteInformationPopup extends Activity {
     private ImageButton btnSelected;
     private GeoPoint geoPoint;
     private Boolean finished;
+    private DatabaseManager databaseManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -83,6 +91,12 @@ public class RouteInformationPopup extends Activity {
         btnBike = findViewById(R.id.ibBikeIcon);
         onButtonWalkClicked(null);
 
+        databaseManager = DatabaseManager.getInstance(getApplicationContext());
+        databaseManager.initTotalDatabase();
+        routePoints = new ArrayList<>();
+        initRecyclerViews();
+
+        testQueries();
         setTestText();
     }
 
@@ -145,6 +159,12 @@ public class RouteInformationPopup extends Activity {
         etRouteEndStreetNumber.setText("26");
     }
 
+    public void testQueries(){
+        System.out.println("LOCATIONS: " + databaseManager.getLocations().size());
+        System.out.println("ROUTES: " + databaseManager.getRoutes().size());
+        System.out.println("LOCATION_ROUTES: " + databaseManager.getLocationRoutes().size());
+    }
+
     public void onButtonCarClicked(View view){
         this.btnSelected = btnCar;
         this.btnCar.setBackgroundResource(R.drawable.rounded_block_selected);
@@ -170,10 +190,32 @@ public class RouteInformationPopup extends Activity {
     private void initRecyclerViews(){
         rvPresetRoutes = findViewById(R.id.rvPresetRoutes);
         rvPresetRoutes.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false));
-        rvPresetRoutes.setAdapter(new PresetRoutesAdapter(this,null));
 
-        rvSavedRoutes = findViewById(R.id.rvSavedRoutes);
-        rvSavedRoutes.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false));
-        rvSavedRoutes.setAdapter(new SavedRoutesAdapter(this,null));
+        PresetRoutesAdapter presetRoutesAdapter = new PresetRoutesAdapter(this, databaseManager.getRoutes(), this);
+        rvPresetRoutes.setAdapter(presetRoutesAdapter);
+        presetRoutesAdapter.notifyDataSetChanged();
+
+
+//        rvSavedRoutes = findViewById(R.id.rvSavedRoutes);
+//        rvSavedRoutes.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false));
+//        rvSavedRoutes.setAdapter(new SavedRoutesAdapter(this,null, this));
+    }
+
+    @Override
+    public void onPresetRouteClicked(int position) {
+
+        Toast.makeText(getApplicationContext(), "PresetRoute clicked " + position, Toast.LENGTH_SHORT).show();
+        List<DB_Location> locations = databaseManager.getLocationsFromRoute(position + 1);
+        for (DB_Location location : locations){
+            routePoints.add(AddressToGeoPoint(location.Street + " " + location.Housenumber, location.City));
+        }
+
+        Intent intent = new Intent(getApplicationContext(), MapScreenActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onSavedRouteClicked(int position) {
+        Toast.makeText(getApplicationContext(), "SavedRoute clicked " + position, Toast.LENGTH_SHORT).show();
     }
 }

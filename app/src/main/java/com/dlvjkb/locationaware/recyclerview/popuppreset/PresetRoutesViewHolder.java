@@ -9,14 +9,24 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.dlvjkb.locationaware.R;
 
-public class PresetRoutesViewHolder extends RecyclerView.ViewHolder{
+public class PresetRoutesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-    private TextView tvRouteName;
-    private ImageView ivRoute;
+    public TextView tvRouteName;
+    public ImageView ivRoute;
+    private PresetRouteClickListener listener;
 
-    public PresetRoutesViewHolder(@NonNull View itemView) {
+    public PresetRoutesViewHolder(@NonNull View itemView, PresetRouteClickListener listener) {
         super(itemView);
         tvRouteName = itemView.findViewById(R.id.tvPresetRoute);
         ivRoute = itemView.findViewById(R.id.ivPresetRoute);
+        this.listener = listener;
+
+        itemView.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        int position = getAdapterPosition();
+        listener.onPresetRouteClicked(position);
     }
 }

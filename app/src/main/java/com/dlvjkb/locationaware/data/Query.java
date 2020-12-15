@@ -35,7 +35,7 @@ public class Query implements Serializable {
     }
 
     public double[] jsonArrayToArray(JSONArray array){
-        final double[] coordinateArray = new double[2];
+        final double[] coordinateArray = new double[array.length()];
         for (int jsonArrayIndex = 0; jsonArrayIndex < array.length(); jsonArrayIndex++){
             try {
                 coordinateArray[jsonArrayIndex] = array.getDouble(jsonArrayIndex);

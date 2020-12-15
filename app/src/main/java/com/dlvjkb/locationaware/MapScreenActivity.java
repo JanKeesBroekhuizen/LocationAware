@@ -15,6 +15,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.dlvjkb.locationaware.data.Route;
+import com.dlvjkb.locationaware.database.DatabaseManager;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -50,6 +51,7 @@ public class MapScreenActivity extends AppCompatActivity {
     private Boolean getCoordinatesFinished = false;
     private Route route;
     private Polyline line;
+    private Polyline lineTest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +84,10 @@ public class MapScreenActivity extends AppCompatActivity {
         if (RouteInformationPopup.routeStartGeoPoint != null && RouteInformationPopup.routeEndGeoPoint != null){
             createRoute(RouteInformationPopup.routeStartGeoPoint, RouteInformationPopup.routeEndGeoPoint, RouteInformationPopup.travelType);
         }
+
+        if (RouteInformationPopup.routePoints != null && RouteInformationPopup.routePoints.size() != 0){
+            createRoutes(RouteInformationPopup.routePoints, TravelType.FOOT_WALKING);
+        }
     }
 
     @Override
@@ -91,10 +97,13 @@ public class MapScreenActivity extends AppCompatActivity {
         //if you make changes to the configuration, use
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
-        mapView.onResume(); //needed for compass, my location overlays, v6.0.0 and up
         if (RouteInformationPopup.routeStartGeoPoint == null && RouteInformationPopup.routeEndGeoPoint == null){
             mapView.getOverlayManager().remove(line);
         }
+        if (RouteInformationPopup.routePoints == null){
+            mapView.getOverlayManager().remove(lineTest);
+        }
+        mapView.onResume(); //needed for compass, my location overlays, v6.0.0 and up
     }
 
     @Override
@@ -207,27 +216,6 @@ public class MapScreenActivity extends AppCompatActivity {
         return coordinatesArray;
     }
 
-    public void drawLine(ArrayList<GeoPoint> geoPoints){
-        line = new Polyline();
-        line.setTitle("Road back home");
-        line.setSubDescription(Polyline.class.getCanonicalName());
-        //line.setWidth(20f);
-        line.getOutlinePaint().setStrokeWidth(20f);
-        line.getOutlinePaint().setColor(Color.RED);
-        line.setPoints(geoPoints);
-        line.setGeodesic(true);
-        line.setInfoWindow(new BasicInfoWindow(R.layout.bonuspack_bubble, mapView));
-        line.setOnClickListener(new Polyline.OnClickListener() {
-            @Override
-            public boolean onClick(Polyline polyline, MapView mapView, GeoPoint eventPos) {
-                Intent intent = new Intent(MapScreenActivity.this,ChosenRouteDetailActivity.class);
-                intent.putExtra("ROUTE",route);
-                startActivity(intent);
-                return false;
-            }
-        });
-    }
-
     public void createRoute(GeoPoint start, GeoPoint end, TravelType travelType){
         ArrayList<GeoPoint> geoPoints = new ArrayList<>();
         OpenRouteServiceConnection.getInstance().getRouteInfo(
@@ -264,9 +252,74 @@ public class MapScreenActivity extends AppCompatActivity {
         while(!finished){}
 
         mapController.setCenter(geoPoints.get(0));
-        drawLine(geoPoints);
+        mapController.setZoom(18.0f);
+        line = new Polyline();
+        drawLine(line, geoPoints);
         if (line != null){
             mapView.getOverlayManager().add(line);
         }
+    }
+
+    public void createRoutes(ArrayList<GeoPoint> routeLocations, TravelType travelType){
+        ArrayList<GeoPoint> geoPoints = new ArrayList<>();
+        OpenRouteServiceConnection.getInstance().getRouteMultiplePoints(
+                APIKEY,
+                routeLocations,
+                travelType,
+                new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        Log.d(MapScreenActivity.class.getName(), e.getLocalizedMessage());
+                    }
+
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        JSONObject responseJson = null;
+                        try {
+                            responseJson = new JSONObject(response.body().string());
+                            route = new Route(responseJson, "Begin", "Destination");
+                            ArrayList<double[]> coordinates = route.features.get(0).geometry.coordinates;
+
+                            for (double[] coordinate : coordinates){
+                                geoPoints.add(new GeoPoint(coordinate[1], coordinate[0]));
+                            }
+                            System.out.println("GeoPoints: " + geoPoints.size() + " Coordinates: " + coordinates.size());
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        finished = true;
+                    }
+                });
+
+        while(!finished){}
+
+        mapController.setCenter(geoPoints.get(0));
+        mapController.setZoom(18.0f);
+        lineTest = new Polyline();
+        drawLine(lineTest, geoPoints);
+        if (lineTest != null){
+            mapView.getOverlayManager().add(lineTest);
+        }
+    }
+
+    public void drawLine(Polyline line, ArrayList<GeoPoint> geoPoints){
+        line.setTitle("Road back home");
+        line.setSubDescription(Polyline.class.getCanonicalName());
+        //line.setWidth(20f);
+        line.getOutlinePaint().setStrokeWidth(20f);
+        line.getOutlinePaint().setColor(Color.RED);
+        line.setPoints(geoPoints);
+        line.setGeodesic(true);
+        line.setInfoWindow(new BasicInfoWindow(R.layout.bonuspack_bubble, mapView));
+        line.setOnClickListener(new Polyline.OnClickListener() {
+            @Override
+            public boolean onClick(Polyline polyline, MapView mapView, GeoPoint eventPos) {
+                Intent intent = new Intent(MapScreenActivity.this,ChosenRouteDetailActivity.class);
+                intent.putExtra("ROUTE",route);
+                startActivity(intent);
+                return false;
+            }
+        });
     }
 }
