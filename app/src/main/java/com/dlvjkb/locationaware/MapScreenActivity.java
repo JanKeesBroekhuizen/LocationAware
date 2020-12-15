@@ -209,7 +209,7 @@ public class MapScreenActivity extends AppCompatActivity {
         line.setOnClickListener(new Polyline.OnClickListener() {
             @Override
             public boolean onClick(Polyline polyline, MapView mapView, GeoPoint eventPos) {
-                Intent intent = new Intent(MapScreenActivity.this,chosenRouteDetailActivity.class);
+                Intent intent = new Intent(MapScreenActivity.this,ChosenRouteDetailActivity.class);
                 intent.putExtra("ROUTE",route);
                 startActivity(intent);
                 return false;

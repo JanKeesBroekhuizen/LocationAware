@@ -3,13 +3,17 @@ package com.dlvjkb.locationaware;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.dlvjkb.locationaware.data.Route;
+import com.dlvjkb.locationaware.recyclerview.RouteDirectionsAdapter;
 
-public class chosenRouteDetailActivity extends AppCompatActivity {
+public class ChosenRouteDetailActivity extends AppCompatActivity {
 
     private TextView tvStartingPoint;
     private TextView tvEndingPoint;
@@ -17,6 +21,8 @@ public class chosenRouteDetailActivity extends AppCompatActivity {
     private Route chosenRoute;
     private TextView tvRouteDistance;
     private TextView tvRouteDuration;
+    private RecyclerView rvDirections;
+    private RouteDirectionsAdapter directionsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +42,7 @@ public class chosenRouteDetailActivity extends AppCompatActivity {
         tvRouteDuration.setText(String.format("%.2f",chosenRoute.features.get(0).property.segments.get(0).duration/60));
 
         setTravelTypeIcon();
+        initializeRecyclerView();
     }
 
     private void setTravelTypeIcon(){
@@ -52,5 +59,12 @@ public class chosenRouteDetailActivity extends AppCompatActivity {
 
     public void onButtonReturnClick(View view){
         finish();
+    }
+
+    private void initializeRecyclerView(){
+        rvDirections = findViewById(R.id.rvRouteDetailDirections);
+        directionsAdapter = new RouteDirectionsAdapter(this,chosenRoute.features.get(0).property.segments.get(0).steps);
+        rvDirections.setLayoutManager(new LinearLayoutManager(this));
+        rvDirections.setAdapter(directionsAdapter);
     }
 }

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">LocationAware</string>
+    <string name="recyclerview_seconds">s</string>
+    <string name="recyclerview_distance">km</string>
 </resources>
