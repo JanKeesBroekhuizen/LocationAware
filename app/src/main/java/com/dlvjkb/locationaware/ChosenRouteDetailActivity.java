@@ -57,8 +57,6 @@ public class ChosenRouteDetailActivity extends AppCompatActivity {
     }
 
     public void onButtonStopClick(View view){
-        RouteInformationPopup.routeStartGeoPoint = null;
-        RouteInformationPopup.routeEndGeoPoint = null;
         RouteInformationPopup.routePoints = null;
         finish();
     }

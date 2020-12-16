@@ -47,10 +47,10 @@ import okhttp3.Response;
 public class RouteInformationPopup extends Activity implements PresetRouteClickListener, SavedRouteClickListener {
 
     public static ArrayList<GeoPoint> routePoints;
-    public static GeoPoint routeStartGeoPoint = null;
-    public static GeoPoint routeEndGeoPoint = null;
-    public static String routeStartAddress;
-    public static String routeEndAddress;
+    //public static GeoPoint routeStartGeoPoint = null;
+    //public static GeoPoint routeEndGeoPoint = null;
+    //public static String routeStartAddress;
+   // public static String routeEndAddress;
     public static TravelType travelType;
     private RecyclerView rvPresetRoutes;
     private RecyclerView rvSavedRoutes;
@@ -101,13 +101,12 @@ public class RouteInformationPopup extends Activity implements PresetRouteClickL
     }
 
     public void onButtonSearchRouteClicked(View view){
-        Toast.makeText(getApplicationContext(), "HELLO TEST", Toast.LENGTH_LONG).show();
-        routeStartGeoPoint = AddressToGeoPoint(etRouteStartStreetName.getText().toString() + " " + etRouteStartStreetNumber.getText().toString(), etRouteStartCityName.getText().toString());
-        routeEndGeoPoint = AddressToGeoPoint(etRouteEndStreetName.getText().toString() + " " + etRouteEndStreetNumber.getText().toString(), etRouteEndCityName.getText().toString());
-        Log.d("GEOPOINT START:" , routeStartGeoPoint.getLatitude() + " " + routeStartGeoPoint.getLongitude());
-        Log.d("GEOPOINT END:" , routeEndGeoPoint.getLatitude() + " " + routeEndGeoPoint.getLongitude());
-        routeStartAddress = etRouteStartStreetName.getText().toString() + " " + etRouteStartStreetNumber.getText().toString() + "\n" + etRouteStartCityName.getText().toString();
-        routeEndAddress = etRouteEndStreetName.getText().toString() + " " + etRouteEndStreetNumber.getText().toString() + "\n" + etRouteEndCityName.getText().toString();
+        GeoPoint routeStartGeoPoint = AddressToGeoPoint(etRouteStartStreetName.getText().toString() + " " + etRouteStartStreetNumber.getText().toString(), etRouteStartCityName.getText().toString());
+        GeoPoint routeEndGeoPoint = AddressToGeoPoint(etRouteEndStreetName.getText().toString() + " " + etRouteEndStreetNumber.getText().toString(), etRouteEndCityName.getText().toString());
+        routePoints.add(routeStartGeoPoint);
+        routePoints.add(routeEndGeoPoint);
+//        routeStartAddress = etRouteStartStreetName.getText().toString() + " " + etRouteStartStreetNumber.getText().toString() + "\n" + etRouteStartCityName.getText().toString();
+//        routeEndAddress = etRouteEndStreetName.getText().toString() + " " + etRouteEndStreetNumber.getText().toString() + "\n" + etRouteEndCityName.getText().toString();
         Intent intent = new Intent(getApplicationContext(), MapScreenActivity.class);
         startActivity(intent);
     }
