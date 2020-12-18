@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.room.Room;
 
 import com.dlvjkb.locationaware.R;
+import com.dlvjkb.locationaware.TravelType;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,7 +33,7 @@ public class DatabaseManager {
 
     public DatabaseManager(Context context){
         this.context = context;
-        this.database = Room.databaseBuilder(context, Database.class, "database-LocationAware1.1").allowMainThreadQueries().build();
+        this.database = Room.databaseBuilder(context, Database.class, "database-LocationAware1.3").allowMainThreadQueries().build();
     }
 
     public void initTotalDatabase() {
@@ -75,6 +76,7 @@ public class DatabaseManager {
                     jsonObject = jsonArrayRoutes.getJSONObject(i);
                     route.ID = jsonObject.getInt("id");
                     route.Name = jsonObject.getString("name");
+                    route.Traveltype = jsonObject.getString("traveltype");
                     routes.add(route);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -172,5 +174,11 @@ public class DatabaseManager {
 
     public List<DB_Geocache> getGeocaches(){
         return database.geocacheDao().getAllGeocaches();
+    }
+
+    public DB_Route getRoute(int routeID){
+        System.out.println("ROUTEID: " + routeID);
+        System.out.println("Selected Route:   " + database.routeDao().getRoute(routeID).Name);
+        return database.routeDao().getRoute(routeID);
     }
 }

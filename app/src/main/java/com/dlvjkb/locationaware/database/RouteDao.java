@@ -12,6 +12,9 @@ public interface RouteDao {
     @Query("SELECT * FROM DB_Route")
     List<DB_Route> getAllRoutes();
 
+    @Query("SELECT * FROM DB_Route WHERE ID = :routeID")
+    DB_Route getRoute(int routeID);
+
     @Insert
     void insert (DB_Route route);
 

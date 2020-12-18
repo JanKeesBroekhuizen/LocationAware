@@ -90,7 +90,7 @@ public class MapScreenActivity extends AppCompatActivity {
 
         Log.d(MapScreenActivity.class.getName(), "Before check");
         if (RouteInformationPopup.routePoints != null && RouteInformationPopup.routePoints.size() != 0){
-            createRoutes(RouteInformationPopup.routePoints, TravelType.FOOT_WALKING);
+            createRoutes(RouteInformationPopup.routePoints, RouteInformationPopup.travelType);
         }
         Log.d(MapScreenActivity.class.getName(), "After check");
     }

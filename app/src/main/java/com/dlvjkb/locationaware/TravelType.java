@@ -44,4 +44,20 @@ public enum TravelType {
         }
         return travelTypeString;
     }
+
+    public static TravelType getTravelTypeEnum(String type){
+        TravelType travelType = null;
+        switch (type){
+            case "foot-walking":
+                travelType = TravelType.FOOT_WALKING;
+                break;
+            case "cycling-regular":
+                travelType = TravelType.CYCLING_REGULAR;
+                break;
+            case "driving-car":
+                travelType = TravelType.DRIVING_CAR;
+                break;
+        }
+        return travelType;
+    }
 }

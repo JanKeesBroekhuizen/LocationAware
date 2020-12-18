@@ -94,6 +94,7 @@ public class RouteInformationPopup extends Activity implements PresetRouteClickL
         databaseManager = DatabaseManager.getInstance(getApplicationContext());
         databaseManager.initTotalDatabase();
         routePoints = new ArrayList<>();
+        travelType = null;
         initRecyclerViews();
 
         testQueries();
@@ -208,7 +209,7 @@ public class RouteInformationPopup extends Activity implements PresetRouteClickL
         for (DB_Location location : locations){
             routePoints.add(AddressToGeoPoint(location.Street + " " + location.Housenumber, location.City));
         }
-
+        travelType = TravelType.getTravelTypeEnum(databaseManager.getRoute(position + 1).Traveltype);
         Intent intent = new Intent(getApplicationContext(), MapScreenActivity.class);
         startActivity(intent);
     }
