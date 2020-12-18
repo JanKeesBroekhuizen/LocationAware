@@ -15,6 +15,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.dlvjkb.locationaware.data.Route;
+import com.dlvjkb.locationaware.database.DB_Geocache;
 import com.dlvjkb.locationaware.database.DatabaseManager;
 
 import org.jetbrains.annotations.NotNull;
@@ -32,6 +33,7 @@ import org.osmdroid.views.overlay.infowindow.BasicInfoWindow;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import okhttp3.Call;
@@ -79,6 +81,7 @@ public class MapScreenActivity extends AppCompatActivity {
         mapController.setZoom(9.5);
         mapView.setMultiTouchControls(true);
 
+        DatabaseManager.getInstance(this).initTotalDatabase();
         currentGeoPoint = new GeoPoint(0.0,0.0);
 
 //        if (RouteInformationPopup.routeStartGeoPoint != null && RouteInformationPopup.routeEndGeoPoint != null){
@@ -165,6 +168,26 @@ public class MapScreenActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(),"INFORMATION POP UP",Toast.LENGTH_LONG).show();
         Intent intent = new Intent(MapScreenActivity.this, RouteInformationPopup.class);
         startActivity(intent);
+    }
+
+    public void onButtonGeocacheClicked(View view){
+        List<DB_Geocache> geocaches = DatabaseManager.getInstance(this).getGeocaches();
+        List<GeoPoint> geoPoints = new ArrayList<>();
+        for (DB_Geocache geocache : geocaches ){
+            GeoPoint geoPoint = new GeoPoint(geocache.Latitude, geocache.Longitude);
+            geoPoints.add(geoPoint);
+            Marker marker = new Marker(mapView);
+            marker.setPosition(geoPoint);
+            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+            marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(Marker marker, MapView mapView) {
+                    Toast.makeText(MapScreenActivity.this, "CLICK", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            });
+            mapView.getOverlays().add(marker);
+        }
     }
 
     public void onButtonSearchClicked(View view){

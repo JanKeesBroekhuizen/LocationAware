@@ -1,0 +1,187 @@
+[
+	{
+		"name": "Historisch monument, Bleskensgraaf",
+		"longitude": 4.782929,
+		"latitude": 51.875151,
+		"size": "small",
+		"difficulty": "easy",
+		"isfinished": false
+	},
+	{
+		"name": "Natuureiland, Bleskensgraaf",
+		"longitude": 4.778945,
+		"latitude": 51.872268,
+		"size": "large",
+		"difficulty": "medium",
+		"isfinished": false
+	},
+	{
+		"name": "Gaatkensbult, Barendrecht",
+		"longitude": 4.500306390804168,
+		"latitude": 51.840178516440474,
+		"size": "medium",
+		"difficulty": "easy",
+		"isfinished": false
+	},
+	{
+		"name": "Brug over de oude maas 1969, Barendrecht",
+		"longitude": 4.526875427022221,
+		"latitude": 51.8315021460116,
+		"size": "small",
+		"difficulty": "easy",
+		"isfinished": false
+	},
+	{
+		"name": "De Schouwplaats, Rotterdam",
+		"longitude": 4.478193524808136,
+		"latitude": 51.88170262198219,
+		"size": "Large",
+		"difficulty": "easy",
+		"isfinished": false
+	},
+	{
+		"name": "Het park, Rotterdam",
+		"longitude": 4.469982398350973,
+		"latitude": 51.906025825656386,
+		"size": "Large",
+		"difficulty": "easy",
+		"isfinished": false
+	},
+	{
+		"name": "Van Nelle fabriek, Rotterdam",
+		"longitude": 4.433733261991274,
+		"latitude": 51.92340200404306,
+		"size": "Large",
+		"difficulty": "easy",
+		"isfinished": false
+	},
+	{
+		"name": "De Euromast, Rotterdam",
+		"longitude": 4.466411586116998,
+		"latitude": 51.90541181359261,
+		"size": "Medium",
+		"difficulty": "easy",
+		"isfinished": false
+	},
+	{
+		"name": "Station Rotterdam, Rotterdam",
+		"longitude": 4.470075129622036,
+		"latitude": 51.9237225920495,
+		"size": "Large",
+		"difficulty": "easy",
+		"isfinished": false
+	},
+	{
+		"name": "De kijkkubus, Rotterdam",
+		"longitude": 4.490135045757129,
+		"latitude": 51.92036439218648,
+		"size": "medium",
+		"difficulty": "easy",
+		"isfinished": false
+	},
+	{
+		"name": "De nieuw delfste poort, Rotterdam",
+		"longitude": 4.480193483189705,
+		"latitude": 51.92458092043162,
+		"size": "small",
+		"difficulty": "easy",
+		"isfinished": false
+	},
+	{
+		"name": "Avans Hogeschool Breda",
+		"longitude": 4.792603,
+		"latitude": 51.585395,
+		"size": "small",
+		"difficulty": "hard",
+		"isfinished": false
+	},
+	{
+		"name": "Chassé Theater & Cinema Breda",
+		"longitude": 4.782231,
+		"latitude": 51.587695,
+		"size": "medium",
+		"difficulty": "medium",
+		"isfinished": false
+	},
+	{
+		"name": "Station Breda",
+		"longitude": 4.781726,
+		"latitude": 51.594933,
+		"size": "large",
+		"difficulty": "hard",
+		"isfinished": false
+	},
+	{
+		"name": "Nassau Baronie monument Breda",
+		"longitude": 4.779794,
+		"latitude": 51.592534,
+		"size": "small",
+		"difficulty": "easy",
+		"isfinished": false
+	},
+	{
+		"name": "Stadhouderspoort Breda",
+		"longitude": 4.776177,
+		"latitude": 51.590878,
+		"size": "small",
+		"difficulty": "easy",
+		"isfinished": false
+	},
+	{
+		"name": "Grote kerk Breda",
+		"longitude": 4.775978,
+		"latitude": 51.589058,
+		"size": "small",
+		"difficulty": "medium",
+		"isfinished": false
+	},
+	{
+		"name": "Bevrijdingsmonument Breda",
+		"longitude": 4.784826,
+		"latitude": 51.580869,
+		"size": "medium",
+		"difficulty": "easy",
+		"isfinished": false
+	},
+	{
+		"name": "Begijnhof Breda",
+		"longitude": 4.7786856,
+		"latitude": 51.5902084,
+		"size": "large",
+		"difficulty": "hard",
+		"isfinished": false
+	},
+	{
+		"name": "Biesbosch Dordrecht",
+		"longitude": 4.762667,
+		"latitude": 51.808114,
+		"size": "small",
+		"difficulty": "hard",
+		"isfinished": false
+	},
+	{
+		"name": "Grote Kerk Dordrecht",
+		"longitude": 4.661416,
+		"latitude": 51.814028,
+		"size": "large",
+		"difficulty": "easy",
+		"isfinished": false
+	},
+	{
+		"name": "Groothoofdspoort Dordrecht",
+		"longitude": 4.670264,
+		"latitude": 51.819696,
+		"size": "medium",
+		"difficulty": "medium",
+		"isfinished": false
+	},
+	{
+		"name": "Standbeeld gebroeders De Witt Dordrecht",
+		"longitude": 4.665168,
+		"latitude": 51.814350,
+		"size": "small",
+		"difficulty": "easy",
+		"isfinished": false
+	}
+]
+

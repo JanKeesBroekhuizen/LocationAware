@@ -1,6 +1,7 @@
 package com.dlvjkb.locationaware.database;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.room.Room;
 
@@ -38,6 +39,7 @@ public class DatabaseManager {
         initTableLocation();
         initTableRoute();
         initTableLocationRoute();
+        initTableGeocache();
     }
 
     public void initTableLocation(){
@@ -102,6 +104,31 @@ public class DatabaseManager {
         }
     }
 
+    public void initTableGeocache(){
+        if (database.geocacheDao().getAllGeocaches().size() == 0){
+            ArrayList<DB_Geocache> geocaches = new ArrayList<>();
+            JSONArray jsonArrayGeocaches = readJson(R.raw.geocache_file);
+            for (int i = 0; i < jsonArrayGeocaches.length(); i++) {
+                JSONObject jsonObject = null;
+                DB_Geocache geocache = new DB_Geocache();
+                try {
+                    jsonObject = jsonArrayGeocaches.getJSONObject(i);
+                    geocache.Name = jsonObject.getString("name");
+                    geocache.Longitude = jsonObject.getDouble("longitude");
+                    geocache.Latitude = jsonObject.getDouble("latitude");
+                    geocache.Size = jsonObject.getString("size");
+                    geocache.Difficulty = jsonObject.getString("difficulty");
+                    geocache.IsFound = jsonObject.getBoolean("isfinished");
+                    geocaches.add(geocache);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            database.geocacheDao().insertAll(geocaches);
+        }
+        Log.d("GEOCACHES",database.geocacheDao().getAllGeocaches().size() + "");
+    }
+
     public JSONArray readJson(int file) {
         JSONArray array = null;
         try {
@@ -141,5 +168,9 @@ public class DatabaseManager {
 
     public List<DB_Location> getLocationsFromRoute(int routeID){
         return database.locationRouteDao().getLocations(routeID);
+    }
+
+    public List<DB_Geocache> getGeocaches(){
+        return database.geocacheDao().getAllGeocaches();
     }
 }
