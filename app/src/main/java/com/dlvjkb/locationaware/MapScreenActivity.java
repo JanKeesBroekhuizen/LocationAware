@@ -304,7 +304,8 @@ public class MapScreenActivity extends AppCompatActivity {
                         JSONObject responseJson = null;
                         try {
                             responseJson = new JSONObject(response.body().string());
-                            route = new Route(responseJson, "Begin", "Destination");
+                            System.out.println(responseJson);
+                            route = new Route(responseJson, RouteInformationPopup.routeAddresses.get(0), RouteInformationPopup.routeAddresses.get(RouteInformationPopup.routeAddresses.size() - 1));
                             ArrayList<double[]> coordinates = route.features.get(0).geometry.coordinates;
 
                             for (double[] coordinate : coordinates){
