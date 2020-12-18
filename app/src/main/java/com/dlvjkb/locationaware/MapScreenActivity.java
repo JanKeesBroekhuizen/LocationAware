@@ -1,9 +1,11 @@
 package com.dlvjkb.locationaware;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -82,17 +84,10 @@ public class MapScreenActivity extends AppCompatActivity {
         mapView.setMultiTouchControls(true);
 
         DatabaseManager.getInstance(this).initTotalDatabase();
-        currentGeoPoint = new GeoPoint(0.0,0.0);
 
-//        if (RouteInformationPopup.routeStartGeoPoint != null && RouteInformationPopup.routeEndGeoPoint != null){
-//            createRoute(RouteInformationPopup.routeStartGeoPoint, RouteInformationPopup.routeEndGeoPoint, RouteInformationPopup.travelType);
-//        }
-
-        Log.d(MapScreenActivity.class.getName(), "Before check");
         if (RouteInformationPopup.routePoints != null && RouteInformationPopup.routePoints.size() != 0){
-            createRoutes(RouteInformationPopup.routePoints, RouteInformationPopup.travelType);
+            createRoute(RouteInformationPopup.routePoints, RouteInformationPopup.travelType);
         }
-        Log.d(MapScreenActivity.class.getName(), "After check");
     }
 
     @Override
@@ -102,9 +97,6 @@ public class MapScreenActivity extends AppCompatActivity {
         //if you make changes to the configuration, use
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
-//        if (RouteInformationPopup.routeStartGeoPoint == null && RouteInformationPopup.routeEndGeoPoint == null){
-//            mapView.getOverlayManager().remove(line);
-//        }
         mapView.onResume(); //needed for compass, my location overlays, v6.0.0 and up
         if (RouteInformationPopup.routePoints == null){
             mapView.getOverlayManager().remove(line);
@@ -241,51 +233,7 @@ public class MapScreenActivity extends AppCompatActivity {
         return coordinatesArray;
     }
 
-//    public void createRoute(GeoPoint start, GeoPoint end, TravelType travelType){
-//        ArrayList<GeoPoint> geoPoints = new ArrayList<>();
-//        OpenRouteServiceConnection.getInstance().getRouteInfo(
-//                APIKEY,
-//                start,
-//                end,
-//                travelType,
-//                new Callback() {
-//                    @Override
-//                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-//                        Log.d(MapScreenActivity.class.getName(), e.getLocalizedMessage());
-//                    }
-//
-//                    @Override
-//                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-//                        JSONObject responseJson = null;
-//                        try {
-//                            responseJson = new JSONObject(response.body().string());
-//                            route = new Route(responseJson,RouteInformationPopup.routeStartAddress, RouteInformationPopup.routeEndAddress);
-//                            ArrayList<double[]> coordinates = route.features.get(0).geometry.coordinates;
-//
-//                            for (double[] coordinate : coordinates){
-//                                geoPoints.add(new GeoPoint(coordinate[1], coordinate[0]));
-//                            }
-//                            System.out.println("GeoPoints: " + geoPoints.size() + " Coordinates: " + coordinates.size());
-//
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                        finished = true;
-//                    }
-//                });
-//
-//        while(!finished){}
-//
-//        mapController.setCenter(geoPoints.get(0));
-//        mapController.setZoom(18.0f);
-//        line = new Polyline();
-//        drawLine(line, geoPoints);
-//        if (line != null){
-//            mapView.getOverlayManager().add(line);
-//        }
-//    }
-
-    public void createRoutes(ArrayList<GeoPoint> routeLocations, TravelType travelType){
+    public void createRoute(ArrayList<GeoPoint> routeLocations, TravelType travelType){
         ArrayList<GeoPoint> geoPoints = new ArrayList<>();
         OpenRouteServiceConnection.getInstance().getRouteMultiplePoints(
                 APIKEY,
@@ -316,34 +264,25 @@ public class MapScreenActivity extends AppCompatActivity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        Log.d(MapScreenActivity.class.getName(), "Before finished");
                         finished = true;
-                        Log.d(MapScreenActivity.class.getName(), "after finished");
                     }
                 }
-
         );
 
         //Hier gaat de app stuk na 3 routes starten of bij het roteren!!!!!!!!
         //TODO Fix the error!!!
 
-        Log.d(MapScreenActivity.class.getName(), "Before while");
         while(!finished){}
-        Log.d(MapScreenActivity.class.getName(), "after while");
         mapController.setCenter(geoPoints.get(0));
         mapController.setZoom(18.0f);
-        Log.d(MapScreenActivity.class.getName(), "after center en zoom / before drawline");
         drawLine(geoPoints);
-        Log.d(MapScreenActivity.class.getName(), "after drawline");
         if (line != null){
             mapView.getOverlayManager().add(line);
         }
-        Log.d(MapScreenActivity.class.getName(), "after line add");
     }
 
     public void drawLine(ArrayList<GeoPoint> geoPoints){
         line = new Polyline();
-        line.setTitle("Road back home");
         line.setSubDescription(Polyline.class.getCanonicalName());
         //line.setWidth(20f);
         line.getOutlinePaint().setStrokeWidth(20f);
