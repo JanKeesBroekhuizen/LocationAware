@@ -35,6 +35,7 @@ import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.infowindow.BasicInfoWindow;
 
 import java.io.IOException;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -43,7 +44,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class MapScreenActivity extends AppCompatActivity{
+public class MapScreenActivity extends AppCompatActivity implements OnGeoLocationStartListener{
 
     public static String APIKEY = "5b3ce3597851110001cf62487e88103431e54b0a846066f367b0b015";
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
@@ -56,7 +57,7 @@ public class MapScreenActivity extends AppCompatActivity{
     private IMapController mapController;
     private Boolean getCoordinatesFinished = false;
     private Route route;
-    private Polyline line;
+    private Polyline NormalLine;
     private Polyline Geoline;
 
     @Override
@@ -85,14 +86,14 @@ public class MapScreenActivity extends AppCompatActivity{
         mapController.setZoom(9.5);
         mapView.setMultiTouchControls(true);
 
+        NormalLine = new Polyline();
+        Geoline = new Polyline();
+
         DatabaseManager.getInstance(this).initTotalDatabase();
         currentGeoPoint = new GeoPoint(51.92458092043162,4.480193483189705);
 
         if (RouteInformationPopup.routePoints != null && RouteInformationPopup.routePoints.size() != 0){
-            createRoute(RouteInformationPopup.routePoints, RouteInformationPopup.travelType,RouteInformationPopup.routeAddresses, line);
-        }
-        if (GeocacheLocationScreen.geoPoints != null && GeocacheLocationScreen.geoPoints.size() != 0){
-            createRoute(GeocacheLocationScreen.geoPoints, GeocacheLocationScreen.travelType,GeocacheLocationScreen.addresses, Geoline);
+            createRoute(RouteInformationPopup.routePoints, RouteInformationPopup.travelType,RouteInformationPopup.routeAddresses, "normal");
         }
     }
 
@@ -105,7 +106,11 @@ public class MapScreenActivity extends AppCompatActivity{
         //Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
         mapView.onResume(); //needed for compass, my location overlays, v6.0.0 and up
         if (RouteInformationPopup.routePoints == null){
-            mapView.getOverlayManager().remove(line);
+            mapView.getOverlayManager().remove(NormalLine);
+        }
+
+        if(GeocacheLocationScreen.geoPoints == null){
+            mapView.getOverlayManager().remove(Geoline);
         }
     }
 
@@ -181,7 +186,7 @@ public class MapScreenActivity extends AppCompatActivity{
                 @Override
                 public boolean onMarkerClick(Marker marker, MapView mapView) {
                     Toast.makeText(MapScreenActivity.this, "CLICK", Toast.LENGTH_SHORT).show();
-                    Dialog geocacheLocationScreen = new GeocacheLocationScreen(MapScreenActivity.this,currentGeoPoint,geocache);
+                    Dialog geocacheLocationScreen = new GeocacheLocationScreen(MapScreenActivity.this, currentGeoPoint, geocache, MapScreenActivity.this);
                     geocacheLocationScreen.show();
                     return false;
                 }
@@ -241,7 +246,8 @@ public class MapScreenActivity extends AppCompatActivity{
         return coordinatesArray;
     }
 
-    public void createRoute(ArrayList<GeoPoint> routeLocations, TravelType travelType, ArrayList<String> addressList, Polyline line){
+    public void createRoute(ArrayList<GeoPoint> routeLocations, TravelType travelType, ArrayList<String> addressList, String currentLine){
+        finished = false;
         ArrayList<GeoPoint> geoPoints = new ArrayList<>();
         OpenRouteServiceConnection.getInstance().getRouteMultiplePoints(
                 APIKEY,
@@ -256,10 +262,10 @@ public class MapScreenActivity extends AppCompatActivity{
 
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        finished = false;
                         JSONObject responseJson = null;
                         try {
                             responseJson = new JSONObject(response.body().string());
+                            System.out.println(responseJson);
                             route = new Route(responseJson, addressList.get(0), addressList.get(addressList.size()-1));
                             ArrayList<double[]> coordinates = route.features.get(0).geometry.coordinates;
 
@@ -280,16 +286,26 @@ public class MapScreenActivity extends AppCompatActivity{
         //TODO Fix the error!!!
 
         while(!finished){}
+        System.out.println("finished: " + finished + "Geopoints: " + geoPoints.size());
+
         mapController.setCenter(geoPoints.get(0));
         mapController.setZoom(18.0f);
-        drawLine(geoPoints,line);
-        if (line != null){
-            mapView.getOverlayManager().add(line);
+        drawLine(geoPoints, currentLine);
+        if (currentLine.equals("geocache")){
+            mapView.getOverlayManager().add(Geoline);
+        } else if (currentLine.equals("normal")){
+            mapView.getOverlayManager().add(NormalLine);
         }
     }
 
-    public void drawLine(ArrayList<GeoPoint> geoPoints, Polyline line){
-        line = new Polyline();
+    public void drawLine(ArrayList<GeoPoint> geoPoints, String currentLine){
+        Polyline line = null;
+        if (currentLine.equals("geocache")){
+            line = Geoline;
+        } else if (currentLine.equals("normal")){
+            line = NormalLine;
+        }
+
         line.setSubDescription(Polyline.class.getCanonicalName());
         //line.setWidth(20f);
         line.getOutlinePaint().setStrokeWidth(20f);
@@ -308,14 +324,14 @@ public class MapScreenActivity extends AppCompatActivity{
         });
     }
 
-//    @Override
-//    public void onGeolocationStartClicked(GeoPoint current, DB_Geocache cache, TravelType travelType) {
-//        ArrayList<GeoPoint> geoPoints = new ArrayList<>();
-//        geoPoints.add(current);
-//        geoPoints.add(new GeoPoint(cache.Latitude,cache.Longitude));
-//        ArrayList<String> locationNames = new ArrayList<>();
-//        locationNames.add("CurrentLocation");
-//        locationNames.add(cache.Name);
-//        createRoute(geoPoints,travelType,locationNames);
-//    }
+    @Override
+    public void onGeolocationStartClicked(GeoPoint current, DB_Geocache cache, TravelType travelType) {
+        ArrayList<GeoPoint> geoPoints = new ArrayList<>();
+        geoPoints.add(current);
+        geoPoints.add(new GeoPoint(cache.Latitude,cache.Longitude));
+        ArrayList<String> locationNames = new ArrayList<>();
+        locationNames.add("CurrentLocation");
+        locationNames.add(cache.Name);
+        createRoute(geoPoints,travelType,locationNames, "geocache");
+    }
 }

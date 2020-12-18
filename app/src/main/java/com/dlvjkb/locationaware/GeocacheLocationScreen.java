@@ -22,18 +22,19 @@ public class GeocacheLocationScreen extends Dialog {
     public static ArrayList<GeoPoint> geoPoints;
     public static ArrayList<String> addresses;
     public static TravelType travelType;
+    private OnGeoLocationStartListener listener;
     private GeoPoint geoPoint;
     private DB_Geocache geocache;
     private ImageButton btnCar;
     private ImageButton btnWalk;
     private ImageButton btnBike;
     private ImageButton btnSelected;
-    private TextView tvCurrentGeopoint;
-    private TextView tvDestinationGeopoint;
-    private TextView tvGeocacheName;
-    private Button btnStartGeocache;
+    private final TextView tvCurrentGeopoint;
+    private final TextView tvDestinationGeopoint;
+    private final TextView tvGeocacheName;
+    private final Button btnStartGeocache;
 
-    public GeocacheLocationScreen(@NonNull Context context, GeoPoint currentGeopoint, DB_Geocache geocache) {
+    public GeocacheLocationScreen(@NonNull Context context, GeoPoint currentGeopoint, DB_Geocache geocache, OnGeoLocationStartListener listener) {
         super(context);
         setContentView(R.layout.activity_geocachelocation);
         this.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -46,6 +47,7 @@ public class GeocacheLocationScreen extends Dialog {
         btnStartGeocache = findViewById(R.id.btnGeocacheStart);
         this.geoPoint = currentGeopoint;
         this.geocache = geocache;
+        this.listener = listener;
         geoPoints = new ArrayList<>();
         addresses = new ArrayList<>();
 
@@ -68,6 +70,7 @@ public class GeocacheLocationScreen extends Dialog {
         geoPoints.add(new GeoPoint(geocache.Latitude, geocache.Longitude));
         addresses.add("Current Location");
         addresses.add(geocache.Name);
+        listener.onGeolocationStartClicked(geoPoint, geocache, travelType);
         this.dismiss();
     }
 
