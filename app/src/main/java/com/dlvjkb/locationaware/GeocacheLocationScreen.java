@@ -15,10 +15,13 @@ import com.dlvjkb.locationaware.database.DB_Geocache;
 
 import org.osmdroid.util.GeoPoint;
 
+import java.util.ArrayList;
+
 public class GeocacheLocationScreen extends Dialog {
 
+    public static ArrayList<GeoPoint> geoPoints;
+    public static ArrayList<String> addresses;
     public static TravelType travelType;
-    private OnGeoLocationStartListener listener;
     private GeoPoint geoPoint;
     private DB_Geocache geocache;
     private ImageButton btnCar;
@@ -30,7 +33,7 @@ public class GeocacheLocationScreen extends Dialog {
     private TextView tvGeocacheName;
     private Button btnStartGeocache;
 
-    public GeocacheLocationScreen(@NonNull Context context, GeoPoint currentGeopoint, DB_Geocache geocache, OnGeoLocationStartListener listener) {
+    public GeocacheLocationScreen(@NonNull Context context, GeoPoint currentGeopoint, DB_Geocache geocache) {
         super(context);
         setContentView(R.layout.activity_geocachelocation);
         this.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -43,7 +46,8 @@ public class GeocacheLocationScreen extends Dialog {
         btnStartGeocache = findViewById(R.id.btnGeocacheStart);
         this.geoPoint = currentGeopoint;
         this.geocache = geocache;
-        this.listener = listener;
+        geoPoints = new ArrayList<>();
+        addresses = new ArrayList<>();
 
         btnCar.setOnClickListener(v -> onButtonCarClicked(v));
         btnBike.setOnClickListener(v -> onButtonBikeClicked(v));
@@ -60,7 +64,10 @@ public class GeocacheLocationScreen extends Dialog {
     }
 
     public void onButtonGeocachStartClick(View view){
-        this.listener.onGeolocationStartClicked(geoPoint,geocache,travelType);
+        geoPoints.add(geoPoint);
+        geoPoints.add(new GeoPoint(geocache.Latitude, geocache.Longitude));
+        addresses.add("Current Location");
+        addresses.add(geocache.Name);
         this.dismiss();
     }
 

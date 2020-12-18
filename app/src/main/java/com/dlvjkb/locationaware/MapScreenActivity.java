@@ -43,7 +43,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class MapScreenActivity extends AppCompatActivity implements OnGeoLocationStartListener {
+public class MapScreenActivity extends AppCompatActivity{
 
     public static String APIKEY = "5b3ce3597851110001cf62487e88103431e54b0a846066f367b0b015";
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
@@ -57,6 +57,7 @@ public class MapScreenActivity extends AppCompatActivity implements OnGeoLocatio
     private Boolean getCoordinatesFinished = false;
     private Route route;
     private Polyline line;
+    private Polyline Geoline;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +89,10 @@ public class MapScreenActivity extends AppCompatActivity implements OnGeoLocatio
         currentGeoPoint = new GeoPoint(51.92458092043162,4.480193483189705);
 
         if (RouteInformationPopup.routePoints != null && RouteInformationPopup.routePoints.size() != 0){
-            createRoute(RouteInformationPopup.routePoints, RouteInformationPopup.travelType);
+            createRoute(RouteInformationPopup.routePoints, RouteInformationPopup.travelType,RouteInformationPopup.routeAddresses, line);
+        }
+        if (GeocacheLocationScreen.geoPoints != null && GeocacheLocationScreen.geoPoints.size() != 0){
+            createRoute(GeocacheLocationScreen.geoPoints, GeocacheLocationScreen.travelType,GeocacheLocationScreen.addresses, Geoline);
         }
     }
 
@@ -177,7 +181,7 @@ public class MapScreenActivity extends AppCompatActivity implements OnGeoLocatio
                 @Override
                 public boolean onMarkerClick(Marker marker, MapView mapView) {
                     Toast.makeText(MapScreenActivity.this, "CLICK", Toast.LENGTH_SHORT).show();
-                    Dialog geocacheLocationScreen = new GeocacheLocationScreen(MapScreenActivity.this,currentGeoPoint,geocache, MapScreenActivity.this);
+                    Dialog geocacheLocationScreen = new GeocacheLocationScreen(MapScreenActivity.this,currentGeoPoint,geocache);
                     geocacheLocationScreen.show();
                     return false;
                 }
@@ -237,7 +241,7 @@ public class MapScreenActivity extends AppCompatActivity implements OnGeoLocatio
         return coordinatesArray;
     }
 
-    public void createRoute(ArrayList<GeoPoint> routeLocations, TravelType travelType){
+    public void createRoute(ArrayList<GeoPoint> routeLocations, TravelType travelType, ArrayList<String> addressList, Polyline line){
         ArrayList<GeoPoint> geoPoints = new ArrayList<>();
         OpenRouteServiceConnection.getInstance().getRouteMultiplePoints(
                 APIKEY,
@@ -256,7 +260,7 @@ public class MapScreenActivity extends AppCompatActivity implements OnGeoLocatio
                         JSONObject responseJson = null;
                         try {
                             responseJson = new JSONObject(response.body().string());
-                            route = new Route(responseJson, routeAddresses.get(0), routeAddresses.get(routeAddresses.size()-1));
+                            route = new Route(responseJson, addressList.get(0), addressList.get(addressList.size()-1));
                             ArrayList<double[]> coordinates = route.features.get(0).geometry.coordinates;
 
                             for (double[] coordinate : coordinates){
@@ -278,13 +282,13 @@ public class MapScreenActivity extends AppCompatActivity implements OnGeoLocatio
         while(!finished){}
         mapController.setCenter(geoPoints.get(0));
         mapController.setZoom(18.0f);
-        drawLine(geoPoints);
+        drawLine(geoPoints,line);
         if (line != null){
             mapView.getOverlayManager().add(line);
         }
     }
 
-    public void drawLine(ArrayList<GeoPoint> geoPoints){
+    public void drawLine(ArrayList<GeoPoint> geoPoints, Polyline line){
         line = new Polyline();
         line.setSubDescription(Polyline.class.getCanonicalName());
         //line.setWidth(20f);
@@ -304,14 +308,14 @@ public class MapScreenActivity extends AppCompatActivity implements OnGeoLocatio
         });
     }
 
-    @Override
-    public void onGeolocationStartClicked(GeoPoint current, DB_Geocache cache, TravelType travelType) {
-        ArrayList<GeoPoint> geoPoints = new ArrayList<>();
-        geoPoints.add(current);
-        geoPoints.add(new GeoPoint(cache.Latitude,cache.Longitude));
-        ArrayList<String> locationNames = new ArrayList<>();
-        locationNames.add("CurrentLocation");
-        locationNames.add(cache.Name);
-        createRoutes(geoPoints,travelType,locationNames);
-    }
+//    @Override
+//    public void onGeolocationStartClicked(GeoPoint current, DB_Geocache cache, TravelType travelType) {
+//        ArrayList<GeoPoint> geoPoints = new ArrayList<>();
+//        geoPoints.add(current);
+//        geoPoints.add(new GeoPoint(cache.Latitude,cache.Longitude));
+//        ArrayList<String> locationNames = new ArrayList<>();
+//        locationNames.add("CurrentLocation");
+//        locationNames.add(cache.Name);
+//        createRoute(geoPoints,travelType,locationNames);
+//    }
 }

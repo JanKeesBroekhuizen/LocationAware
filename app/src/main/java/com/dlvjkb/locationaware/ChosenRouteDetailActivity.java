@@ -62,6 +62,8 @@ public class ChosenRouteDetailActivity extends AppCompatActivity {
     public void onButtonStopClick(View view){
         RouteInformationPopup.routePoints = null;
         RouteInformationPopup.routeAddresses = null;
+        GeocacheLocationScreen.geoPoints = null;
+        GeocacheLocationScreen.addresses = null;
         finish();
     }
 
