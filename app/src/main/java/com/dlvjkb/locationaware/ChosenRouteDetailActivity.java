@@ -10,7 +10,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dlvjkb.locationaware.data.Route;
+import com.dlvjkb.locationaware.data.Step;
 import com.dlvjkb.locationaware.recyclerview.routedetail.RouteDirectionsAdapter;
+
+import java.util.ArrayList;
 
 public class ChosenRouteDetailActivity extends AppCompatActivity {
 
@@ -37,7 +40,7 @@ public class ChosenRouteDetailActivity extends AppCompatActivity {
 
         tvStartingPoint.setText(chosenRoute.routeStartAddress);
         tvEndingPoint.setText(chosenRoute.routeEndAddress);
-        tvRouteDistance.setText(String.format("%.2f",chosenRoute.features.get(0).property.segments.get(0).distance/1000) + " KM");
+        tvRouteDistance.setText(String.format("%.2f",chosenRoute.features.get(0).property.summary.distance/1000) + " KM");
         tvRouteDuration.setText(setRouteTravelTime());
 
         setTravelTypeIcon();
@@ -58,6 +61,7 @@ public class ChosenRouteDetailActivity extends AppCompatActivity {
 
     public void onButtonStopClick(View view){
         RouteInformationPopup.routePoints = null;
+        RouteInformationPopup.routeAddresses = null;
         finish();
     }
 
@@ -67,13 +71,20 @@ public class ChosenRouteDetailActivity extends AppCompatActivity {
 
     private void initializeRecyclerView(){
         rvDirections = findViewById(R.id.rvRouteDetailDirections);
-        directionsAdapter = new RouteDirectionsAdapter(this,chosenRoute.features.get(0).property.segments.get(0).steps);
+
+        ArrayList<Step> steps = new ArrayList<>();
+        int stepAmount = chosenRoute.features.get(0).property.segments.size();
+        for (int i = 0; i < stepAmount; i++) {
+            steps.addAll(chosenRoute.features.get(0).property.segments.get(i).steps);
+        }
+
+        directionsAdapter = new RouteDirectionsAdapter(this, steps);
         rvDirections.setLayoutManager(new LinearLayoutManager(this));
         rvDirections.setAdapter(directionsAdapter);
     }
 
     private String setRouteTravelTime(){
-        int totalSeconds = (int)chosenRoute.features.get(0).property.segments.get(0).duration;
+        int totalSeconds = (int)chosenRoute.features.get(0).property.summary.duration;
         String ss = String.format("%02d",totalSeconds%60);
         String mm = String.format("%02d",(totalSeconds % 3600)/60);
         String hh = String.format("%02d",totalSeconds / 3600);
