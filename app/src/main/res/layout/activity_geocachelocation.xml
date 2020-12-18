@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/rounded_popup">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvGeoachPopupValueDestGeo">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/ibGeocacheWalkIcon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_block"
+                android:onClick="onButtonWalkClicked"
+                android:scaleType="center"
+                android:src="@drawable/icon_traveltype_walking"
+                android:tint="@color/white" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Walk"
+                android:textAlignment="center"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/ibGeocacheBikeIcon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_block"
+                android:onClick="onButtonBikeClicked"
+                android:src="@drawable/icon_traveltype_bike"
+                android:tint="@color/white" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cycle"
+                android:textAlignment="center"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/ibGeocacheCarIcon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_block"
+                android:onClick="onButtonCarClicked"
+                android:src="@drawable/icon_traveltype_car"
+                android:tint="@color/white" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Car"
+                android:textAlignment="center"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnGeocacheStart"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/rounded_block_selected"
+        android:text="Start"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+    <TextView
+        android:id="@+id/tvGeoachPopupTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Start expedition?"
+        android:textColor="@color/greyish_white"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvGeoachPopupName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:text="Geocache name"
+        android:textAlignment="center"
+        android:textColor="@color/greyish_white"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvGeoachPopupTitle" />
+
+    <TextView
+        android:id="@+id/tvGeoachPopupValueCurrent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Long, Lat"
+        android:textColor="@color/greyish_white"
+        app:layout_constraintEnd_toEndOf="@+id/tvGeoachPopupTitle"
+        app:layout_constraintTop_toBottomOf="@+id/tvGeoachPopupName" />
+
+    <TextView
+        android:id="@+id/tvGeoachPopupValueDestGeo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Long, Lat"
+        android:textColor="@color/greyish_white"
+        app:layout_constraintEnd_toEndOf="@+id/tvGeoachPopupValueCurrent"
+        app:layout_constraintTop_toBottomOf="@+id/tvGeoachPopupValueCurrent" />
+
+    <TextView
+        android:id="@+id/tvGeoachPopupTextCurrentGeo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Current:"
+        android:textColor="@color/greyish_white"
+        app:layout_constraintStart_toStartOf="@+id/tvGeoachPopupTitle"
+        app:layout_constraintTop_toBottomOf="@+id/tvGeoachPopupName" />
+
+    <TextView
+        android:id="@+id/tvGeoachPopupTextDestGeo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Destination:"
+        android:textColor="@color/greyish_white"
+        app:layout_constraintStart_toStartOf="@+id/tvGeoachPopupTextCurrentGeo"
+        app:layout_constraintTop_toBottomOf="@+id/tvGeoachPopupValueCurrent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

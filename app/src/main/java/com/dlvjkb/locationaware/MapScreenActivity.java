@@ -1,6 +1,7 @@
 package com.dlvjkb.locationaware;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -40,7 +41,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class MapScreenActivity extends AppCompatActivity {
+public class MapScreenActivity extends AppCompatActivity implements OnGeoLocationStartListener {
 
     public static String APIKEY = "5b3ce3597851110001cf62487e88103431e54b0a846066f367b0b015";
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
@@ -82,7 +83,7 @@ public class MapScreenActivity extends AppCompatActivity {
         mapView.setMultiTouchControls(true);
 
         DatabaseManager.getInstance(this).initTotalDatabase();
-        currentGeoPoint = new GeoPoint(0.0,0.0);
+        currentGeoPoint = new GeoPoint(51.92458092043162,4.480193483189705);
 
 //        if (RouteInformationPopup.routeStartGeoPoint != null && RouteInformationPopup.routeEndGeoPoint != null){
 //            createRoute(RouteInformationPopup.routeStartGeoPoint, RouteInformationPopup.routeEndGeoPoint, RouteInformationPopup.travelType);
@@ -183,6 +184,8 @@ public class MapScreenActivity extends AppCompatActivity {
                 @Override
                 public boolean onMarkerClick(Marker marker, MapView mapView) {
                     Toast.makeText(MapScreenActivity.this, "CLICK", Toast.LENGTH_SHORT).show();
+                    Dialog geocacheLocationScreen = new GeocacheLocationScreen(MapScreenActivity.this,currentGeoPoint,geocache, MapScreenActivity.this);
+                    geocacheLocationScreen.show();
                     return false;
                 }
             });
@@ -285,7 +288,7 @@ public class MapScreenActivity extends AppCompatActivity {
 //        }
 //    }
 
-    public void createRoutes(ArrayList<GeoPoint> routeLocations, TravelType travelType){
+    public void createRoutes(ArrayList<GeoPoint> routeLocations, TravelType travelType, ArrayList<String> routeAddresses){
         ArrayList<GeoPoint> geoPoints = new ArrayList<>();
         OpenRouteServiceConnection.getInstance().getRouteMultiplePoints(
                 APIKEY,
@@ -304,7 +307,7 @@ public class MapScreenActivity extends AppCompatActivity {
                         JSONObject responseJson = null;
                         try {
                             responseJson = new JSONObject(response.body().string());
-                            route = new Route(responseJson, "Begin", "Destination");
+                            route = new Route(responseJson, routeAddresses.get(0), routeAddresses.get(routeAddresses.size()-1));
                             ArrayList<double[]> coordinates = route.features.get(0).geometry.coordinates;
 
                             for (double[] coordinate : coordinates){
@@ -359,5 +362,16 @@ public class MapScreenActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    @Override
+    public void onGeolocationStartClicked(GeoPoint current, DB_Geocache cache, TravelType travelType) {
+        ArrayList<GeoPoint> geoPoints = new ArrayList<>();
+        geoPoints.add(current);
+        geoPoints.add(new GeoPoint(cache.Latitude,cache.Longitude));
+        ArrayList<String> locationNames = new ArrayList<>();
+        locationNames.add("CurrentLocation");
+        locationNames.add(cache.Name);
+        createRoutes(geoPoints,travelType,locationNames);
     }
 }

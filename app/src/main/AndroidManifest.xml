@@ -25,5 +25,4 @@
         <activity android:name=".RouteInformationPopup" android:theme="@style/Theme.LocationAware.popUp"/>
         <activity android:name=".ChosenRouteDetailActivity"/>
     </application>
-
 </manifest>
