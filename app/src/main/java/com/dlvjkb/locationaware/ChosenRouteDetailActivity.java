@@ -6,14 +6,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dlvjkb.locationaware.data.Route;
+import com.dlvjkb.locationaware.data.RouteViewModel;
 import com.dlvjkb.locationaware.data.Step;
 import com.dlvjkb.locationaware.recyclerview.routedetail.RouteDirectionsAdapter;
 
+import org.osmdroid.util.GeoPoint;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class ChosenRouteDetailActivity extends AppCompatActivity {
 
@@ -25,6 +30,7 @@ public class ChosenRouteDetailActivity extends AppCompatActivity {
     private TextView tvRouteDuration;
     private RecyclerView rvDirections;
     private RouteDirectionsAdapter directionsAdapter;
+    private RouteViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +49,8 @@ public class ChosenRouteDetailActivity extends AppCompatActivity {
         tvRouteDistance.setText(String.format("%.2f",chosenRoute.features.get(0).property.summary.distance/1000) + " KM");
         tvRouteDuration.setText(setRouteTravelTime());
 
+        viewModel = RouteViewModel.getInstance();
+
         setTravelTypeIcon();
         initializeRecyclerView();
     }
@@ -60,10 +68,11 @@ public class ChosenRouteDetailActivity extends AppCompatActivity {
     }
 
     public void onButtonStopClick(View view){
-        RouteInformationPopup.routePoints = null;
-        RouteInformationPopup.routeAddresses = null;
-        GeocacheLocationScreen.geoPoints = null;
-        GeocacheLocationScreen.addresses = null;
+//        RouteInformationPopup.routePoints = null;
+//        RouteInformationPopup.routeAddresses = null;
+        viewModel.setRoute(new ArrayList<>());
+        viewModel.setBeginEndPoint(new ArrayList<>());
+        viewModel.setIsDrawingRoute(false);
         finish();
     }
 

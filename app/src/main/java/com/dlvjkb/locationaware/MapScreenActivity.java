@@ -1,12 +1,10 @@
 package com.dlvjkb.locationaware;
 
 import android.Manifest;
-import android.content.Context;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +16,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.dlvjkb.locationaware.data.Route;
+import com.dlvjkb.locationaware.data.RouteViewModel;
 import com.dlvjkb.locationaware.database.DB_Geocache;
 import com.dlvjkb.locationaware.database.DatabaseManager;
 
@@ -35,7 +34,6 @@ import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.infowindow.BasicInfoWindow;
 
 import java.io.IOException;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -44,7 +42,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class MapScreenActivity extends AppCompatActivity implements OnGeoLocationStartListener{
+public class MapScreenActivity extends AppCompatActivity implements RouteStartListener {
 
     public static String APIKEY = "5b3ce3597851110001cf62487e88103431e54b0a846066f367b0b015";
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
@@ -57,8 +55,8 @@ public class MapScreenActivity extends AppCompatActivity implements OnGeoLocatio
     private IMapController mapController;
     private Boolean getCoordinatesFinished = false;
     private Route route;
-    private Polyline NormalLine;
-    private Polyline Geoline;
+    private Polyline line;
+    private RouteViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,15 +84,15 @@ public class MapScreenActivity extends AppCompatActivity implements OnGeoLocatio
         mapController.setZoom(9.5);
         mapView.setMultiTouchControls(true);
 
-        NormalLine = new Polyline();
-        Geoline = new Polyline();
+        line = new Polyline();;
+
+        viewModel = RouteViewModel.getInstance();
+        viewModel.setStartListener(this);
 
         DatabaseManager.getInstance(this).initTotalDatabase();
         currentGeoPoint = new GeoPoint(51.92458092043162,4.480193483189705);
 
-        if (RouteInformationPopup.routePoints != null && RouteInformationPopup.routePoints.size() != 0){
-            createRoute(RouteInformationPopup.routePoints, RouteInformationPopup.travelType,RouteInformationPopup.routeAddresses, "normal");
-        }
+        createRoute();
     }
 
     @Override
@@ -105,12 +103,8 @@ public class MapScreenActivity extends AppCompatActivity implements OnGeoLocatio
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
         mapView.onResume(); //needed for compass, my location overlays, v6.0.0 and up
-        if (RouteInformationPopup.routePoints == null){
-            mapView.getOverlayManager().remove(NormalLine);
-        }
-
-        if(GeocacheLocationScreen.geoPoints == null){
-            mapView.getOverlayManager().remove(Geoline);
+        if (!viewModel.getIsDrawingRoute().getValue()){
+            mapView.getOverlayManager().remove(line);
         }
     }
 
@@ -246,66 +240,67 @@ public class MapScreenActivity extends AppCompatActivity implements OnGeoLocatio
         return coordinatesArray;
     }
 
-    public void createRoute(ArrayList<GeoPoint> routeLocations, TravelType travelType, ArrayList<String> addressList, String currentLine){
-        finished = false;
-        ArrayList<GeoPoint> geoPoints = new ArrayList<>();
-        OpenRouteServiceConnection.getInstance().getRouteMultiplePoints(
-                APIKEY,
-                routeLocations,
-                travelType,
-                Locale.getDefault().getLanguage(),
-                new Callback() {
+    public void createRoute(){
+        if (viewModel.getRoute().getValue() != null) {
+            if (viewModel.getRoute().getValue().size() != 0) {
+                finished = false;
+                ArrayList<GeoPoint> geoPoints = new ArrayList<>();
+                new Thread(new Runnable() {
                     @Override
-                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                        Log.d(MapScreenActivity.class.getName(), e.getLocalizedMessage());
+                    public void run() {
+                        OpenRouteServiceConnection.getInstance().getRouteMultiplePoints(
+                                APIKEY,
+                                (ArrayList<GeoPoint>) viewModel.getRoute().getValue(),
+                                viewModel.getTravelType().getValue(),
+                                Locale.getDefault().getLanguage(),
+                                new Callback() {
+                                    @Override
+                                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                                        Log.d(MapScreenActivity.class.getName(), e.getLocalizedMessage());
+                                    }
+
+                                    @Override
+                                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                                        JSONObject responseJson = null;
+                                        try {
+                                            responseJson = new JSONObject(response.body().string());
+                                            System.out.println(responseJson);
+                                            route = new Route(responseJson, viewModel.getBeginEndPoint().getValue().get(0), viewModel.getBeginEndPoint().getValue().get(viewModel.getBeginEndPoint().getValue().size() - 1));
+                                            ArrayList<double[]> coordinates = route.features.get(0).geometry.coordinates;
+
+                                            for (double[] coordinate : coordinates) {
+                                                geoPoints.add(new GeoPoint(coordinate[1], coordinate[0]));
+                                            }
+                                            System.out.println("GeoPoints: " + geoPoints.size() + " Coordinates: " + coordinates.size());
+                                            finished = true;
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                        );
+
                     }
+                }).start();
 
-                    @Override
-                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        JSONObject responseJson = null;
-                        try {
-                            responseJson = new JSONObject(response.body().string());
-                            System.out.println(responseJson);
-                            route = new Route(responseJson, addressList.get(0), addressList.get(addressList.size()-1));
-                            ArrayList<double[]> coordinates = route.features.get(0).geometry.coordinates;
+                //Hier gaat de app stuk na 3 routes starten of bij het roteren!!!!!!!!
+                //TODO Fix the error!!! --> Mayby the error is fixed!!!
 
-                            for (double[] coordinate : coordinates){
-                                geoPoints.add(new GeoPoint(coordinate[1], coordinate[0]));
-                            }
-                            System.out.println("GeoPoints: " + geoPoints.size() + " Coordinates: " + coordinates.size());
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        finished = true;
-                    }
+                while (!finished) {
+                    Log.d(MapScreenActivity.class.getName(), "Waiting..."); //Don't remove this line, shows the program is active.
                 }
-        );
+                System.out.println("finished: " + finished + "    Geopoints: " + geoPoints.size());
 
-        //Hier gaat de app stuk na 3 routes starten of bij het roteren!!!!!!!!
-        //TODO Fix the error!!!
-
-        while(!finished){}
-        System.out.println("finished: " + finished + "Geopoints: " + geoPoints.size());
-
-        mapController.setCenter(geoPoints.get(0));
-        mapController.setZoom(18.0f);
-        drawLine(geoPoints, currentLine);
-        if (currentLine.equals("geocache")){
-            mapView.getOverlayManager().add(Geoline);
-        } else if (currentLine.equals("normal")){
-            mapView.getOverlayManager().add(NormalLine);
+                mapController.setCenter(geoPoints.get(0));
+                mapController.setZoom(18.0f);
+                drawLine(geoPoints);
+                mapView.getOverlayManager().add(line);
+            }
         }
     }
 
-    public void drawLine(ArrayList<GeoPoint> geoPoints, String currentLine){
-        Polyline line = null;
-        if (currentLine.equals("geocache")){
-            line = Geoline;
-        } else if (currentLine.equals("normal")){
-            line = NormalLine;
-        }
-
+    public void drawLine(ArrayList<GeoPoint> geoPoints){
+        line = new Polyline();
         line.setSubDescription(Polyline.class.getCanonicalName());
         //line.setWidth(20f);
         line.getOutlinePaint().setStrokeWidth(20f);
@@ -316,7 +311,7 @@ public class MapScreenActivity extends AppCompatActivity implements OnGeoLocatio
         line.setOnClickListener(new Polyline.OnClickListener() {
             @Override
             public boolean onClick(Polyline polyline, MapView mapView, GeoPoint eventPos) {
-                Intent intent = new Intent(MapScreenActivity.this,ChosenRouteDetailActivity.class);
+                Intent intent = new Intent(MapScreenActivity.this, ChosenRouteDetailActivity.class);
                 intent.putExtra("ROUTE", route);
                 startActivity(intent);
                 return false;
@@ -325,13 +320,8 @@ public class MapScreenActivity extends AppCompatActivity implements OnGeoLocatio
     }
 
     @Override
-    public void onGeolocationStartClicked(GeoPoint current, DB_Geocache cache, TravelType travelType) {
-        ArrayList<GeoPoint> geoPoints = new ArrayList<>();
-        geoPoints.add(current);
-        geoPoints.add(new GeoPoint(cache.Latitude,cache.Longitude));
-        ArrayList<String> locationNames = new ArrayList<>();
-        locationNames.add("CurrentLocation");
-        locationNames.add(cache.Name);
-        createRoute(geoPoints,travelType,locationNames, "geocache");
+    public void onRouteStartClicked() {
+        Toast.makeText(this, "RouteStarted", Toast.LENGTH_SHORT).show();
+        createRoute();
     }
 }

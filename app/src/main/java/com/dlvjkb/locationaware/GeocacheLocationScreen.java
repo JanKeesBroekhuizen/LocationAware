@@ -11,30 +11,32 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.dlvjkb.locationaware.data.RouteViewModel;
 import com.dlvjkb.locationaware.database.DB_Geocache;
 
 import org.osmdroid.util.GeoPoint;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GeocacheLocationScreen extends Dialog {
 
-    public static ArrayList<GeoPoint> geoPoints;
-    public static ArrayList<String> addresses;
-    public static TravelType travelType;
-    private OnGeoLocationStartListener listener;
+//    public static ArrayList<GeoPoint> geoPoints;
+//    public static ArrayList<String> addresses;
+//    public static TravelType travelType;
+    private RouteStartListener listener;
     private GeoPoint geoPoint;
     private DB_Geocache geocache;
     private ImageButton btnCar;
     private ImageButton btnWalk;
     private ImageButton btnBike;
-    private ImageButton btnSelected;
     private final TextView tvCurrentGeopoint;
     private final TextView tvDestinationGeopoint;
     private final TextView tvGeocacheName;
     private final Button btnStartGeocache;
+    private RouteViewModel viewModel;
 
-    public GeocacheLocationScreen(@NonNull Context context, GeoPoint currentGeopoint, DB_Geocache geocache, OnGeoLocationStartListener listener) {
+    public GeocacheLocationScreen(@NonNull Context context, GeoPoint currentGeopoint, DB_Geocache geocache, RouteStartListener listener) {
         super(context);
         setContentView(R.layout.activity_geocachelocation);
         this.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -48,8 +50,10 @@ public class GeocacheLocationScreen extends Dialog {
         this.geoPoint = currentGeopoint;
         this.geocache = geocache;
         this.listener = listener;
-        geoPoints = new ArrayList<>();
-        addresses = new ArrayList<>();
+//        geoPoints = new ArrayList<>();
+//        addresses = new ArrayList<>();
+
+        viewModel = RouteViewModel.getInstance();
 
         btnCar.setOnClickListener(v -> onButtonCarClicked(v));
         btnBike.setOnClickListener(v -> onButtonBikeClicked(v));
@@ -66,33 +70,38 @@ public class GeocacheLocationScreen extends Dialog {
     }
 
     public void onButtonGeocachStartClick(View view){
-        geoPoints.add(geoPoint);
-        geoPoints.add(new GeoPoint(geocache.Latitude, geocache.Longitude));
-        addresses.add("Current Location");
-        addresses.add(geocache.Name);
-        listener.onGeolocationStartClicked(geoPoint, geocache, travelType);
+        List<GeoPoint> routePoints = new ArrayList<>();
+        List<String> routeAddresses = new ArrayList<>();
+
+        routePoints.add(geoPoint);
+        routePoints.add(new GeoPoint(geocache.Latitude, geocache.Longitude));
+        routeAddresses.add("Current Location");
+        routeAddresses.add(geocache.Name);
+
+        viewModel.setRoute(routePoints);
+        viewModel.setBeginEndPoint(routeAddresses);
+        viewModel.setIsDrawingRoute(true);
+
+        listener.onRouteStartClicked();
         this.dismiss();
     }
 
     public void onButtonCarClicked(View view){
-        this.btnSelected = btnCar;
         this.btnCar.setBackgroundResource(R.drawable.rounded_block_selected);
         this.btnWalk.setBackgroundResource(R.drawable.rounded_block);
         this.btnBike.setBackgroundResource(R.drawable.rounded_block);
-        travelType = TravelType.DRIVING_CAR;
+        viewModel.setTravelType(TravelType.DRIVING_CAR);
     }
     public void onButtonWalkClicked(View view){
-        this.btnSelected = btnWalk;
         this.btnWalk.setBackgroundResource(R.drawable.rounded_block_selected);
         this.btnCar.setBackgroundResource(R.drawable.rounded_block);
         this.btnBike.setBackgroundResource(R.drawable.rounded_block);
-        travelType = TravelType.FOOT_WALKING;
+        viewModel.setTravelType(TravelType.FOOT_WALKING);
     }
     public void onButtonBikeClicked(View view){
-        this.btnSelected = btnBike;
         this.btnBike.setBackgroundResource(R.drawable.rounded_block_selected);
         this.btnWalk.setBackgroundResource(R.drawable.rounded_block);
         this.btnCar.setBackgroundResource(R.drawable.rounded_block);
-        travelType = TravelType.CYCLING_REGULAR;
+        viewModel.setTravelType(TravelType.CYCLING_REGULAR);
     }
 }

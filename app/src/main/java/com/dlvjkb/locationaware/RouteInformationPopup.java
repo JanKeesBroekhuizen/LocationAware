@@ -19,9 +19,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.dlvjkb.locationaware.data.RouteViewModel;
 import com.dlvjkb.locationaware.database.DB_Location;
 import com.dlvjkb.locationaware.database.Database;
 import com.dlvjkb.locationaware.database.DatabaseManager;
@@ -44,15 +46,15 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class RouteInformationPopup extends Activity implements PresetRouteClickListener, SavedRouteClickListener {
+public class RouteInformationPopup extends AppCompatActivity implements PresetRouteClickListener, SavedRouteClickListener {
 
-    public static ArrayList<GeoPoint> routePoints;
-    public static ArrayList<String> routeAddresses;
-    //public static GeoPoint routeStartGeoPoint = null;
-    //public static GeoPoint routeEndGeoPoint = null;
-    //public static String routeStartAddress;
-   // public static String routeEndAddress;
-    public static TravelType travelType;
+//    public static ArrayList<GeoPoint> routePoints;
+//    public static ArrayList<String> routeAddresses;
+//    public static GeoPoint routeStartGeoPoint = null;
+//    public static GeoPoint routeEndGeoPoint = null;
+//    public static String routeStartAddress;
+//    public static String routeEndAddress;
+//    public static TravelType travelType;
     private RecyclerView rvPresetRoutes;
     private RecyclerView rvSavedRoutes;
     private EditText etRouteStartCityName;
@@ -64,15 +66,17 @@ public class RouteInformationPopup extends Activity implements PresetRouteClickL
     private ImageButton btnCar;
     private ImageButton btnWalk;
     private ImageButton btnBike;
-    private ImageButton btnSelected;
+//    private ImageButton btnSelected;
     private GeoPoint geoPoint;
     private Boolean finished;
     private DatabaseManager databaseManager;
+    private RouteViewModel viewModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.popup_routeinformation);
+
         //Animation:
         WindowManager.LayoutParams params = getWindow().getAttributes();
         params.gravity = Gravity.CENTER;
@@ -80,7 +84,7 @@ public class RouteInformationPopup extends Activity implements PresetRouteClickL
         params.y = -20;
         getWindow().setAttributes(params);
 
-        //Initialisation:
+        //Initialisation views:
         etRouteStartCityName = findViewById(R.id.etStartAddressCity);
         etRouteStartStreetName = findViewById(R.id.etStartAddressStreet);
         etRouteStartStreetNumber = findViewById(R.id.etStartAddressNumber);
@@ -90,29 +94,40 @@ public class RouteInformationPopup extends Activity implements PresetRouteClickL
         btnCar = findViewById(R.id.ibCarIcon);
         btnWalk = findViewById(R.id.ibWalkIcon);
         btnBike = findViewById(R.id.ibBikeIcon);
-        onButtonWalkClicked(null);
 
+
+        //initialize databasemanager
         databaseManager = DatabaseManager.getInstance(getApplicationContext());
         databaseManager.initTotalDatabase();
-        routePoints = new ArrayList<>();
-        routeAddresses = new ArrayList<>();
-        initRecyclerViews();
 
+        viewModel = RouteViewModel.getInstance();
+        onButtonWalkClicked(null);
+        //initialize new Arraylists
+//        routePoints = new ArrayList<>();
+//        routeAddresses = new ArrayList<>();
+
+        initRecyclerViews();
         testQueries();
         setTestText();
     }
 
     public void onButtonSearchRouteClicked(View view){
+        List<GeoPoint> routePoints = new ArrayList<>();
+        List<String> routeAddresses = new ArrayList<>();
+
         GeoPoint routeStartGeoPoint = AddressToGeoPoint(etRouteStartStreetName.getText().toString() + " " + etRouteStartStreetNumber.getText().toString(), etRouteStartCityName.getText().toString());
         routePoints.add(routeStartGeoPoint);
         routeAddresses.add(etRouteStartStreetName.getText().toString() + " " + etRouteStartStreetNumber.getText().toString() + "\n" + etRouteStartCityName.getText().toString());
         GeoPoint routeEndGeoPoint = AddressToGeoPoint(etRouteEndStreetName.getText().toString() + " " + etRouteEndStreetNumber.getText().toString(), etRouteEndCityName.getText().toString());
         routePoints.add(routeEndGeoPoint);
         routeAddresses.add(etRouteEndStreetName.getText().toString() + " " + etRouteEndStreetNumber.getText().toString() + "\n" + etRouteEndCityName.getText().toString());
-//        routeStartAddress = etRouteStartStreetName.getText().toString() + " " + etRouteStartStreetNumber.getText().toString() + "\n" + etRouteStartCityName.getText().toString();
-//        routeEndAddress = etRouteEndStreetName.getText().toString() + " " + etRouteEndStreetNumber.getText().toString() + "\n" + etRouteEndCityName.getText().toString();
-        Intent intent = new Intent(getApplicationContext(), MapScreenActivity.class);
-        startActivity(intent);
+
+        viewModel.setRoute(routePoints);
+        viewModel.setBeginEndPoint(routeAddresses);
+        viewModel.setIsDrawingRoute(true);
+
+        viewModel.getStartListener().onRouteStartClicked();
+        finish();
     }
 
     public GeoPoint AddressToGeoPoint(String address, String city){
@@ -169,25 +184,25 @@ public class RouteInformationPopup extends Activity implements PresetRouteClickL
     }
 
     public void onButtonCarClicked(View view){
-        this.btnSelected = btnCar;
+//        this.btnSelected = btnCar;
         this.btnCar.setBackgroundResource(R.drawable.rounded_block_selected);
         this.btnWalk.setBackgroundResource(R.drawable.rounded_block);
         this.btnBike.setBackgroundResource(R.drawable.rounded_block);
-        travelType = TravelType.DRIVING_CAR;
+        viewModel.setTravelType(TravelType.DRIVING_CAR);
     }
     public void onButtonWalkClicked(View view){
-        this.btnSelected = btnWalk;
+//        this.btnSelected = btnWalk;
         this.btnWalk.setBackgroundResource(R.drawable.rounded_block_selected);
         this.btnCar.setBackgroundResource(R.drawable.rounded_block);
         this.btnBike.setBackgroundResource(R.drawable.rounded_block);
-        travelType = TravelType.FOOT_WALKING;
+        viewModel.setTravelType(TravelType.FOOT_WALKING);
     }
     public void onButtonBikeClicked(View view){
-        this.btnSelected = btnBike;
+//        this.btnSelected = btnBike;
         this.btnBike.setBackgroundResource(R.drawable.rounded_block_selected);
         this.btnWalk.setBackgroundResource(R.drawable.rounded_block);
         this.btnCar.setBackgroundResource(R.drawable.rounded_block);
-        travelType = TravelType.CYCLING_REGULAR;
+        viewModel.setTravelType(TravelType.CYCLING_REGULAR);
     }
 
     private void initRecyclerViews(){
@@ -206,6 +221,8 @@ public class RouteInformationPopup extends Activity implements PresetRouteClickL
 
     @Override
     public void onPresetRouteClicked(int position) {
+        List<GeoPoint> routePoints = new ArrayList<>();
+        List<String> routeAddresses = new ArrayList<>();
 
         Toast.makeText(getApplicationContext(), "PresetRoute clicked " + position, Toast.LENGTH_SHORT).show();
         List<DB_Location> locations = databaseManager.getLocationsFromRoute(position + 1);
@@ -213,9 +230,14 @@ public class RouteInformationPopup extends Activity implements PresetRouteClickL
             routePoints.add(AddressToGeoPoint(location.Street + " " + location.Housenumber, location.City));
             routeAddresses.add(location.Street + " " + location.Housenumber + "\n" + location.City);
         }
-        travelType = TravelType.getTravelTypeEnum(databaseManager.getRoute(position + 1).Traveltype);
-        Intent intent = new Intent(getApplicationContext(), MapScreenActivity.class);
-        startActivity(intent);
+
+        viewModel.setRoute(routePoints);
+        viewModel.setBeginEndPoint(routeAddresses);
+        viewModel.setTravelType(TravelType.getTravelTypeEnum(databaseManager.getRoute(position + 1).Traveltype));
+        viewModel.setIsDrawingRoute(true);
+
+        viewModel.getStartListener().onRouteStartClicked();
+        finish();
     }
 
     @Override
