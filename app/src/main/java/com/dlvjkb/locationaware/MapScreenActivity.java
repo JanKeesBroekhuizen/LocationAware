@@ -91,6 +91,8 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
 
         DatabaseManager.getInstance(this).initTotalDatabase();
         currentGeoPoint = new GeoPoint(51.92458092043162,4.480193483189705);
+        mapController.setCenter(currentGeoPoint);
+        mapController.setZoom(18.0);
 
         createRoute();
     }
@@ -187,6 +189,7 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
             });
             mapView.getOverlays().add(marker);
         }
+        mapView.invalidate();
     }
 
     public void onButtonSearchClicked(View view){

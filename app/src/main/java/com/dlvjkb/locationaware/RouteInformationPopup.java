@@ -230,6 +230,8 @@ public class RouteInformationPopup extends AppCompatActivity implements PresetRo
             routePoints.add(AddressToGeoPoint(location.Street + " " + location.Housenumber, location.City));
             routeAddresses.add(location.Street + " " + location.Housenumber + "\n" + location.City);
         }
+        routePoints.add(AddressToGeoPoint(locations.get(0).Street + " " + locations.get(0).Housenumber, locations.get(0).City));
+        routeAddresses.add(locations.get(0).Street + " " + locations.get(0).Housenumber + "\n" + locations.get(0).City);
 
         viewModel.setRoute(routePoints);
         viewModel.setBeginEndPoint(routeAddresses);
