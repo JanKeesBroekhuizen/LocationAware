@@ -1,4 +1,4 @@
-package com.dlvjkb.locationaware.database;
+package com.dlvjkb.locationaware.database.geocache;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;

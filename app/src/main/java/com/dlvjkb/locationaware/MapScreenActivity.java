@@ -17,7 +17,7 @@ import androidx.core.content.ContextCompat;
 
 import com.dlvjkb.locationaware.data.Route;
 import com.dlvjkb.locationaware.data.RouteViewModel;
-import com.dlvjkb.locationaware.database.DB_Geocache;
+import com.dlvjkb.locationaware.database.geocache.DB_Geocache;
 import com.dlvjkb.locationaware.database.DatabaseManager;
 
 import org.jetbrains.annotations.NotNull;
@@ -193,33 +193,42 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
     }
 
     public void onButtonSearchClicked(View view){
-        Toast.makeText(getApplicationContext(),"SEARCH",Toast.LENGTH_LONG).show();
-        OpenRouteServiceConnection.getInstance().getCoordinatesOfAddress(
-                "5b3ce3597851110001cf62487e88103431e54b0a846066f367b0b015",
-                etSearchStreetName.getText().toString() + " " + etSearchStreetNumber.getText().toString(),
-                etSearchCityName.getText().toString(),
-                new Callback() {
-                    @Override
-                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                        Log.d(MapScreenActivity.class.getName(), e.getLocalizedMessage());
-                    }
+//        Toast.makeText(getApplicationContext(),"SEARCH",Toast.LENGTH_LONG).show();
+        getCoordinatesFinished = false;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                OpenRouteServiceConnection.getInstance().getCoordinatesOfAddress(
+                        "5b3ce3597851110001cf62487e88103431e54b0a846066f367b0b015",
+                        etSearchStreetName.getText().toString() + " " + etSearchStreetNumber.getText().toString(),
+                        etSearchCityName.getText().toString(),
+                        new Callback() {
+                            @Override
+                            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                                Log.d(MapScreenActivity.class.getName(), e.getLocalizedMessage());
+                            }
 
-                    @Override
-                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        JSONObject responseJson = null;
-                        try {
-                            responseJson = new JSONObject(response.body().string());
-                            double[] coordinates = jsonArrayToArray(responseJson.getJSONArray("features").getJSONObject(0).getJSONObject("geometry").getJSONArray("coordinates"));
-                            System.out.println(coordinates[0] + " " + coordinates[1]);
-                            currentGeoPoint.setLatitude(coordinates[1]);
-                            currentGeoPoint.setLongitude(coordinates[0]);
-                        }catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        getCoordinatesFinished = true;
-                    }
-                });
-        while (!getCoordinatesFinished){}
+                            @Override
+                            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                                JSONObject responseJson = null;
+                                try {
+                                    responseJson = new JSONObject(response.body().string());
+                                    double[] coordinates = jsonArrayToArray(responseJson.getJSONArray("features").getJSONObject(0).getJSONObject("geometry").getJSONArray("coordinates"));
+                                    System.out.println(coordinates[0] + " " + coordinates[1]);
+                                    currentGeoPoint.setLatitude(coordinates[1]);
+                                    currentGeoPoint.setLongitude(coordinates[0]);
+                                }catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                getCoordinatesFinished = true;
+                            }
+                        });
+            }
+        }).start();
+
+        while (!getCoordinatesFinished){
+            Log.d(MapScreenActivity.class.getName(), "Waiting for location...");
+        }
 
         mapController.setCenter(currentGeoPoint);
         mapController.setZoom(18.0);
@@ -290,7 +299,7 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
                 //TODO Fix the error!!! --> Mayby the error is fixed!!!
 
                 while (!finished) {
-                    Log.d(MapScreenActivity.class.getName(), "Waiting..."); //Don't remove this line, shows the program is active.
+                    Log.d(MapScreenActivity.class.getName(), "Waiting for route...");
                 }
                 System.out.println("finished: " + finished + "    Geopoints: " + geoPoints.size());
 

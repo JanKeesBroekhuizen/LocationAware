@@ -6,7 +6,14 @@ import android.util.Log;
 import androidx.room.Room;
 
 import com.dlvjkb.locationaware.R;
-import com.dlvjkb.locationaware.TravelType;
+import com.dlvjkb.locationaware.database.geocache.DB_Geocache;
+import com.dlvjkb.locationaware.database.preset.Preset_Location;
+import com.dlvjkb.locationaware.database.preset.Preset_Location_Route;
+import com.dlvjkb.locationaware.database.preset.Preset_Route;
+import com.dlvjkb.locationaware.database.saved.SavedRouteDao;
+import com.dlvjkb.locationaware.database.saved.Saved_Location;
+import com.dlvjkb.locationaware.database.saved.Saved_Location_Route;
+import com.dlvjkb.locationaware.database.saved.Saved_Route;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,7 +21,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +39,7 @@ public class DatabaseManager {
 
     public DatabaseManager(Context context){
         this.context = context;
-        this.database = Room.databaseBuilder(context, Database.class, "database-LocationAware1.3").allowMainThreadQueries().build();
+        this.database = Room.databaseBuilder(context, Database.class, "database-LocationAware").allowMainThreadQueries().build();
     }
 
     public void initTotalDatabase() {
@@ -44,12 +50,12 @@ public class DatabaseManager {
     }
 
     public void initTableLocation(){
-        if (database.locationDoa().getAllLocations().size() == 0){
-            ArrayList<DB_Location> locations = new ArrayList<>();
+        if (database.presetLocationDoa().getAllLocations().size() == 0){
+            ArrayList<Preset_Location> locations = new ArrayList<>();
             JSONArray jsonArrayLocation = readJson(R.raw.location_file);
             for (int i = 0; i < jsonArrayLocation.length(); i++) {
                 JSONObject jsonObject = null;
-                DB_Location location = new DB_Location();
+                Preset_Location location = new Preset_Location();
                 try {
                     jsonObject = jsonArrayLocation.getJSONObject(i);
                     location.ID = jsonObject.getInt("id");
@@ -61,17 +67,17 @@ public class DatabaseManager {
                     e.printStackTrace();
                 }
             }
-            database.locationDoa().insertAll(locations);
+            database.presetLocationDoa().insertAll(locations);
         }
     }
 
     public void initTableRoute(){
-        if (database.routeDao().getAllRoutes().size() == 0){
-            ArrayList<DB_Route> routes = new ArrayList<>();
+        if (database.presetRouteDao().getAllRoutes().size() == 0){
+            ArrayList<Preset_Route> routes = new ArrayList<>();
             JSONArray jsonArrayRoutes = readJson(R.raw.route_file);
             for (int i = 0; i < jsonArrayRoutes.length(); i++) {
                 JSONObject jsonObject = null;
-                DB_Route route = new DB_Route();
+                Preset_Route route = new Preset_Route();
                 try {
                     jsonObject = jsonArrayRoutes.getJSONObject(i);
                     route.ID = jsonObject.getInt("id");
@@ -82,17 +88,17 @@ public class DatabaseManager {
                     e.printStackTrace();
                 }
             }
-            database.routeDao().insertAll(routes);
+            database.presetRouteDao().insertAll(routes);
         }
     }
 
     public void initTableLocationRoute(){
-        if (database.locationRouteDao().getAllLocationRoutes().size() == 0){
-            ArrayList<DB_Location_Route> location_routes = new ArrayList<>();
+        if (database.presetLocationRouteDao().getAllLocationRoutes().size() == 0){
+            ArrayList<Preset_Location_Route> location_routes = new ArrayList<>();
             JSONArray jsonArrayLocationRoutes = readJson(R.raw.location_route_file);
             for (int i = 0; i < jsonArrayLocationRoutes.length(); i++) {
                 JSONObject jsonObject = null;
-                DB_Location_Route location_route = new DB_Location_Route();
+                Preset_Location_Route location_route = new Preset_Location_Route();
                 try {
                     jsonObject = jsonArrayLocationRoutes.getJSONObject(i);
                     location_route.RouteID = jsonObject.getInt("route_id");
@@ -102,7 +108,7 @@ public class DatabaseManager {
                     e.printStackTrace();
                 }
             }
-            database.locationRouteDao().insertAll(location_routes);
+            database.presetLocationRouteDao().insertAll(location_routes);
         }
     }
 
@@ -156,29 +162,51 @@ public class DatabaseManager {
         return json;
     }
 
-    public List<DB_Location> getLocations(){
-        return database.locationDoa().getAllLocations();
+    public List<Preset_Location> getPresetLocations(){
+        return database.presetLocationDoa().getAllLocations();
     }
 
-    public List<DB_Route> getRoutes(){
-        return database.routeDao().getAllRoutes();
+    public List<Preset_Route> getPresetRoutes(){
+        return database.presetRouteDao().getAllRoutes();
     }
 
-    public List<DB_Location_Route> getLocationRoutes(){
-        return database.locationRouteDao().getAllLocationRoutes();
+    public List<Preset_Location_Route> getPresetLocationRoutes(){
+        return database.presetLocationRouteDao().getAllLocationRoutes();
     }
 
-    public List<DB_Location> getLocationsFromRoute(int routeID){
-        return database.locationRouteDao().getLocations(routeID);
+    public List<Preset_Location> getPresetLocationsFromRoute(int routeID){
+        return database.presetLocationRouteDao().getLocations(routeID);
     }
 
     public List<DB_Geocache> getGeocaches(){
         return database.geocacheDao().getAllGeocaches();
     }
 
-    public DB_Route getRoute(int routeID){
-        System.out.println("ROUTEID: " + routeID);
-        System.out.println("Selected Route:   " + database.routeDao().getRoute(routeID).Name);
-        return database.routeDao().getRoute(routeID);
+    public Preset_Route getPresetRoute(int routeID){
+        return database.presetRouteDao().getRoute(routeID);
+    }
+
+    public void insertSavedRoute(Saved_Route route, Saved_Location startLocation, Saved_Location destinationLocation, Saved_Location_Route startLocationRoute, Saved_Location_Route destinationLocationRoute){
+        database.savedRouteDao().insert(route);
+        database.savedLocationDao().insert(startLocation);
+        database.savedLocationDao().insert(destinationLocation);
+        database.savedLocationRouteDao().insert(startLocationRoute);
+        database.savedLocationRouteDao().insert(destinationLocationRoute);
+    }
+
+    public List<Saved_Location> getSavedLocations(){
+        return database.savedLocationDao().getAllLocations();
+    }
+
+    public List<Saved_Route> getSavedRoutes(){
+        return database.savedRouteDao().getAllRoutes();
+    }
+
+    public List<Saved_Location> getSavedLocationsFromRoute(int routeID){
+        return database.savedLocationRouteDao().getLocations(routeID);
+    }
+
+    public Saved_Route getSavedRoute(int routeID){
+        return database.savedRouteDao().getRoute(routeID);
     }
 }

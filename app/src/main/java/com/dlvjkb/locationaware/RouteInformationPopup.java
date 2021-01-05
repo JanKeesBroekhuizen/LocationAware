@@ -1,32 +1,25 @@
 package com.dlvjkb.locationaware;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.dlvjkb.locationaware.data.RouteViewModel;
-import com.dlvjkb.locationaware.database.DB_Location;
-import com.dlvjkb.locationaware.database.Database;
+import com.dlvjkb.locationaware.database.preset.Preset_Location;
 import com.dlvjkb.locationaware.database.DatabaseManager;
+import com.dlvjkb.locationaware.database.saved.Saved_Location;
+import com.dlvjkb.locationaware.database.saved.Saved_Location_Route;
+import com.dlvjkb.locationaware.database.saved.Saved_Route;
 import com.dlvjkb.locationaware.recyclerview.popuppreset.PresetRouteClickListener;
 import com.dlvjkb.locationaware.recyclerview.popuppreset.PresetRoutesAdapter;
 import com.dlvjkb.locationaware.recyclerview.popupsaved.SavedRouteClickListener;
@@ -71,6 +64,8 @@ public class RouteInformationPopup extends AppCompatActivity implements PresetRo
     private Boolean finished;
     private DatabaseManager databaseManager;
     private RouteViewModel viewModel;
+    private SavedRoutesAdapter savedRoutesAdapter;
+    private SwipeRefreshLayout refreshLayoutSavedRoutes;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -106,6 +101,7 @@ public class RouteInformationPopup extends AppCompatActivity implements PresetRo
 //        routePoints = new ArrayList<>();
 //        routeAddresses = new ArrayList<>();
 
+        initRefreshViews();
         initRecyclerViews();
         testQueries();
         setTestText();
@@ -128,6 +124,55 @@ public class RouteInformationPopup extends AppCompatActivity implements PresetRo
 
         viewModel.getStartListener().onRouteStartClicked();
         finish();
+    }
+
+    public void onButtonSaveRouteClicked(View view){
+        Saved_Route route = new Saved_Route();
+        route.ID = databaseManager.getSavedRoutes().size() + 1;
+        route.Traveltype = TravelType.getTravelType(viewModel.getTravelType().getValue());
+
+        Saved_Location startLocation = new Saved_Location();
+        startLocation.ID = databaseManager.getSavedLocations().size() + 1;
+        startLocation.City = etRouteStartCityName.getText().toString();
+        startLocation.Street = etRouteStartStreetName.getText().toString();
+        startLocation.Housenumber = Integer.parseInt(etRouteStartStreetNumber.getText().toString());
+
+        Saved_Location destinationLocation = new Saved_Location();
+        destinationLocation.ID = databaseManager.getSavedLocations().size() + 2;
+        destinationLocation.City = etRouteEndCityName.getText().toString();
+        destinationLocation.Street = etRouteEndStreetName.getText().toString();
+        destinationLocation.Housenumber = Integer.parseInt(etRouteEndStreetNumber.getText().toString());
+
+        Saved_Location_Route startLocationRoute = new Saved_Location_Route();
+        startLocationRoute.LocationID = startLocation.ID;
+        startLocationRoute.RouteID = route.ID;
+
+        Saved_Location_Route destinationLocationRoute = new Saved_Location_Route();
+        destinationLocationRoute.LocationID = destinationLocation.ID;
+        destinationLocationRoute.RouteID = route.ID;
+
+        //check if route is already in the database!
+        boolean created = false;
+        if (databaseManager.getSavedRoutes().size() != 0){
+            for (Saved_Route saved_route : databaseManager.getSavedRoutes()){
+                if (saved_route.Traveltype.equals(route.Traveltype)){
+                    List<Saved_Location> routeLocations = databaseManager.getSavedLocationsFromRoute(saved_route.ID);
+                    if ((routeLocations.get(0).City.equals(startLocation.City) && routeLocations.get(0).Street.equals(startLocation.Street) && routeLocations.get(0).Housenumber == startLocation.Housenumber) &&
+                            (routeLocations.get(1).City.equals(destinationLocation.City) && routeLocations.get(1).Street.equals(destinationLocation.Street) && routeLocations.get(1).Housenumber == destinationLocation.Housenumber)){
+                        created = true;
+                    }
+                }
+            }
+        }
+
+        if (created){
+            Toast.makeText(this, "Route already created!", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Route saved and started!", Toast.LENGTH_SHORT).show();
+            databaseManager.insertSavedRoute(route, startLocation, destinationLocation, startLocationRoute, destinationLocationRoute);
+            savedRoutesAdapter.notifyDataSetChanged();
+            onButtonSearchRouteClicked(null);
+        }
     }
 
     public GeoPoint AddressToGeoPoint(String address, String city){
@@ -178,9 +223,9 @@ public class RouteInformationPopup extends AppCompatActivity implements PresetRo
     }
 
     public void testQueries(){
-        System.out.println("LOCATIONS: " + databaseManager.getLocations().size());
-        System.out.println("ROUTES: " + databaseManager.getRoutes().size());
-        System.out.println("LOCATION_ROUTES: " + databaseManager.getLocationRoutes().size());
+        System.out.println("LOCATIONS: " + databaseManager.getPresetLocations().size());
+        System.out.println("ROUTES: " + databaseManager.getPresetRoutes().size());
+        System.out.println("LOCATION_ROUTES: " + databaseManager.getPresetLocationRoutes().size());
     }
 
     public void onButtonCarClicked(View view){
@@ -209,14 +254,28 @@ public class RouteInformationPopup extends AppCompatActivity implements PresetRo
         rvPresetRoutes = findViewById(R.id.rvPresetRoutes);
         rvPresetRoutes.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false));
 
-        PresetRoutesAdapter presetRoutesAdapter = new PresetRoutesAdapter(this, databaseManager.getRoutes(), this);
+        PresetRoutesAdapter presetRoutesAdapter = new PresetRoutesAdapter(this, databaseManager.getPresetRoutes(), this);
         rvPresetRoutes.setAdapter(presetRoutesAdapter);
         presetRoutesAdapter.notifyDataSetChanged();
 
 
-//        rvSavedRoutes = findViewById(R.id.rvSavedRoutes);
-//        rvSavedRoutes.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false));
-//        rvSavedRoutes.setAdapter(new SavedRoutesAdapter(this,null, this));
+        rvSavedRoutes = findViewById(R.id.rvSavedRoutes);
+        rvSavedRoutes.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false));
+
+        savedRoutesAdapter = new SavedRoutesAdapter(this, databaseManager.getSavedRoutes(), this);
+        rvSavedRoutes.setAdapter(savedRoutesAdapter);
+        savedRoutesAdapter.notifyDataSetChanged();
+    }
+
+    private void initRefreshViews(){
+        refreshLayoutSavedRoutes = findViewById(R.id.srvSavedRoute);
+        refreshLayoutSavedRoutes.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                savedRoutesAdapter.notifyDataSetChanged();
+                refreshLayoutSavedRoutes.setRefreshing(false);
+            }
+        });
     }
 
     @Override
@@ -225,8 +284,8 @@ public class RouteInformationPopup extends AppCompatActivity implements PresetRo
         List<String> routeAddresses = new ArrayList<>();
 
         Toast.makeText(getApplicationContext(), "PresetRoute clicked " + position, Toast.LENGTH_SHORT).show();
-        List<DB_Location> locations = databaseManager.getLocationsFromRoute(position + 1);
-        for (DB_Location location : locations){
+        List<Preset_Location> locations = databaseManager.getPresetLocationsFromRoute(position + 1);
+        for (Preset_Location location : locations){
             routePoints.add(AddressToGeoPoint(location.Street + " " + location.Housenumber, location.City));
             routeAddresses.add(location.Street + " " + location.Housenumber + "\n" + location.City);
         }
@@ -235,7 +294,7 @@ public class RouteInformationPopup extends AppCompatActivity implements PresetRo
 
         viewModel.setRoute(routePoints);
         viewModel.setBeginEndPoint(routeAddresses);
-        viewModel.setTravelType(TravelType.getTravelTypeEnum(databaseManager.getRoute(position + 1).Traveltype));
+        viewModel.setTravelType(TravelType.getTravelTypeEnum(databaseManager.getPresetRoute(position + 1).Traveltype));
         viewModel.setIsDrawingRoute(true);
 
         viewModel.getStartListener().onRouteStartClicked();
@@ -245,5 +304,22 @@ public class RouteInformationPopup extends AppCompatActivity implements PresetRo
     @Override
     public void onSavedRouteClicked(int position) {
         Toast.makeText(getApplicationContext(), "SavedRoute clicked " + position, Toast.LENGTH_SHORT).show();
+
+        List<GeoPoint> routePoints = new ArrayList<>();
+        List<String> routeAddresses = new ArrayList<>();
+
+        List<Saved_Location> locations = databaseManager.getSavedLocationsFromRoute(position + 1);
+        for (Saved_Location location : locations){
+            routePoints.add(AddressToGeoPoint(location.Street + " " + location.Housenumber, location.City));
+            routeAddresses.add(location.Street + " " + location.Housenumber + "\n" + location.City);
+        }
+
+        viewModel.setRoute(routePoints);
+        viewModel.setBeginEndPoint(routeAddresses);
+        viewModel.setTravelType(TravelType.getTravelTypeEnum(databaseManager.getSavedRoute(position + 1).Traveltype));
+        viewModel.setIsDrawingRoute(true);
+
+        viewModel.getStartListener().onRouteStartClicked();
+        finish();
     }
 }

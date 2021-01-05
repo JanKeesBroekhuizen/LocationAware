@@ -9,20 +9,19 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dlvjkb.locationaware.R;
-import com.dlvjkb.locationaware.data.Route;
-import com.dlvjkb.locationaware.database.DB_Route;
+import com.dlvjkb.locationaware.TravelType;
+import com.dlvjkb.locationaware.database.preset.Preset_Route;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PresetRoutesAdapter extends RecyclerView.Adapter<PresetRoutesViewHolder> {
 
 
-    private List<DB_Route> presetList;
+    private List<Preset_Route> presetList;
     private Context context;
     private PresetRouteClickListener listener;
 
-    public PresetRoutesAdapter(Context context, List<DB_Route> presetList, PresetRouteClickListener listener) {
+    public PresetRoutesAdapter(Context context, List<Preset_Route> presetList, PresetRouteClickListener listener) {
         this.context = context;
         this.presetList = presetList;
         this.listener = listener;
@@ -38,8 +37,16 @@ public class PresetRoutesAdapter extends RecyclerView.Adapter<PresetRoutesViewHo
 
     @Override
     public void onBindViewHolder(@NonNull PresetRoutesViewHolder holder, int position) {
-        DB_Route route = presetList.get(position);
+        Preset_Route route = presetList.get(position);
         holder.tvRouteName.setText(route.Name);
+
+        if (TravelType.getTravelTypeEnum(route.Traveltype) == TravelType.CYCLING_REGULAR){
+            holder.ivRouteTravelType.setImageResource(R.drawable.icon_traveltype_bike);
+        } else if (TravelType.getTravelTypeEnum(route.Traveltype) == TravelType.FOOT_WALKING) {
+            holder.ivRouteTravelType.setImageResource(R.drawable.icon_traveltype_walking);
+        } else {
+            holder.ivRouteTravelType.setImageResource(R.drawable.icon_traveltype_car);
+        }
     }
 
 

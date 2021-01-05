@@ -1,10 +1,11 @@
-package com.dlvjkb.locationaware.database;
+package com.dlvjkb.locationaware.database.geocache;
 
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 
-import java.util.ArrayList;
+import com.dlvjkb.locationaware.database.geocache.DB_Geocache;
+
 import java.util.List;
 
 @Dao

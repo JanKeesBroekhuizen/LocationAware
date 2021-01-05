@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel;
 
 import com.dlvjkb.locationaware.RouteStartListener;
 import com.dlvjkb.locationaware.TravelType;
-import com.dlvjkb.locationaware.database.DB_Route;
 
 import org.osmdroid.util.GeoPoint;
 
