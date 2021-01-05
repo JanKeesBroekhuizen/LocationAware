@@ -1,4 +1,4 @@
-package com.dlvjkb.locationaware.database;
+package com.dlvjkb.locationaware.database.preset;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey;
 import com.dlvjkb.locationaware.TravelType;
 
 @Entity
-public class DB_Route {
+public class Preset_Route {
     @PrimaryKey
     public int ID;
     public String Name;
