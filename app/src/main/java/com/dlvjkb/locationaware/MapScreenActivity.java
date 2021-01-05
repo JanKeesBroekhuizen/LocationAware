@@ -2,9 +2,12 @@ package com.dlvjkb.locationaware;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +23,9 @@ import com.dlvjkb.locationaware.data.RouteViewModel;
 import com.dlvjkb.locationaware.database.geocache.DB_Geocache;
 import com.dlvjkb.locationaware.database.DatabaseManager;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -58,6 +64,20 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
     private Polyline line;
     private RouteViewModel viewModel;
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onLocationEvent(LocationService.LocationEvent event) {
+        currentGeoPoint = event.getGeoPoint();
+//        marker.setPosition(myLocation);
+        Log.d("LOCATION_CHANGED:", currentGeoPoint.getLatitude() + "," + currentGeoPoint.getLongitude());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onWaypointEvent(LocationService.GeocacheEvent event) {
+        Dialog geocacheFoundScreen = new GeocacheDetailLocationScreen(MapScreenActivity.this,event.geocache);
+        geocacheFoundScreen.show();
+        Log.d("Waypoint Event:", "Waypoint Reached");
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +92,7 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
         });
 
         Configuration.getInstance().setUserAgentValue("com.dlvjkb.locationaware");
+        createNotificationChannel();
 
         mapView = findViewById(R.id.osmMap);
         mapView.setTileSource(TileSourceFactory.MAPNIK);
@@ -95,6 +116,10 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
         mapController.setZoom(18.0);
 
         createRoute();
+
+        //Start location service for monitoring new geopoints.
+        Intent locationService = new Intent(this,LocationService.class);
+        startForegroundService(locationService);
     }
 
     @Override
@@ -118,6 +143,18 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //Configuration.getInstance().save(this, prefs);
         mapView.onPause();  //needed for compass, my location overlays, v6.0.0 and up
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 
     @Override
@@ -335,5 +372,21 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
     public void onRouteStartClicked() {
         Toast.makeText(this, "RouteStarted", Toast.LENGTH_SHORT).show();
         createRoute();
+    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "notifychannel";
+            String description = "notifydescription";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("notifychannelid", name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 }

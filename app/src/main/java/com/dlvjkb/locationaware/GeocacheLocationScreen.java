@@ -2,6 +2,7 @@ package com.dlvjkb.locationaware;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.view.View;
@@ -61,6 +62,7 @@ public class GeocacheLocationScreen extends Dialog {
         btnStartGeocache.setOnClickListener(v -> onButtonGeocachStartClick(v));
         onButtonWalkClicked(null);
         changeDialogText();
+        viewModel.
     }
 
     public void changeDialogText(){
