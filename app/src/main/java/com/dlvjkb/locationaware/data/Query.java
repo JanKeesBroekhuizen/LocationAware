@@ -4,9 +4,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Query {
+public class Query implements Serializable {
     public ArrayList<double[]> coordinates;
     public String profile;
     public String format;
@@ -34,7 +35,7 @@ public class Query {
     }
 
     public double[] jsonArrayToArray(JSONArray array){
-        final double[] coordinateArray = new double[2];
+        final double[] coordinateArray = new double[array.length()];
         for (int jsonArrayIndex = 0; jsonArrayIndex < array.length(); jsonArrayIndex++){
             try {
                 coordinateArray[jsonArrayIndex] = array.getDouble(jsonArrayIndex);

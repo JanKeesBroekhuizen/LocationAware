@@ -48,6 +48,24 @@
             android:background="@color/transparant_grey" />
 
         <ImageButton
+            android:id="@+id/ibGeocache"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@android:color/transparent"
+            android:onClick="onButtonGeocacheClicked"
+            android:scaleType="center"
+            android:scaleX="1.5"
+            android:scaleY="1.5"
+            android:src="@drawable/icon_geocache"
+            android:tint="@color/white" />
+
+        <View
+            android:id="@+id/vLine2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/transparant_grey" />
+
+        <ImageButton
             android:id="@+id/ibGPSLocation"
             android:layout_width="48dp"
             android:layout_height="48dp"

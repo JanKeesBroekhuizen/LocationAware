@@ -3,7 +3,9 @@ package com.dlvjkb.locationaware.data;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Engine {
+import java.io.Serializable;
+
+public class Engine implements Serializable {
 
     public String version;
     public String buildDate;

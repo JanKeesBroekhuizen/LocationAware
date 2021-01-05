@@ -3,9 +3,10 @@ package com.dlvjkb.locationaware.data;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class Metadata {
+public class Metadata implements Serializable {
 
     public String attribution;
     public String service;

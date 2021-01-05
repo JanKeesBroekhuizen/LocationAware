@@ -1,0 +1,38 @@
+[
+	{
+		"id": 1,
+		"city": "Bleskensgraaf",
+		"street": "Reigerstraat",
+		"housenumber": 26
+	},
+	{
+		"id": 2,
+		"city": "Bleskensgraaf",
+		"street": "Gruttostraat",
+		"housenumber": 22
+	},
+	{
+		"id": 3,
+		"city": "Bleskensgraaf",
+		"street": "Lindenstraat",
+		"housenumber": 17
+	},
+	{
+		"id": 4,
+		"city": "Bleskensgraaf",
+		"street": "Klaverpad",
+		"housenumber": 2
+	},
+	{
+		"id": 5,
+		"city": "Bleskensgraaf",
+		"street": "Peppelstraat",
+		"housenumber": 33
+	},
+	{
+		"id": 6,
+		"city": "Bleskensgraaf",
+		"street": "Fluitekruidstraat",
+		"housenumber": 9
+	}
+]

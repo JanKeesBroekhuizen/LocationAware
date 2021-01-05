@@ -4,9 +4,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Property {
+public class Property implements Serializable {
     public ArrayList<Segment> segments;
     public Summary summary;
     public int[] wayPoints;
@@ -34,7 +35,7 @@ public class Property {
     }
 
     public int[] jsonArrayToArray(JSONArray array){
-        final int[] wayPointsArray = new int[2];
+        final int[] wayPointsArray = new int[array.length()];
         for (int jsonArrayIndex = 0; jsonArrayIndex < array.length(); jsonArrayIndex++){
             try {
                 wayPointsArray[jsonArrayIndex] = array.getInt(jsonArrayIndex);

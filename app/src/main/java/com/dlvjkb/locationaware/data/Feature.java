@@ -4,7 +4,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Feature {
+import java.io.Serializable;
+
+public class Feature implements Serializable {
 
     public double[] bbox;
     public String type;

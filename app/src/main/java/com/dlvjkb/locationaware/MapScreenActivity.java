@@ -1,6 +1,7 @@
 package com.dlvjkb.locationaware;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -15,6 +16,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.dlvjkb.locationaware.data.Route;
+import com.dlvjkb.locationaware.data.RouteViewModel;
+import com.dlvjkb.locationaware.database.geocache.DB_Geocache;
+import com.dlvjkb.locationaware.database.DatabaseManager;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -31,12 +35,14 @@ import org.osmdroid.views.overlay.infowindow.BasicInfoWindow;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class MapScreenActivity extends AppCompatActivity {
+public class MapScreenActivity extends AppCompatActivity implements RouteStartListener {
 
     public static String APIKEY = "5b3ce3597851110001cf62487e88103431e54b0a846066f367b0b015";
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
@@ -48,6 +54,9 @@ public class MapScreenActivity extends AppCompatActivity {
     private EditText etSearchStreetNumber;
     private IMapController mapController;
     private Boolean getCoordinatesFinished = false;
+    private Route route;
+    private Polyline line;
+    private RouteViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,12 +82,19 @@ public class MapScreenActivity extends AppCompatActivity {
         etSearchStreetNumber = findViewById(R.id.etSearchAddressNumber);
         mapController = mapView.getController();
         mapController.setZoom(9.5);
+        mapView.setMultiTouchControls(true);
 
-        currentGeoPoint = new GeoPoint(0.0,0.0);
+        line = new Polyline();;
 
-        if (RouteInformationPopup.routeStartGeoPoint != null && RouteInformationPopup.routeEndGeoPoint != null){
-            createRoute(RouteInformationPopup.routeStartGeoPoint, RouteInformationPopup.routeEndGeoPoint);
-        }
+        viewModel = RouteViewModel.getInstance();
+        viewModel.setStartListener(this);
+
+        DatabaseManager.getInstance(this).initTotalDatabase();
+        currentGeoPoint = new GeoPoint(51.92458092043162,4.480193483189705);
+        mapController.setCenter(currentGeoPoint);
+        mapController.setZoom(18.0);
+
+        createRoute();
     }
 
     @Override
@@ -89,6 +105,9 @@ public class MapScreenActivity extends AppCompatActivity {
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
         mapView.onResume(); //needed for compass, my location overlays, v6.0.0 and up
+        if (!viewModel.getIsDrawingRoute().getValue()){
+            mapView.getOverlayManager().remove(line);
+        }
     }
 
     @Override
@@ -99,6 +118,12 @@ public class MapScreenActivity extends AppCompatActivity {
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //Configuration.getInstance().save(this, prefs);
         mapView.onPause();  //needed for compass, my location overlays, v6.0.0 and up
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mapView.onDetach();
     }
 
     @Override
@@ -144,34 +169,66 @@ public class MapScreenActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void onButtonSearchClicked(View view){
-        Toast.makeText(getApplicationContext(),"SEARCH",Toast.LENGTH_LONG).show();
-        OpenRouteServiceConnection.getInstance().getCoordinatesOfAddress(
-                "5b3ce3597851110001cf62487e88103431e54b0a846066f367b0b015",
-                etSearchStreetName.getText().toString() + " " + etSearchStreetNumber.getText().toString(),
-                etSearchCityName.getText().toString(),
-                new Callback() {
-                    @Override
-                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                        Log.d(MapScreenActivity.class.getName(), e.getLocalizedMessage());
-                    }
+    public void onButtonGeocacheClicked(View view){
+        List<DB_Geocache> geocaches = DatabaseManager.getInstance(this).getGeocaches();
+        List<GeoPoint> geoPoints = new ArrayList<>();
+        for (DB_Geocache geocache : geocaches ){
+            GeoPoint geoPoint = new GeoPoint(geocache.Latitude, geocache.Longitude);
+            geoPoints.add(geoPoint);
+            Marker marker = new Marker(mapView);
+            marker.setPosition(geoPoint);
+            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+            marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(Marker marker, MapView mapView) {
+                    Toast.makeText(MapScreenActivity.this, "CLICK", Toast.LENGTH_SHORT).show();
+                    Dialog geocacheLocationScreen = new GeocacheLocationScreen(MapScreenActivity.this, currentGeoPoint, geocache, MapScreenActivity.this);
+                    geocacheLocationScreen.show();
+                    return false;
+                }
+            });
+            mapView.getOverlays().add(marker);
+        }
+        mapView.invalidate();
+    }
 
-                    @Override
-                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        JSONObject responseJson = null;
-                        try {
-                            responseJson = new JSONObject(response.body().string());
-                            double[] coordinates = jsonArrayToArray(responseJson.getJSONArray("features").getJSONObject(0).getJSONObject("geometry").getJSONArray("coordinates"));
-                            System.out.println(coordinates[0] + " " + coordinates[1]);
-                            currentGeoPoint.setLatitude(coordinates[1]);
-                            currentGeoPoint.setLongitude(coordinates[0]);
-                        }catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        getCoordinatesFinished = true;
-                    }
-                });
-        while (!getCoordinatesFinished){}
+    public void onButtonSearchClicked(View view){
+//        Toast.makeText(getApplicationContext(),"SEARCH",Toast.LENGTH_LONG).show();
+        getCoordinatesFinished = false;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                OpenRouteServiceConnection.getInstance().getCoordinatesOfAddress(
+                        "5b3ce3597851110001cf62487e88103431e54b0a846066f367b0b015",
+                        etSearchStreetName.getText().toString() + " " + etSearchStreetNumber.getText().toString(),
+                        etSearchCityName.getText().toString(),
+                        new Callback() {
+                            @Override
+                            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                                Log.d(MapScreenActivity.class.getName(), e.getLocalizedMessage());
+                            }
+
+                            @Override
+                            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                                JSONObject responseJson = null;
+                                try {
+                                    responseJson = new JSONObject(response.body().string());
+                                    double[] coordinates = jsonArrayToArray(responseJson.getJSONArray("features").getJSONObject(0).getJSONObject("geometry").getJSONArray("coordinates"));
+                                    System.out.println(coordinates[0] + " " + coordinates[1]);
+                                    currentGeoPoint.setLatitude(coordinates[1]);
+                                    currentGeoPoint.setLongitude(coordinates[0]);
+                                }catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                getCoordinatesFinished = true;
+                            }
+                        });
+            }
+        }).start();
+
+        while (!getCoordinatesFinished){
+            Log.d(MapScreenActivity.class.getName(), "Waiting for location...");
+        }
 
         mapController.setCenter(currentGeoPoint);
         mapController.setZoom(18.0);
@@ -195,9 +252,67 @@ public class MapScreenActivity extends AppCompatActivity {
         return coordinatesArray;
     }
 
-    public Polyline drawLine(ArrayList<GeoPoint> geoPoints){
-        Polyline line = new Polyline();
-        line.setTitle("Road back home");
+    public void createRoute(){
+        if (viewModel.getRoute().getValue() != null) {
+            if (viewModel.getRoute().getValue().size() != 0) {
+                finished = false;
+                ArrayList<GeoPoint> geoPoints = new ArrayList<>();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        OpenRouteServiceConnection.getInstance().getRouteMultiplePoints(
+                                APIKEY,
+                                (ArrayList<GeoPoint>) viewModel.getRoute().getValue(),
+                                viewModel.getTravelType().getValue(),
+                                Locale.getDefault().getLanguage(),
+                                new Callback() {
+                                    @Override
+                                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                                        Log.d(MapScreenActivity.class.getName(), e.getLocalizedMessage());
+                                    }
+
+                                    @Override
+                                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                                        JSONObject responseJson = null;
+                                        try {
+                                            responseJson = new JSONObject(response.body().string());
+                                            System.out.println(responseJson);
+                                            route = new Route(responseJson, viewModel.getBeginEndPoint().getValue().get(0), viewModel.getBeginEndPoint().getValue().get(viewModel.getBeginEndPoint().getValue().size() - 1));
+                                            ArrayList<double[]> coordinates = route.features.get(0).geometry.coordinates;
+
+                                            for (double[] coordinate : coordinates) {
+                                                geoPoints.add(new GeoPoint(coordinate[1], coordinate[0]));
+                                            }
+                                            System.out.println("GeoPoints: " + geoPoints.size() + " Coordinates: " + coordinates.size());
+                                            finished = true;
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                        );
+
+                    }
+                }).start();
+
+                //Hier gaat de app stuk na 3 routes starten of bij het roteren!!!!!!!!
+                //TODO Fix the error!!! --> Mayby the error is fixed!!!
+
+                while (!finished) {
+                    Log.d(MapScreenActivity.class.getName(), "Waiting for route...");
+                }
+                System.out.println("finished: " + finished + "    Geopoints: " + geoPoints.size());
+
+                mapController.setCenter(geoPoints.get(0));
+                mapController.setZoom(18.0f);
+                drawLine(geoPoints);
+                mapView.getOverlayManager().add(line);
+            }
+        }
+    }
+
+    public void drawLine(ArrayList<GeoPoint> geoPoints){
+        line = new Polyline();
         line.setSubDescription(Polyline.class.getCanonicalName());
         //line.setWidth(20f);
         line.getOutlinePaint().setStrokeWidth(20f);
@@ -208,49 +323,17 @@ public class MapScreenActivity extends AppCompatActivity {
         line.setOnClickListener(new Polyline.OnClickListener() {
             @Override
             public boolean onClick(Polyline polyline, MapView mapView, GeoPoint eventPos) {
-                Toast.makeText(getApplicationContext(), "JOEJOE", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MapScreenActivity.this, ChosenRouteDetailActivity.class);
+                intent.putExtra("ROUTE", route);
+                startActivity(intent);
                 return false;
             }
         });
-        return line;
     }
 
-    public void createRoute(GeoPoint start, GeoPoint end){
-        ArrayList<GeoPoint> geoPoints = new ArrayList<>();
-        OpenRouteServiceConnection.getInstance().getRouteInfo(
-                APIKEY,
-                start,
-                end,
-                TravelType.DRIVING_CAR,
-                new Callback() {
-                    @Override
-                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                        Log.d(MapScreenActivity.class.getName(), e.getLocalizedMessage());
-                    }
-
-                    @Override
-                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        JSONObject responseJson = null;
-                        try {
-                            responseJson = new JSONObject(response.body().string());
-                            Route route = new Route(responseJson);
-                            ArrayList<double[]> coordinates = route.features.get(0).geometry.coordinates;
-
-                            for (double[] coordinate : coordinates){
-                                geoPoints.add(new GeoPoint(coordinate[1], coordinate[0]));
-                            }
-                            System.out.println("GeoPoints: " + geoPoints.size() + " Coordinates: " + coordinates.size());
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        finished = true;
-                    }
-                });
-
-        while(!finished){}
-
-        mapController.setCenter(geoPoints.get(0));
-        mapView.getOverlayManager().add(drawLine(geoPoints));
+    @Override
+    public void onRouteStartClicked() {
+        Toast.makeText(this, "RouteStarted", Toast.LENGTH_SHORT).show();
+        createRoute();
     }
 }
