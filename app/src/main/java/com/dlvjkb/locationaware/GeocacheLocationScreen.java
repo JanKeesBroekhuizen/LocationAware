@@ -70,8 +70,8 @@ public class GeocacheLocationScreen extends Dialog {
     }
 
     public void onButtonGeocachStartClick(View view){
-        List<GeoPoint> routePoints = new ArrayList<>();
-        List<String> routeAddresses = new ArrayList<>();
+        ArrayList<GeoPoint> routePoints = new ArrayList<>();
+        ArrayList<String> routeAddresses = new ArrayList<>();
 
         routePoints.add(geoPoint);
         routePoints.add(new GeoPoint(geocache.Latitude, geocache.Longitude));

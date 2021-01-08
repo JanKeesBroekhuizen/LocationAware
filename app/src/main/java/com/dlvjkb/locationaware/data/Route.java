@@ -1,53 +1,55 @@
 package com.dlvjkb.locationaware.data;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.dlvjkb.locationaware.TravelType;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Route implements Serializable {
-    public String type;
-    public ArrayList<Feature> features;
-    public double[] bbox;
-    public Metadata metadata;
-    public String routeStartAddress;
-    public String routeEndAddress;
 
-    public Route(JSONObject jsonObject, String start, String end){
-        try{
-            this.type = jsonObject.getString("type");
-            this.features = jsonArrayToList(jsonObject.getJSONArray("features"));
-            this.bbox = jsonArrayToArray(jsonObject.getJSONArray("bbox"));
-            this.metadata = new Metadata(jsonObject.getJSONObject("metadata"));
-            this.routeStartAddress = start;
-            this.routeEndAddress = end;
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    private double distance;
+    private double duration;
+    private ArrayList<Segment> segments;
+    private int[] wayPoints;
+    private ArrayList<double[]> coordinates;
+    private ArrayList<String> locations;
+    private TravelType travelType;
+
+    public Route(double distance, double duration, ArrayList<Segment> segments, int[] wayPoints, ArrayList<double[]> coordinates, ArrayList<String> locations, TravelType travelType) {
+        this.distance = distance;
+        this.duration = duration;
+        this.segments = segments;
+        this.wayPoints = wayPoints;
+        this.coordinates = coordinates;
+        this.locations = locations;
+        this.travelType = travelType;
     }
 
-    public ArrayList<Feature> jsonArrayToList(JSONArray array){
-        ArrayList<Feature> list = new ArrayList<>();
-        for (int arrayIndex = 0; arrayIndex < array.length(); arrayIndex++){
-            try {
-                list.add(new Feature(array.getJSONObject(arrayIndex)));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        return list;
+    public double getDistance() {
+        return distance;
     }
 
-    public double[] jsonArrayToArray(JSONArray array){
-        final double[] bboxArray = new double[4];
-        for (int jsonArrayIndex = 0; jsonArrayIndex < array.length(); jsonArrayIndex++){
-            try {
-                bboxArray[jsonArrayIndex] = array.getDouble(jsonArrayIndex);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        return bboxArray;
+    public double getDuration() {
+        return duration;
+    }
+
+    public ArrayList<Segment> getSegments() {
+        return segments;
+    }
+
+    public int[] getWayPoints() {
+        return wayPoints;
+    }
+
+    public ArrayList<double[]> getCoordinates() {
+        return coordinates;
+    }
+
+    public ArrayList<String> getLocations() {
+        return locations;
+    }
+
+    public TravelType getTravelType() {
+        return travelType;
     }
 }

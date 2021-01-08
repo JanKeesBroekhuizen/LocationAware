@@ -35,10 +35,10 @@ public class RouteDirectionsAdapter extends RecyclerView.Adapter<RouteDirections
     @Override
     public void onBindViewHolder(@NonNull RouteDirectionsViewHolder holder, int position) {
         Step step = steps.get(position);
-        holder.tvDescription.setText(step.instruction);
-        holder.tvDistanceValue.setText(String.format("%.2f",step.distance/1000) + " " + context.getResources().getString(R.string.recyclerview_distance));
-        holder.tvDurationValue.setText(String.format("%.2f",step.duration/60) + " "  + context.getResources().getString(R.string.recyclerview_seconds));
-        holder.ivDirections.setImageResource(getDirectionTypeIcon(step.type));
+        holder.tvDescription.setText(step.getInstruction());
+        holder.tvDistanceValue.setText(String.format("%.2f",step.getDistance()/1000) + " " + context.getResources().getString(R.string.recyclerview_distance));
+        holder.tvDurationValue.setText(String.format("%.2f",step.getDuration()/60) + " "  + context.getResources().getString(R.string.recyclerview_seconds));
+        holder.ivDirections.setImageResource(getDirectionTypeIcon(step.getType()));
     }
 
 

@@ -9,11 +9,13 @@ import com.dlvjkb.locationaware.TravelType;
 
 import org.osmdroid.util.GeoPoint;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RouteViewModel extends ViewModel {
-    private MutableLiveData<List<GeoPoint>> route;
-    private MutableLiveData<List<String>> beginEndPoint;
+    private MutableLiveData<Route> selectedRoute;
+    private MutableLiveData<ArrayList<GeoPoint>> route;
+    private MutableLiveData<ArrayList<String>> beginEndPoint;
     private MutableLiveData<Boolean> isDrawingRoute;
     private MutableLiveData<TravelType> travelType;
     private RouteStartListener startListener;
@@ -27,6 +29,7 @@ public class RouteViewModel extends ViewModel {
     }
 
     public RouteViewModel (){
+        selectedRoute = new MutableLiveData<>();
         route = new MutableLiveData<>();
         beginEndPoint = new MutableLiveData<>();
         isDrawingRoute = new MutableLiveData<>();
@@ -36,11 +39,15 @@ public class RouteViewModel extends ViewModel {
     }
 
     //getters
-    public LiveData<List<GeoPoint>> getRoute(){
+    public LiveData<Route> getSelectedRoute(){
+        return selectedRoute;
+    }
+
+    public LiveData<ArrayList<GeoPoint>> getRoute(){
         return route;
     }
 
-    public LiveData<List<String>> getBeginEndPoint(){
+    public LiveData<ArrayList<String>> getBeginEndPoint(){
         return beginEndPoint;
     }
 
@@ -57,11 +64,15 @@ public class RouteViewModel extends ViewModel {
     }
 
     //setters
-    public void setRoute(List<GeoPoint> route){
+    public void setSelectedRoute(Route route){
+        this.selectedRoute.setValue(route);
+    }
+
+    public void setRoute(ArrayList<GeoPoint> route){
         this.route.setValue(route);
     }
 
-    public void setBeginEndPoint(List<String> beginEndPoints){
+    public void setBeginEndPoint(ArrayList<String> beginEndPoints){
         this.beginEndPoint.setValue(beginEndPoints);
     }
 

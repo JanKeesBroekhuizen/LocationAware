@@ -108,8 +108,8 @@ public class RouteInformationPopup extends AppCompatActivity implements PresetRo
     }
 
     public void onButtonSearchRouteClicked(View view){
-        List<GeoPoint> routePoints = new ArrayList<>();
-        List<String> routeAddresses = new ArrayList<>();
+        ArrayList<GeoPoint> routePoints = new ArrayList<>();
+        ArrayList<String> routeAddresses = new ArrayList<>();
 
         GeoPoint routeStartGeoPoint = AddressToGeoPoint(etRouteStartStreetName.getText().toString() + " " + etRouteStartStreetNumber.getText().toString(), etRouteStartCityName.getText().toString());
         routePoints.add(routeStartGeoPoint);
@@ -280,8 +280,8 @@ public class RouteInformationPopup extends AppCompatActivity implements PresetRo
 
     @Override
     public void onPresetRouteClicked(int position) {
-        List<GeoPoint> routePoints = new ArrayList<>();
-        List<String> routeAddresses = new ArrayList<>();
+        ArrayList<GeoPoint> routePoints = new ArrayList<>();
+        ArrayList<String> routeAddresses = new ArrayList<>();
 
         Toast.makeText(getApplicationContext(), "PresetRoute clicked " + position, Toast.LENGTH_SHORT).show();
         List<Preset_Location> locations = databaseManager.getPresetLocationsFromRoute(position + 1);
@@ -305,8 +305,8 @@ public class RouteInformationPopup extends AppCompatActivity implements PresetRo
     public void onSavedRouteClicked(int position) {
         Toast.makeText(getApplicationContext(), "SavedRoute clicked " + position, Toast.LENGTH_SHORT).show();
 
-        List<GeoPoint> routePoints = new ArrayList<>();
-        List<String> routeAddresses = new ArrayList<>();
+        ArrayList<GeoPoint> routePoints = new ArrayList<>();
+        ArrayList<String> routeAddresses = new ArrayList<>();
 
         List<Saved_Location> locations = databaseManager.getSavedLocationsFromRoute(position + 1);
         for (Saved_Location location : locations){
