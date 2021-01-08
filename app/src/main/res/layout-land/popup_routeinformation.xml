@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparant_dark_grey"
+    tools:context=".RouteInformationPopup">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toStartOf="@+id/vDeviderPopUpTwo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/ibWalkIcon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_block"
+                android:onClick="onButtonWalkClicked"
+                android:scaleType="center"
+                android:src="@drawable/icon_traveltype_walking"
+                android:tint="@color/white" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Walk"
+                android:textAlignment="center"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/ibBikeIcon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_block"
+                android:onClick="onButtonBikeClicked"
+                android:src="@drawable/icon_traveltype_bike"
+                android:tint="@color/white" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cycle"
+                android:textAlignment="center"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/ibCarIcon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_block"
+                android:onClick="onButtonCarClicked"
+                android:src="@drawable/icon_traveltype_car"
+                android:tint="@color/white" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Car"
+                android:textAlignment="center"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/vDeviderPopUpOne"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/white"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/startingPointLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/halfrounded_transparant_block"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vDeviderPopUpOne">
+
+        <View
+            android:id="@+id/vstartingPointBackground"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/rounded_block"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/etStartAddressStreet"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:ems="10"
+            android:hint="Streetname"
+            android:inputType="textPersonName"
+            android:textColor="@color/white"
+            android:textColorHint="@color/greyish_white"
+            app:layout_constraintBottom_toBottomOf="@+id/vstartingPointBackground"
+            app:layout_constraintEnd_toStartOf="@+id/etStartAddressNumber"
+            app:layout_constraintTop_toTopOf="@+id/vstartingPointBackground" />
+
+        <EditText
+            android:id="@+id/etStartAddressNumber"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:ems="10"
+            android:hint="195"
+            android:inputType="number"
+            android:textColor="@color/white"
+            android:textColorHint="@color/greyish_white"
+            app:layout_constraintBottom_toBottomOf="@+id/vstartingPointBackground"
+            app:layout_constraintEnd_toEndOf="@id/vstartingPointBackground"
+            app:layout_constraintTop_toTopOf="@+id/vstartingPointBackground" />
+
+        <EditText
+            android:id="@+id/etStartAddressCity"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:ems="10"
+            android:hint="City"
+            android:inputType="textPersonName"
+            android:textColor="@color/white"
+            android:textColorHint="@color/greyish_white"
+            app:layout_constraintBottom_toBottomOf="@+id/vstartingPointBackground"
+            app:layout_constraintEnd_toStartOf="@+id/etStartAddressStreet"
+            app:layout_constraintStart_toStartOf="@+id/vstartingPointBackground"
+            app:layout_constraintTop_toTopOf="@+id/vstartingPointBackground" />
+
+        <TextView
+            android:id="@+id/tvStartingPointText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Starting point:"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toTopOf="@+id/vstartingPointBackground"
+            app:layout_constraintStart_toStartOf="@+id/vstartingPointBackground"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/endingPointLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/halfrounded_transparant_block"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/startingPointLayout">
+
+        <View
+            android:id="@+id/vEndingPointBackground"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/rounded_block"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/etEndAddressStreet"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:ems="10"
+            android:hint="Streetname"
+            android:inputType="textPersonName"
+            android:textColor="@color/white"
+            android:textColorHint="@color/greyish_white"
+            app:layout_constraintBottom_toBottomOf="@+id/vEndingPointBackground"
+            app:layout_constraintEnd_toStartOf="@+id/etEndAddressNumber"
+            app:layout_constraintTop_toTopOf="@+id/vEndingPointBackground" />
+
+        <EditText
+            android:id="@+id/etEndAddressNumber"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:ems="10"
+            android:hint="195"
+            android:inputType="number"
+            android:textColor="@color/white"
+            android:textColorHint="@color/greyish_white"
+            app:layout_constraintBottom_toBottomOf="@+id/vEndingPointBackground"
+            app:layout_constraintEnd_toEndOf="@id/vEndingPointBackground"
+            app:layout_constraintTop_toTopOf="@+id/vEndingPointBackground" />
+
+        <EditText
+            android:id="@+id/etEndAddressCity"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:ems="10"
+            android:hint="City"
+            android:inputType="textPersonName"
+            android:textColor="@color/white"
+            android:textColorHint="@color/greyish_white"
+            app:layout_constraintBottom_toBottomOf="@+id/vEndingPointBackground"
+            app:layout_constraintEnd_toStartOf="@+id/etEndAddressStreet"
+            app:layout_constraintStart_toStartOf="@+id/vEndingPointBackground"
+            app:layout_constraintTop_toTopOf="@+id/vEndingPointBackground" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ending point:"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toTopOf="@+id/vEndingPointBackground"
+            app:layout_constraintStart_toStartOf="@+id/vEndingPointBackground"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/tvPresetRoutes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Presets"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/rvPresetRoutes"
+        app:layout_constraintStart_toStartOf="@+id/rvPresetRoutes" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPresetRoutes"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/vDeviderPopUpTwo"
+        app:layout_constraintTop_toTopOf="@+id/vDeviderPopUpTwo" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Saved"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/srvSavedRoute"
+        app:layout_constraintStart_toStartOf="@+id/srvSavedRoute" />
+
+    <View
+        android:id="@+id/vDeviderPopUpTwo"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="32dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/srvSavedRoute"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toBottomOf="@+id/vDeviderPopUpTwo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/vDeviderPopUpTwo">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvSavedRoutes"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:showDividers="middle"
+        app:layout_constraintBottom_toBottomOf="@+id/vDeviderPopUpTwo"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/endingPointLayout">
+
+        <Button
+            android:id="@+id/btnSearchRoute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:background="@drawable/rounded_block_selected"
+            android:onClick="onButtonSearchRouteClicked"
+            android:text="Start" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:background="@drawable/rounded_block_selected"
+            android:onClick="onButtonSaveRouteClicked"
+            android:text="Save and start" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
