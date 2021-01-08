@@ -118,12 +118,7 @@ public class RouteInformationPopup extends AppCompatActivity implements PresetRo
         routePoints.add(routeEndGeoPoint);
         routeAddresses.add(etRouteEndStreetName.getText().toString() + " " + etRouteEndStreetNumber.getText().toString() + "\n" + etRouteEndCityName.getText().toString());
 
-        viewModel.setRoute(routePoints);
-        viewModel.setBeginEndPoint(routeAddresses);
-        viewModel.setIsDrawingRoute(true);
-
-        viewModel.getStartListener().onRouteStartClicked();
-        finish();
+        startRoute(routePoints,routeAddresses,viewModel.getTravelType().getValue());
     }
 
     public void onButtonSaveRouteClicked(View view){
@@ -292,13 +287,7 @@ public class RouteInformationPopup extends AppCompatActivity implements PresetRo
         routePoints.add(AddressToGeoPoint(locations.get(0).Street + " " + locations.get(0).Housenumber, locations.get(0).City));
         routeAddresses.add(locations.get(0).Street + " " + locations.get(0).Housenumber + "\n" + locations.get(0).City);
 
-        viewModel.setRoute(routePoints);
-        viewModel.setBeginEndPoint(routeAddresses);
-        viewModel.setTravelType(TravelType.getTravelTypeEnum(databaseManager.getPresetRoute(position + 1).Traveltype));
-        viewModel.setIsDrawingRoute(true);
-
-        viewModel.getStartListener().onRouteStartClicked();
-        finish();
+        startRoute(routePoints,routeAddresses,TravelType.getTravelTypeEnum(databaseManager.getPresetRoute(position + 1).Traveltype));
     }
 
     @Override
@@ -313,13 +302,20 @@ public class RouteInformationPopup extends AppCompatActivity implements PresetRo
             routePoints.add(AddressToGeoPoint(location.Street + " " + location.Housenumber, location.City));
             routeAddresses.add(location.Street + " " + location.Housenumber + "\n" + location.City);
         }
+        startRoute(routePoints,routeAddresses,TravelType.getTravelTypeEnum(databaseManager.getSavedRoute(position + 1).Traveltype));
+    }
 
-        viewModel.setRoute(routePoints);
-        viewModel.setBeginEndPoint(routeAddresses);
-        viewModel.setTravelType(TravelType.getTravelTypeEnum(databaseManager.getSavedRoute(position + 1).Traveltype));
-        viewModel.setIsDrawingRoute(true);
+    private void startRoute(ArrayList<GeoPoint> routePoints, ArrayList<String> routeAddresses,TravelType travelType){
+        if (viewModel.getRoute().getValue().size() == 0){
+            viewModel.setRoute(routePoints);
+            viewModel.setBeginEndPoint(routeAddresses);
+            viewModel.setTravelType(travelType);
+            viewModel.setIsDrawingRoute(true);
 
-        viewModel.getStartListener().onRouteStartClicked();
-        finish();
+            viewModel.getStartListener().onRouteStartClicked();
+            finish();
+        }else {
+            Toast.makeText(this,"Another route is active!", Toast.LENGTH_SHORT).show();
+        }
     }
 }
