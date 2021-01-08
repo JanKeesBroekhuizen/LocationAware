@@ -1,42 +1,39 @@
 package com.dlvjkb.locationaware.data;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.Serializable;
-import java.lang.reflect.Array;
 
 public class Step implements Serializable {
-    public double distance;
-    public double duration;
-    public int type;
-    public String instruction;
-    public String name;
-    public int[] wayPoints;
+    private double distance;
+    private double duration;
+    private int type;
+    private String instruction;
+    private String name;
 
-    public Step(JSONObject jsonObject) {
-        try {
-            this.distance = jsonObject.getDouble("distance");
-            this.duration = jsonObject.getDouble("duration");
-            this.type = jsonObject.getInt("type");
-            this.instruction = jsonObject.getString("instruction");
-            this.name = jsonObject.getString("name");
-            this.wayPoints = jsonArrayToArray(jsonObject.getJSONArray("way_points"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    public Step(double distance, double duration, int type, String instruction, String name) {
+        this.distance = distance;
+        this.duration = duration;
+        this.type = type;
+        this.instruction = instruction;
+        this.name = name;
     }
 
-    public int[] jsonArrayToArray(JSONArray array){
-        int[] way_points = new int[2];
-        for (int jsonArrayIndex = 0; jsonArrayIndex < array.length(); jsonArrayIndex++){
-            try {
-                way_points[jsonArrayIndex] = array.getInt(jsonArrayIndex);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        return way_points;
+    public double getDistance() {
+        return distance;
+    }
+
+    public double getDuration() {
+        return duration;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public String getInstruction() {
+        return instruction;
+    }
+
+    public String getName() {
+        return name;
     }
 }

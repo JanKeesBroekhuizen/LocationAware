@@ -6,19 +6,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dlvjkb.locationaware.data.Route;
 import com.dlvjkb.locationaware.data.RouteViewModel;
+import com.dlvjkb.locationaware.data.Segment;
 import com.dlvjkb.locationaware.data.Step;
 import com.dlvjkb.locationaware.recyclerview.routedetail.RouteDirectionsAdapter;
 
-import org.osmdroid.util.GeoPoint;
-
 import java.util.ArrayList;
-import java.util.List;
 
 public class ChosenRouteDetailActivity extends AppCompatActivity {
 
@@ -36,6 +33,7 @@ public class ChosenRouteDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chosenroutedetail);
+        viewModel = RouteViewModel.getInstance();
         chosenRoute = (Route) getIntent().getSerializableExtra("ROUTE");
 
         tvStartingPoint = findViewById(R.id.tvRouteDetailStartingPoint);
@@ -44,25 +42,23 @@ public class ChosenRouteDetailActivity extends AppCompatActivity {
         tvRouteDistance = findViewById(R.id.tvRouteDetailDistance);
         tvRouteDuration = findViewById(R.id.tvRouteDetailDuration);
 
-        tvStartingPoint.setText(chosenRoute.routeStartAddress);
-        tvEndingPoint.setText(chosenRoute.routeEndAddress);
-        tvRouteDistance.setText(String.format("%.2f",chosenRoute.features.get(0).property.summary.distance/1000) + " KM");
+        tvStartingPoint.setText(chosenRoute.getLocations().get(0));
+        tvEndingPoint.setText(chosenRoute.getLocations().get(chosenRoute.getLocations().size() - 1));
+        tvRouteDistance.setText(String.format("%.2f", chosenRoute.getDistance()/1000) + " KM");
         tvRouteDuration.setText(setRouteTravelTime());
-
-        viewModel = RouteViewModel.getInstance();
 
         setTravelTypeIcon();
         initializeRecyclerView();
     }
 
     private void setTravelTypeIcon(){
-        if (chosenRoute.metadata.query.profile.equals(TravelType.getTravelType(TravelType.DRIVING_CAR))){
+        if (chosenRoute.getTravelType().equals(TravelType.DRIVING_CAR)){
             ivTravelType.setImageResource(R.drawable.icon_traveltype_car);
         }
-        else if (chosenRoute.metadata.query.profile.equals(TravelType.getTravelType(TravelType.CYCLING_REGULAR))){
+        else if (chosenRoute.getTravelType().equals(TravelType.CYCLING_REGULAR)){
             ivTravelType.setImageResource(R.drawable.icon_traveltype_bike);
         }
-        else if (chosenRoute.metadata.query.profile.equals(TravelType.getTravelType(TravelType.FOOT_WALKING))){
+        else if (chosenRoute.getTravelType().equals(TravelType.FOOT_WALKING)){
             ivTravelType.setImageResource(R.drawable.icon_traveltype_walking);
         }
     }
@@ -84,10 +80,14 @@ public class ChosenRouteDetailActivity extends AppCompatActivity {
         rvDirections = findViewById(R.id.rvRouteDetailDirections);
 
         ArrayList<Step> steps = new ArrayList<>();
-        int stepAmount = chosenRoute.features.get(0).property.segments.size();
-        for (int i = 0; i < stepAmount; i++) {
-            steps.addAll(chosenRoute.features.get(0).property.segments.get(i).steps);
+        for (Segment segment : chosenRoute.getSegments()){
+            steps.addAll(segment.getSteps());
         }
+
+//        int stepAmount = chosenRoute.features.get(0).property.segments.size();
+//        for (int i = 0; i < stepAmount; i++) {
+//            steps.addAll(chosenRoute.features.get(0).property.segments.get(i).steps);
+//        }
 
         directionsAdapter = new RouteDirectionsAdapter(this, steps);
         rvDirections.setLayoutManager(new LinearLayoutManager(this));
@@ -95,7 +95,7 @@ public class ChosenRouteDetailActivity extends AppCompatActivity {
     }
 
     private String setRouteTravelTime(){
-        int totalSeconds = (int)chosenRoute.features.get(0).property.summary.duration;
+        int totalSeconds = (int)chosenRoute.getDuration();
         String ss = String.format("%02d",totalSeconds%60);
         String mm = String.format("%02d",(totalSeconds % 3600)/60);
         String hh = String.format("%02d",totalSeconds / 3600);

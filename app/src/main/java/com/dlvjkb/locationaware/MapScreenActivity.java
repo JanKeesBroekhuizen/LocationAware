@@ -15,8 +15,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.dlvjkb.locationaware.data.Route;
+import com.dlvjkb.locationaware.data.RouteMapper;
 import com.dlvjkb.locationaware.data.RouteViewModel;
+import com.dlvjkb.locationaware.data.Route;
+import com.dlvjkb.locationaware.data.Segment;
+import com.dlvjkb.locationaware.data.Step;
 import com.dlvjkb.locationaware.database.geocache.DB_Geocache;
 import com.dlvjkb.locationaware.database.DatabaseManager;
 
@@ -57,6 +60,7 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
     private Route route;
     private Polyline line;
     private RouteViewModel viewModel;
+    private RouteMapper routeMapper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +92,8 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
 
         viewModel = RouteViewModel.getInstance();
         viewModel.setStartListener(this);
+
+        routeMapper = new RouteMapper();
 
         DatabaseManager.getInstance(this).initTotalDatabase();
         currentGeoPoint = new GeoPoint(51.92458092043162,4.480193483189705);
@@ -239,19 +245,6 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
         mapView.getOverlays().add(marker);
     }
 
-
-    public double[] jsonArrayToArray(JSONArray array){
-        final double[] coordinatesArray = new double[2];
-        for (int jsonArrayIndex = 0; jsonArrayIndex < array.length(); jsonArrayIndex++){
-            try {
-                coordinatesArray[jsonArrayIndex] = array.getDouble(jsonArrayIndex);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        return coordinatesArray;
-    }
-
     public void createRoute(){
         if (viewModel.getRoute().getValue() != null) {
             if (viewModel.getRoute().getValue().size() != 0) {
@@ -276,14 +269,14 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
                                         JSONObject responseJson = null;
                                         try {
                                             responseJson = new JSONObject(response.body().string());
-                                            System.out.println(responseJson);
-                                            route = new Route(responseJson, viewModel.getBeginEndPoint().getValue().get(0), viewModel.getBeginEndPoint().getValue().get(viewModel.getBeginEndPoint().getValue().size() - 1));
-                                            ArrayList<double[]> coordinates = route.features.get(0).geometry.coordinates;
+                                            route = routeMapper.mapRoute(responseJson, viewModel.getBeginEndPoint().getValue());
 
-                                            for (double[] coordinate : coordinates) {
+//                                            route = new Route(responseJson, viewModel.getBeginEndPoint().getValue().get(0), viewModel.getBeginEndPoint().getValue().get(viewModel.getBeginEndPoint().getValue().size() - 1));
+//                                            ArrayList<double[]> coordinates = route.features.get(0).geometry.coordinates;
+
+                                            for (double[] coordinate : route.getCoordinates()) {
                                                 geoPoints.add(new GeoPoint(coordinate[1], coordinate[0]));
                                             }
-                                            System.out.println("GeoPoints: " + geoPoints.size() + " Coordinates: " + coordinates.size());
                                             finished = true;
                                         } catch (JSONException e) {
                                             e.printStackTrace();
@@ -335,5 +328,17 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
     public void onRouteStartClicked() {
         Toast.makeText(this, "RouteStarted", Toast.LENGTH_SHORT).show();
         createRoute();
+    }
+
+    public double[] jsonArrayToArray(JSONArray array){
+        final double[] coordinatesArray = new double[array.length()];
+        for (int jsonArrayIndex = 0; jsonArrayIndex < array.length(); jsonArrayIndex++){
+            try {
+                coordinatesArray[jsonArrayIndex] = array.getDouble(jsonArrayIndex);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return coordinatesArray;
     }
 }
