@@ -35,7 +35,7 @@
 		"name": "De Schouwplaats, Rotterdam",
 		"longitude": 4.478193524808136,
 		"latitude": 51.88170262198219,
-		"size": "Large",
+		"size": "large",
 		"difficulty": "easy",
 		"isfinished": false
 	},
@@ -43,7 +43,7 @@
 		"name": "Het park, Rotterdam",
 		"longitude": 4.469982398350973,
 		"latitude": 51.906025825656386,
-		"size": "Large",
+		"size": "large",
 		"difficulty": "easy",
 		"isfinished": false
 	},
@@ -51,7 +51,7 @@
 		"name": "Van Nelle fabriek, Rotterdam",
 		"longitude": 4.433733261991274,
 		"latitude": 51.92340200404306,
-		"size": "Large",
+		"size": "large",
 		"difficulty": "easy",
 		"isfinished": false
 	},
@@ -59,7 +59,7 @@
 		"name": "De Euromast, Rotterdam",
 		"longitude": 4.466411586116998,
 		"latitude": 51.90541181359261,
-		"size": "Medium",
+		"size": "medium",
 		"difficulty": "easy",
 		"isfinished": false
 	},
@@ -67,7 +67,7 @@
 		"name": "Station Rotterdam, Rotterdam",
 		"longitude": 4.470075129622036,
 		"latitude": 51.9237225920495,
-		"size": "Large",
+		"size": "large",
 		"difficulty": "easy",
 		"isfinished": false
 	},

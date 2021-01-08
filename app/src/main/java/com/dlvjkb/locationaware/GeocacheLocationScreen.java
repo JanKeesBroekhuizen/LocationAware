@@ -45,7 +45,7 @@ public class GeocacheLocationScreen extends Dialog {
         btnBike = findViewById(R.id.ibGeocacheBikeIcon);
         tvCurrentGeopoint = findViewById(R.id.tvGeoachPopupValueCurrent);
         tvDestinationGeopoint = findViewById(R.id.tvGeoachPopupValueDestGeo);
-        tvGeocacheName = findViewById(R.id.tvGeoachPopupName);
+        tvGeocacheName = findViewById(R.id.tvGeocachePopupName);
         btnStartGeocache = findViewById(R.id.btnGeocacheStart);
         this.geoPoint = currentGeopoint;
         this.geocache = geocache;
@@ -58,7 +58,7 @@ public class GeocacheLocationScreen extends Dialog {
         btnCar.setOnClickListener(v -> onButtonCarClicked(v));
         btnBike.setOnClickListener(v -> onButtonBikeClicked(v));
         btnWalk.setOnClickListener(v -> onButtonWalkClicked(v));
-        btnStartGeocache.setOnClickListener(v -> onButtonGeocachStartClick(v));
+        btnStartGeocache.setOnClickListener(v -> onButtonGeocacheStartClick(v));
         onButtonWalkClicked(null);
         changeDialogText();
     }
@@ -69,7 +69,7 @@ public class GeocacheLocationScreen extends Dialog {
         tvGeocacheName.setText(geocache.Name);
     }
 
-    public void onButtonGeocachStartClick(View view){
+    public void onButtonGeocacheStartClick(View view){
         ArrayList<GeoPoint> routePoints = new ArrayList<>();
         ArrayList<String> routeAddresses = new ArrayList<>();
 

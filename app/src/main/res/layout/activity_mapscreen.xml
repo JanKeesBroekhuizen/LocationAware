@@ -70,7 +70,6 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="@android:color/transparent"
-            android:onClick="onButtonCurrentLocationClicked"
             android:scaleType="center"
             android:scaleX="1.5"
             android:scaleY="1.5"
