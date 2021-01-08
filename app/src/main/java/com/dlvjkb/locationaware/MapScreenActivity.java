@@ -12,10 +12,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import com.dlvjkb.locationaware.data.Route;
@@ -54,28 +57,52 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView mapView = null;
     private boolean finished = false;
-    private GeoPoint currentGeoPoint = null;
+    private GeoPoint currentLocationGeoPoint = null;
     private EditText etSearchCityName;
     private EditText etSearchStreetName;
     private EditText etSearchStreetNumber;
     private IMapController mapController;
     private Boolean getCoordinatesFinished = false;
+    private Boolean geocacheMode = false;
+    private Intent locationService;
+    private List<Marker> geocacheMarkers;
+    private DatabaseManager databaseManager;
     private Route route;
     private Polyline line;
     private RouteViewModel viewModel;
+    private Marker currentLocationMarker;
+    private Boolean focussedOnUser = false;
+    private ImageButton imageButton;
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLocationEvent(LocationService.LocationEvent event) {
-        currentGeoPoint = event.getGeoPoint();
-//        marker.setPosition(myLocation);
-        Log.d("LOCATION_CHANGED:", currentGeoPoint.getLatitude() + "," + currentGeoPoint.getLongitude());
+        currentLocationGeoPoint = event.getGeoPoint();
+        currentLocationMarker.setPosition(currentLocationGeoPoint);
+        Log.d(LocationService.LocationEvent.class.getName(), currentLocationGeoPoint.getLatitude() + "," + currentLocationGeoPoint.getLongitude());
+        if (focussedOnUser){
+            mapController.animateTo(currentLocationGeoPoint);
+            mapController.setZoom(20.0);
+        }
+        mapView.invalidate();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onWaypointEvent(LocationService.GeocacheEvent event) {
-        Dialog geocacheFoundScreen = new GeocacheDetailLocationScreen(MapScreenActivity.this,event.geocache);
-        geocacheFoundScreen.show();
-        Log.d("Waypoint Event:", "Waypoint Reached");
+    public void onGeocacheArrivedEvent(LocationService.GeocacheEvent event) {
+        if (!event.geocache.IsFound) {
+            Dialog geocacheFoundScreen = new GeocacheDetailLocationScreen(MapScreenActivity.this, event.geocache);
+            geocacheFoundScreen.show();
+            databaseManager.changeGeocacheFoundState(event.geocache, true);
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "notifychannelid")
+                    .setContentTitle(getString(R.string.app_name))
+                    .setContentText("Geocache " + event.geocache.Name + " reached!")
+                    .setSmallIcon(R.drawable.icon_geocache)
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
+            // notificationId is a unique int for each notification that you must define
+            notificationManager.notify(0, builder.build());
+        }
+        Log.d(LocationService.GeocacheModeEvent.class.getName(), "Geocache" + event.geocache.Name + "Reached");
     }
 
     @Override
@@ -105,20 +132,30 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
         mapController.setZoom(9.5);
         mapView.setMultiTouchControls(true);
 
-        line = new Polyline();;
+        line = new Polyline();
 
         viewModel = RouteViewModel.getInstance();
         viewModel.setStartListener(this);
+        geocacheMarkers = new ArrayList<>();
+        databaseManager = DatabaseManager.getInstance(this);
 
-        DatabaseManager.getInstance(this).initTotalDatabase();
-        currentGeoPoint = new GeoPoint(51.92458092043162,4.480193483189705);
-        mapController.setCenter(currentGeoPoint);
+        databaseManager.initTotalDatabase();
+        currentLocationGeoPoint = new GeoPoint(51.92458092043162,4.480193483189705);
+        mapController.setCenter(currentLocationGeoPoint);
         mapController.setZoom(18.0);
+
+        currentLocationMarker = new Marker(mapView);
+        currentLocationMarker.setOnMarkerClickListener((marker, mapView) -> false);
+        currentLocationMarker.setIcon(getDrawable(R.drawable.icon_current_location));
+        mapView.getOverlays().add(currentLocationMarker);
+
+        imageButton = findViewById(R.id.ibGPSLocation);
+        imageButton.setOnClickListener(v -> onButtonCurrentLocationClicked(v));
 
         createRoute();
 
         //Start location service for monitoring new geopoints.
-        Intent locationService = new Intent(this,LocationService.class);
+        locationService = new Intent(this,LocationService.class);
         startForegroundService(locationService);
     }
 
@@ -161,6 +198,7 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
     protected void onDestroy() {
         super.onDestroy();
         mapView.onDetach();
+        stopService(locationService);
     }
 
     @Override
@@ -195,9 +233,17 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
     }
 
     public void onButtonCurrentLocationClicked(View view){
-        Toast.makeText(getApplicationContext(),"CURRENT LOCATION",Toast.LENGTH_LONG).show();
-        mapController.setCenter(currentGeoPoint);
-        mapController.setZoom(18.0);
+        mapController.animateTo(currentLocationGeoPoint);
+        focussedOnUser = !focussedOnUser;
+        if (!focussedOnUser){
+            imageButton.setImageResource(R.drawable.icon_user_location);
+            mapController.setZoom(19.0);
+            Toast.makeText(this,"Focussed OFF",Toast.LENGTH_SHORT).show();
+        } else if (focussedOnUser){
+            mapController.setZoom(20.0);
+            imageButton.setImageResource(R.drawable.icon_user_location_focussed);
+            Toast.makeText(this,"Focussed ON",Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void onButtonInformationClicked(View view){
@@ -207,26 +253,8 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
     }
 
     public void onButtonGeocacheClicked(View view){
-        List<DB_Geocache> geocaches = DatabaseManager.getInstance(this).getGeocaches();
-        List<GeoPoint> geoPoints = new ArrayList<>();
-        for (DB_Geocache geocache : geocaches ){
-            GeoPoint geoPoint = new GeoPoint(geocache.Latitude, geocache.Longitude);
-            geoPoints.add(geoPoint);
-            Marker marker = new Marker(mapView);
-            marker.setPosition(geoPoint);
-            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-            marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
-                @Override
-                public boolean onMarkerClick(Marker marker, MapView mapView) {
-                    Toast.makeText(MapScreenActivity.this, "CLICK", Toast.LENGTH_SHORT).show();
-                    Dialog geocacheLocationScreen = new GeocacheLocationScreen(MapScreenActivity.this, currentGeoPoint, geocache, MapScreenActivity.this);
-                    geocacheLocationScreen.show();
-                    return false;
-                }
-            });
-            mapView.getOverlays().add(marker);
-        }
-        mapView.invalidate();
+        geocacheMode = !geocacheMode;
+        displayGeocachePoints();
     }
 
     public void onButtonSearchClicked(View view){
@@ -252,8 +280,8 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
                                     responseJson = new JSONObject(response.body().string());
                                     double[] coordinates = jsonArrayToArray(responseJson.getJSONArray("features").getJSONObject(0).getJSONObject("geometry").getJSONArray("coordinates"));
                                     System.out.println(coordinates[0] + " " + coordinates[1]);
-                                    currentGeoPoint.setLatitude(coordinates[1]);
-                                    currentGeoPoint.setLongitude(coordinates[0]);
+                                    currentLocationGeoPoint.setLatitude(coordinates[1]);
+                                    currentLocationGeoPoint.setLongitude(coordinates[0]);
                                 }catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -267,11 +295,11 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
             Log.d(MapScreenActivity.class.getName(), "Waiting for location...");
         }
 
-        mapController.setCenter(currentGeoPoint);
+        mapController.setCenter(currentLocationGeoPoint);
         mapController.setZoom(18.0);
 
         Marker marker = new Marker(mapView);
-        marker.setPosition(currentGeoPoint);
+        marker.setPosition(currentLocationGeoPoint);
         marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
         mapView.getOverlays().add(marker);
     }
@@ -387,6 +415,40 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
             // or other notification behaviors after this
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    private void displayGeocachePoints() {
+        if (geocacheMode) {
+            List<DB_Geocache> geocaches = DatabaseManager.getInstance(this).getGeocaches();
+            List<GeoPoint> geoPoints = new ArrayList<>();
+            for (DB_Geocache geocache : geocaches) {
+                GeoPoint geoPoint = new GeoPoint(geocache.Latitude, geocache.Longitude);
+                geoPoints.add(geoPoint);
+                Marker marker = new Marker(mapView);
+                marker.setPosition(geoPoint);
+                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(Marker marker, MapView mapView) {
+                        Toast.makeText(MapScreenActivity.this, "CLICK", Toast.LENGTH_SHORT).show();
+                        Dialog geocacheLocationScreen = new GeocacheLocationScreen(MapScreenActivity.this, currentLocationGeoPoint, geocache, MapScreenActivity.this);
+                        geocacheLocationScreen.show();
+                        return false;
+                    }
+                });
+                geocacheMarkers.add(marker);
+            }
+            mapView.getOverlays().addAll(geocacheMarkers);
+            mapView.invalidate();
+            EventBus.getDefault().post(new LocationService.GeocacheModeEvent(geocacheMode));
+            Log.v("GEOACHE MODE:","" + geocacheMode);
+        }
+        if (!geocacheMode){
+            mapView.getOverlays().removeAll(geocacheMarkers);
+            mapView.invalidate();
+            Log.v("GEOACHE MODE:","" + geocacheMode);
+            EventBus.getDefault().post(new LocationService.GeocacheModeEvent(geocacheMode));
         }
     }
 }

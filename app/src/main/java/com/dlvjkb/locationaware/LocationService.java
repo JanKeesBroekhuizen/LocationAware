@@ -1,5 +1,6 @@
 package com.dlvjkb.locationaware;
 
+import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -19,6 +20,8 @@ import com.dlvjkb.locationaware.database.DatabaseManager;
 import com.dlvjkb.locationaware.database.geocache.DB_Geocache;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.osmdroid.util.GeoPoint;
 
 public class LocationService extends Service {
@@ -27,7 +30,14 @@ public class LocationService extends Service {
     private static final int LOCATION_INTERVAL = 1000;
     private static final float LOCATION_DISTANCE = 10f;
     private LocationManager mLocationManager = null;
-    public DB_Geocache geocache = null;
+    private DB_Geocache geocache = null;
+    private Boolean geoCacheMode = false;
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onGeocacheModeMode(LocationService.GeocacheModeEvent event) {
+        geoCacheMode = event.mode;
+        Log.d("LOCATIONSERVICE-WAYPOINT:", "" + geoCacheMode);
+    }
 
     public static class LocationEvent{
         GeoPoint geoPoint;
@@ -61,6 +71,22 @@ public class LocationService extends Service {
         }
     }
 
+    public static class GeocacheModeEvent{
+        Boolean mode;
+
+        public GeocacheModeEvent(Boolean mode) {
+            this.mode = mode;
+        }
+
+        public Boolean getMode() {
+            return mode;
+        }
+
+        public void setMode(Boolean mode) {
+            this.mode = mode;
+        }
+    }
+
     private class LocationListener implements android.location.LocationListener {
         Location mLastLocation;
 
@@ -74,23 +100,18 @@ public class LocationService extends Service {
             Log.e(TAG, "onLocationChanged: " + location);
             mLastLocation.set(location);
             EventBus.getDefault().post(new LocationEvent(new GeoPoint(location.getLatitude(),location.getLongitude())));
-            for (DB_Geocache geocache : DatabaseManager.getInstance(getApplicationContext()).getGeocaches()){
-                double distance = (new GeoPoint(geocache.Latitude,geocache.Longitude).distanceToAsDouble(new GeoPoint(location.getLatitude(),location.getLongitude())));
-                if ( distance <= calculateGeocacheSize(geocache.Size)){
-                    Log.e("DISTANCE","" + distance);
-//                    Intent intent = new Intent(getApplicationContext(), BuildingDetailScreenActivity.class);
-//                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                    intent.putExtra("waypoint",wp);
-//                    PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
+            if (geoCacheMode){
+                for (DB_Geocache geocache : DatabaseManager.getInstance(getApplicationContext()).getGeocaches()) {
+                    double distance = (new GeoPoint(geocache.Latitude, geocache.Longitude).distanceToAsDouble(new GeoPoint(location.getLatitude(), location.getLongitude())));
+                    if (distance <= calculateGeocacheSize(geocache.Size)) {
+                        Log.e("DISTANCE", "" + distance);
+    //                    Intent intent = new Intent(getApplicationContext(), BuildingDetailScreenActivity.class);
+    //                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+    //                    intent.putExtra("waypoint",wp);
+    //                    PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
 
-                    NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "notifychannelid")
-                            .setContentTitle(getString(R.string.app_name))
-                            .setContentText("Waypoint " + geocache.Name + " reached!")
-                            .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-                    NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
-                    // notificationId is a unique int for each notification that you must define
-                    notificationManager.notify(0, builder.build());
-                    EventBus.getDefault().post(new GeocacheEvent(geocache));
+                        EventBus.getDefault().post(new GeocacheEvent(geocache));
+                    }
                 }
             }
         }
@@ -124,6 +145,7 @@ public class LocationService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.e(TAG, "onStartCommand");
+        EventBus.getDefault().register(this);
         super.onStartCommand(intent, flags, startId);
 //        this.route = (Route) intent.getSerializableExtra("geoFenceRoute");
         return START_STICKY;
@@ -184,13 +206,13 @@ public class LocationService extends Service {
     private int calculateGeocacheSize(String size){
         switch (size){
             default:
-                return 100;
+                return 0;
             case "small":
-                return 10;
-            case "medium":
                 return 25;
-            case "large":
+            case "medium":
                 return 50;
+            case "large":
+                return 100;
         }
     }
 }

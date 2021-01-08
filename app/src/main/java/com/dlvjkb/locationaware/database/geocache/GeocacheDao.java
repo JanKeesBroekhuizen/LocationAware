@@ -18,4 +18,7 @@ public interface GeocacheDao {
 
     @Insert
     void insertAll(List<DB_Geocache> Geocache);
+
+    @Query("UPDATE DB_Geocache SET IsFound = :IsFound WHERE Name LIKE :geoCacheName")
+    void changeGeocacheFoundState(String geoCacheName, boolean IsFound);
 }

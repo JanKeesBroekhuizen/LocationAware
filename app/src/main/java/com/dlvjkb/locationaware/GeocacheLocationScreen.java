@@ -2,7 +2,6 @@ package com.dlvjkb.locationaware;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.view.View;
@@ -46,7 +45,7 @@ public class GeocacheLocationScreen extends Dialog {
         btnBike = findViewById(R.id.ibGeocacheBikeIcon);
         tvCurrentGeopoint = findViewById(R.id.tvGeoachPopupValueCurrent);
         tvDestinationGeopoint = findViewById(R.id.tvGeoachPopupValueDestGeo);
-        tvGeocacheName = findViewById(R.id.tvGeoachPopupName);
+        tvGeocacheName = findViewById(R.id.tvGeocachePopupName);
         btnStartGeocache = findViewById(R.id.btnGeocacheStart);
         this.geoPoint = currentGeopoint;
         this.geocache = geocache;
@@ -59,10 +58,9 @@ public class GeocacheLocationScreen extends Dialog {
         btnCar.setOnClickListener(v -> onButtonCarClicked(v));
         btnBike.setOnClickListener(v -> onButtonBikeClicked(v));
         btnWalk.setOnClickListener(v -> onButtonWalkClicked(v));
-        btnStartGeocache.setOnClickListener(v -> onButtonGeocachStartClick(v));
+        btnStartGeocache.setOnClickListener(v -> onButtonGeocacheStartClick(v));
         onButtonWalkClicked(null);
         changeDialogText();
-        viewModel.
     }
 
     public void changeDialogText(){
@@ -71,7 +69,7 @@ public class GeocacheLocationScreen extends Dialog {
         tvGeocacheName.setText(geocache.Name);
     }
 
-    public void onButtonGeocachStartClick(View view){
+    public void onButtonGeocacheStartClick(View view){
         List<GeoPoint> routePoints = new ArrayList<>();
         List<String> routeAddresses = new ArrayList<>();
 

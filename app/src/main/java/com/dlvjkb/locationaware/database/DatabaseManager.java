@@ -209,4 +209,8 @@ public class DatabaseManager {
     public Saved_Route getSavedRoute(int routeID){
         return database.savedRouteDao().getRoute(routeID);
     }
+
+    public void changeGeocacheFoundState(DB_Geocache geocache, Boolean state){
+        database.geocacheDao().changeGeocacheFoundState(geocache.Name,state);
+    }
 }

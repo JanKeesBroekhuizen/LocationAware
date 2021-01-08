@@ -131,7 +131,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tvGeoachPopupName"
+        android:id="@+id/tvGeocachePopupName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -153,7 +153,7 @@
         android:text="Long, Lat"
         android:textColor="@color/greyish_white"
         app:layout_constraintEnd_toEndOf="@+id/tvGeoachPopupTitle"
-        app:layout_constraintTop_toBottomOf="@+id/tvGeoachPopupName" />
+        app:layout_constraintTop_toBottomOf="@+id/tvGeocachePopupName" />
 
     <TextView
         android:id="@+id/tvGeoachPopupValueDestGeo"
@@ -172,7 +172,7 @@
         android:text="Current:"
         android:textColor="@color/greyish_white"
         app:layout_constraintStart_toStartOf="@+id/tvGeoachPopupTitle"
-        app:layout_constraintTop_toBottomOf="@+id/tvGeoachPopupName" />
+        app:layout_constraintTop_toBottomOf="@+id/tvGeocachePopupName" />
 
     <TextView
         android:id="@+id/tvGeoachPopupTextDestGeo"
