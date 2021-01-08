@@ -152,6 +152,7 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
         currentLocationMarker = new Marker(mapView);
         currentLocationMarker.setOnMarkerClickListener((marker, mapView) -> false);
         currentLocationMarker.setIcon(getDrawable(R.drawable.icon_current_location));
+        currentLocationMarker.setAnchor(Marker.ANCHOR_CENTER,Marker.ANCHOR_CENTER);
         mapView.getOverlays().add(currentLocationMarker);
 
         imageButton = findViewById(R.id.ibGPSLocation);
@@ -303,10 +304,10 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
         mapController.setCenter(currentLocationGeoPoint);
         mapController.setZoom(18.0);
 
-        Marker marker = new Marker(mapView);
-        marker.setPosition(currentLocationGeoPoint);
-        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        mapView.getOverlays().add(marker);
+//        Marker marker = new Marker(mapView);
+//        marker.setPosition(currentLocationGeoPoint);
+//        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+//        mapView.getOverlays().add(marker);
     }
 
     public void createRoute(){
@@ -442,5 +443,17 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
             Log.v("GEOACHE MODE:","" + geocacheMode);
             EventBus.getDefault().post(new LocationService.GeocacheModeEvent(geocacheMode));
         }
+    }
+
+    public double[] jsonArrayToArray(JSONArray array){
+        final double[] coordinatesArray = new double[array.length()];
+        for (int jsonArrayIndex = 0; jsonArrayIndex < array.length(); jsonArrayIndex++){
+            try {
+                coordinatesArray[jsonArrayIndex] = array.getDouble(jsonArrayIndex);
+            }catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return coordinatesArray;
     }
 }

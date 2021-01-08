@@ -30,7 +30,7 @@ public class RouteViewModel extends ViewModel {
 
     public RouteViewModel (){
         selectedRoute = new MutableLiveData<>();
-        route = new MutableLiveData<>();
+        route = new MutableLiveData<>(new ArrayList<GeoPoint>());
         beginEndPoint = new MutableLiveData<>();
         isDrawingRoute = new MutableLiveData<>();
         isDrawingRoute.setValue(false);
