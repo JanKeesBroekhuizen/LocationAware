@@ -6,6 +6,7 @@
 		"latitude": 51.875151,
 		"size": "small",
 		"difficulty": "easy",
+		"imagelink": "https://www.4en5mei.nl/tmp/afbeeldingen/album_oorlogsmonumenten/3810/bleskensgraaf_oorlogsmonument5_w800_h600.jpg",
 		"isfinished": false
 	},
 	{
@@ -15,6 +16,7 @@
 		"latitude": 51.872268,
 		"size": "large",
 		"difficulty": "medium",
+		"imagelink": "",
 		"isfinished": false
 	},
 	{
@@ -24,6 +26,7 @@
 		"latitude": 51.840178516440474,
 		"size": "medium",
 		"difficulty": "easy",
+		"imagelink": "https://mapio.net/images-p/61754776.jpg",
 		"isfinished": false
 	},
 	{
@@ -33,6 +36,7 @@
 		"latitude": 51.8315021460116,
 		"size": "small",
 		"difficulty": "easy",
+		"imagelink": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTExIWFRUXFhcVGBYWGBgXFhYWGBgYFxgYFxUYHSggGBolGxgXITEhJSkrLi4uFyAzODMtNygtLisBCgoKBQUFDgUFDisZExkrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrK//AABEIAOQA3gMBIgACEQEDEQH/xAAbAAABBQEBAAAAAAAAAAAAAAAAAQIDBAUGB//EAD8QAAEDAgQCBwUGBAcAAwAAAAEAAhEDIQQSMUFRYQUTInGBkaEGMkKx8BQjUsHR4RVicpIHM4KissLxJEPi/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/APcUIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEISIFSIQgVCRKgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEJEIBCEIBCEIBIhCBUqQJUAhCEAhCEAhCEAhCEAhCEAhCEAhCEAhCEAhIhAISIQCESkQKklEppKB0olMlKCgkCVMBT0AhCEAhCEAhCEAhCEAhCEAhCEAhCEAkQhAJJQklASkleJe13tpjBjK7aFeqylmytZDbdhrHEGZEuDnC/xA7rofYL2+pil1WMrODwXEVamjg4yGlwJIIk6iIAug9MlIq2GxtOoAadRjwRILXBwItcEbXHmpiUDpTSU0uTS5A+UAqLMlBQWGlSBV2FWGoFQhCBEISIFSpqVAqEiECoQhAISIQKkQhAJESkJQBUGLxApsc86Ma557mgn8lKSsX2tqAYV8uygmm2ZywHVGAwe4oPGsP0Li8bVqGmw1HZgC4uY0SGgRczAgDyG6aPZjEGq2hlHWOBIbmiSBmynMAGujc2/LsPZEUxTJOLFJj3NqdmrkdLmuqOblEaAgE3iCBe6bVrMo4+hVLzUcHtZn+8MhxZRJcXEiwc/yKDgQyvhHOcxz6T2nI/KXU3tmxDhrrHlN9Vu+yHtNX+20XVa1Sq1z20yHvJDczerDo4gGea6j/Fjo1j6uFcTl61xY8zAOWMpNjeHuE92tgua6c6DwdCh1uHxBdUBFpOZp3AIGU37ojUoPZ8ybmVLonHCtRp1QQQ5oMjSRZ3qCrUoHSnAqKU4FBYplWWKpTKtMQPSJU0lASklISklA5KmSnAoHITZSygVCSUIFSISIFlJKSUhKBSUhKSU0lApK5j2/wARkwjjzJH9TWPe22/aa2y6QuXEf4i4pjnYXDPB+9qTOrYzMpPBGs5azj/pQXOgeiw3ODem1tPK2AAQGPg2N2ggQbSWyLBsYnthgG0+sIqCIdlBIlhccogzMAZiObu4HVw3Q1OpVq9ZSZk6um5rcglwL64BJNxYDvgbSXmO6HaysLA0srqeQNGdocK2h+JoDdNYOsBBm+1ONGIdgngNLH0escHTlitkcwmNYdS01J9J+lxUGHztp0miaZbUDczgesY2SQQGtjcW1GkE870JWqPmoYyUGMo/E6QapLS0NIcY6xze5ul5HW9MuxJoPJyBsAw1h6xoFQEGC8tOmkHxQTexpLaDqLveo1H0uBIabEiTBNzC3ZXJ+zr+pxVWi50mtTp1223Acx4nQEZNNvQdRmQSSnAqLMlDkFqmVcprOpuV6i6yCYqNxTXYhuxnuBPyUDsS3n/a79EExckzKBtUESO64I0MGxvsjMgnzJQ5U3YiJsbTtw1XP9I+3OGpWZmrHM2n92WFge4wA6qXZRzuSOCDrg5LmXl3SHtzi3Pcym2nShmaGAV37z23OaxsAA3adfFZDekMTWFB1fpCo2nUdDuqqOZUZPZDnMphgIzfCA7a90HtMoleKVmMFNzTiKr6gxDBL673B1E1Q0gxUyh2oIAmLyqGPweH/wDkGnUc3t0xS+8nsENJJzEnjpx2Qe9EpMy8KfjalE1TTxTuyWsYadZ9MzBv1QeabhMzNrAi638B7dYmmX9tuIpsc1pFVhpVQXEgtzsbGZvNt73OpD1QuSFy4Ot/iGKgjD0SXy5p6yYY4BxjLTBL/dMaDnqFzGK9q8TVc0HE1G5ss9W19MMOUuc0ZGh52tmkWvEoPYZTS5eKU8U55p5q+MeC1hf97iCbtdnymdA4NA11N037VXow4VcSQGhxl9ZjrUi5xmQ1wnYiLAmdw9rLlxPt1TY/E4MOtlNWpmi4DWtfA3kmmAO8rP6M9rsTSZnrsNWiAXF5AbUawCn2paMrx95MWMA3Jsm+02Ko1sdTzlpZSoOObNZr3VGhrgMjg/hlLSDmCDap9Hh1Sq6uGtb1dIgEkkjPUaM5d7kz7o3IVbHYGiysw0nUsrHSWHJmAcKw7FQ8g4AOm+4hcr7RYfE0mCo/CUxTqyz7trWw8P8Au+tBg051yg/DePdWFXqYum5hFJlEZ2lkdUQ1zGloM9omS95va/Kwa/RrndfiTh3ub26b8rW03PMntubnaWjK6RMizhe6OnPaCqCaZxNR7TAfl6uB2g4ta9upA3I1kQuabjKmZzxUe175Ly17mudmOcl2WJkiY05WURoFrb0xrGaXTI1FnR6IPR+hMPSpV8LVZVe81RUpkPeHkEs6xrg6LiWvuJ1AJmw7YvXheCqvouDmSHMeHAQDlIIcb7i2n6ldyfbTNRc2pSc2tBaQBa4s+CZaCDptzsUHc06wcJBkJ4cuP9lunqBoACq3stky4NIu6AZPABS1PbKjTbmqBtzlHVVG1BpJucqDsKblfoOXJfx5jmU6lOrRDHEk9Y4tcWtJa4hoB0I13hS4X2yw8EuJF4gCe89yDYqdOUWsjOJDRYkbAW71Xb07S6kPLmkke6CJJ4Lz2r07hho2o43Gmsxe1SdjbmoqPtdTpNDWUSQ0AS57pMCLgGNkHd4b2kpQJkEuOxAAJmZ3Ez5FTP6eph4HwuE59vqbLzp3to4+4yRtfSdha9581S6S9ssQ6C5rbGQbyHDexHH1Qd/030syowUKdSOuqFj3gO7FLWq4fzZeyObguPwlLCU6Yw5wfWuIp1G1G0M1SH05fSfVAzHK8kgyOy5o+G/LY/2iqOcDaYiYvB11J4lLgfaWtTfJcTt2SW7RtGyDoKOFbQqPqPpTHVsq03MBGV4qMNSnazZ0FhDgdWK/gnYYBlF1KW1aYdIZdrnYc060E69oteCPxLk6nTbXkGoC8kQcznaed7yfFQM6XYP/AKaZ0NxPEHWZFxrwCDtMV0o0jPka1wqtze6BPWU6jzH9dNscidFBicfSmuBEfd5BLNgwHQ3s3muXo9PQLU6YsBZjZ30tzVvC+11SlGQNFoPZF4JI+aDdqY1hLi1pf7htBzOHVgkxMnsv1/GqmJ6Rbhw9uX/NpuDy+znVsj2Nq3FzFV4jexmyhP8AiLiuIHcP3+pXNdM9KPxTusqmXQAbRoICDf6LhlRuQkF7TTeZiD7zahmJh2bXZR4mqaddwaJAMtJ49podrqZnw5LmsNX6u7bO4hSOxzy4OJJIjX5IO4o4TFOawtblAY1sxUk5Qcp7I5qerg8Rk7ejWiTlqzDc51LP5jvsuVf7Y4rLlD8oHCAkd7YYsiDVPC0Axpqglpe1r2N6prXlrbAFrYywWhupsAfQcFcw2NxGHo08W1tG5FFmfrHPEZiDlHCLON+0FydOoAZEg8ZKsHpJxbkJcWSHZczspcAQDlmJE680HUdNe0PSLWUzWNOHE1GCLzpmyzIu/dSdFYQ4ik51fF06OQHIy0mGAACTYkADRcYcUSb34Tf5pv2tw0MTwQdXgcFSqZM9QsHauSxpBsBAcARzlZmFqDrstRzurDxLmwXZQ7UQSJjvWI/EkiE6njnNGqDeDmiqRJfRzECLOLbxOhC0nUnsfUNFrXUX5QA97QW9kO2P4p1BkcNuKOIPr6pn2h40cY70HT9EdE5mzLAJe0Ne4kZhM+Ufut+n0WAKYcaWdrpYB7gvwgz57Lzltdw0PNKcW86koPYvtjqVIMNSk1pJsKYcYc4ucZcdJJdGmqxMX0/hcO8jNWqTf7sUwwa6SQZsvPHY+ofecT3lDKhQbeMxnakHc/Mn9FQxGLgRJPHyVnEdHOzEcPr9VF/AqjjpGk/Xl5oK9LGQ2O70MqHFYyT33+vFbTfZxwi2mvz+Sjr+z5aOIjyMx5XagxDVt9fW6DWVo0Rk0vF/OB4z81E/DXt+EH5jzlAjb3Tsvkr/ANjEC4tYnmYg/PyUeQOsDfjsfoRf6AVA08D4JTUA+a0cHTkt4FsE8jMfOfBTYjowOdDJOVozW0LnOAbP4paRHcdCgxdU9shb1Ho0dWHgTdxP9IHHTwUrMKHkAQd9NzeBzgEoOYM/XmnNBiYsurq+zh1mLgSP6beNkP6EDcwMce4EXMRxug5JzlG5y38V0E5uXgdQRpeAY8VA3oioLQCR6gktP13IMcmyGlbFTopwtzy34EZmnukR4FNr9EPkiNjFracNkGQXJpKsHCO7Jix/YH9VXLDEx9XQISmFylp0Dlm/Du4JXUDFhGvP14W+pQRApZCjFI3tBCGtOn1pP5IHuTZThRdGh+uCOoJ23QAKmY9RGgdNLT5JwYRfbidJ79J/dB7EcOxhB17MyBeNABz09Utek0NPGIBjSdPK1yE/GuiMo1t5gkE+Z71lYnFEjjNuNonx3CCoakOgm5+VrnznwTH1w5pD4F9eE6gkRsPmqVaoXw4Ac53BbB9WkKg7Eu0Ojp878PqyCpWoQ6P5p/7Ef3D58VTe8zm0iw5htvETN/0Uzy4jxEc/o/NQilmO8ZTHkgXDVS4guNvPh63UmJquc8PIv9Rfjr5IpUIcAdDMHcAfsFM6k8G425cjbgbIJuihDMzjdpEttxFu6PzVihjSw1WC7S4EtA0Ibl7W9gGxB46ptLDk0czRx8SZ30iT5lR4cDICNy5xMjQ5XAxzE+ZsgtPxJbTMnUZgCZiXXLjuSOCrdG40sIOoggt3NjoeRP7qGsXPIaB+Q4xb6upqVEgTlOxEA6EEnxt3ckFqn0o6oDDibHNeJJh3PKNBpOqnwmIOftFzrm7r6W08LDlKzqWFyEE7loeTaO04GORjfWVo4RmwsSS7SQSDcDw25EoNilQc5oiHAucHTFhJ0jcEgeiX7Pf3mzFwB8Tr6EmNJ8/B2EY5rToCSYseZAd8pVhtQWEgkgEmOG/Mc44IMrGMe2S1uYHLYSYgTw77frCbXputAaIIvsdiCZGXuA4K8ym0MzNOV0NOaBto0gR2bxx0SmmIOmaQ4niRlvryjuhBi16EAscBOabadonjyVP+HAhwEXZmtJAIJzAT4+vJdBXpNmQASQdTHgDqOXgo6FMZdD7okTIJNjNyQZDfPfVBz9LC5OzlJcfhMbc9N9EDC3ADfPfcG9o1ty2226Tm5G/BeIMXibEjew+irFQMFpExMW2NyBx3lBy9bAtEwBZpv3nLtuFBSwYBzkCLGByie47rpnU2ucWtcQWm+txuL7Q4weXKEzE0/hjW02jl5m3BBi9QGwMhgOI2B7QtcmP/ABRUsFoYOUyJ2kG0iZHqtmjhwWgbWgHYtNoG1vkmYiiXEQ6HCHhswCAYMDxE34cUGccIA6Ig38bSL/Wykw2Ba+zWyCJ0nlpx/ZbbQ0kTlJ48DN/Ii/cp6dCWwA1hkGCAQNRaPDyQXcVjI33/AOw38R5rFr4s5ov/APqTH/H/AHc1A7EuIbbaY5kgD/iSqTsVJeeAcZjWcpEc0CvxTg7Wxb4Tfb181HiRIdHEObyG/oD5lMqOJLCLToOEzr3FTtqS+2jhl32D2i/iPRA2k3jpGcTpfbwPoU3D0QHRFjlIB4OFx3SQ3/SnseMjSbTT8pyiPT0UZqDM15i7IgDeSRH93yQWmYaHEQDldl5mfysVdGHGWDoDryix74ie4qpWxX3h5j/c0h3yzHxVrA1s1MidADPIZmn1E+KC90dSaxgYR7ryw8r2PkWeSoHCta9zAAB2Y3iSWRB1+I+Ke2tIeJki58NjPMDwamYusHQR8TeN5EZe7YoEw+GaHDSZOWeOVriDy7X+0rRdh2sAP4TB7nfoHR4rAZVzViJ/muYEydG95BP9K2K1aWgkagXPEQ0T4EeSCbE4NsxOgaeJI7Qtxn9UjcPDbdkyNI1BE7HidlGMV2qciJblv/KQ2DzA+aT7US134ssxwcJnuv8AJBeIIJvIPHgIM2/1BMrOiCNLDv1NlVoYrM1szbLbe/Zd43nwRUryw30cJ7pkEeIjwKBhqlsXsM3iNR4dn1UgqTFyJBGvIa34KliKwNt4nuufyKTD1paxx4ifHjwQWW1M1j8JJ9BClp1oA2iR3C36rPNQBw1+EjiQLH0MeClfUBB4e9bgGx52QS57biHR5gtn6/NQv+CHe6CB3xAOnhHNNFWSZtIDu4wCR4apKzoNt7jvBBB+ZQWKkaRprE/MX/8ASq73hgtMe9xbJ2B9YPEqcPnyI/tJHzBVJ5BJbeIG3E5fHVBNRcYIFoMibwkLiXCRe4lp04bcQdVG3jsY8tPQl3kmPqkR3jyidfFyC27DiA4CC4kGTuQWyLSDA9VpdHnLF3RlEfFrprOl1TFSwPMRpfVWOtyRDg3VsmYieW+nkgy8TQGZsVW5QYJktIbbtQRBIvbkq32CqXdloOsw5tr3bIOnDkVNjWsOoGsWOU+qrV6EggEizTqTy27/AEQK7Bugl3wnYXvlIgd3fqp6OEEtsQ1rS8g+9+G5jWSPrTMGHIM53SON7WvorLa1SP8AMm+4nggv4/o+aliRa1h2nBt4vaSW67ys77K50NFzO3wtEif5t9OXFT0MdVZcZT3ghXB01kv1O1iCJg3vLZ3nvQZlUHOZOmcW4wGn5KTCPc1rpsTFrbk2njBRWx9N5LsuUnXW3cCI24KUVMK52Y9ZMQYLXCdjBgz5IKgqubJO8x3C3l2lFUxLsoudxr/KY8Ln1V9mCpuH+aCdrZSLk72ImYi90fw5sF0k8IBIJsZ0HA8dUGfh6jhUa+Z25SJkcpyjvutYYjNSya5Yv3/X1tnswjveyuEFouCPxHfv9VbwuFdlc6DFyBYF0B0Q03O0fmgiGLlrLyWvcbbkskz5K0a8MeTqAe4nLPyaVXoYPskGzrW4WkgcbFSHBkGJ0MngLGTOm5E7RugfQxMTyDj5fO4geKmoPnrBrYDnIdHyVZ1K1pPEsFiNgCbZQdO5MpiLmbiI1JLiLZuPZb5HTRAlauCQNBHkRlFz3u9E6i/M1wGhOW+sANHgbwqGLIEuNieyBNyDGY6aaDnfgn4d8Nc6DEkgb9kFxIHeJQWH1L90DuFz4yPmrYeAeILCfQmPMrCqPMEzew4REk/JWsPiLZjeAOd4A+coLtU5XNg7OvykNt/c3wCSs6zT/NHft8j6qka0snv/AOp87JrKh7bZ+JrhbQ2P5DyCDTp1jmB4l48SAdOJifFQVHiQRoC5sRYySQJ49oKvXxfanbMyw4WDvmfIKBuIkRz+TSB8gg0mzYW4+ET84Ed6rF97ndwPrFv9RUlKqIbexNu/NfnoQqlKtBbyLzyHZZr4yg1cLiNJ1AJ/5fmFdzNPvace6BN+JzeSxaL7kCDlBm+wGXTXQEnuWoO2BxIBkRsXA78x5IGVKxdprwgyozSdeWGCDFv5f2TcfMkGJF7A2BJGvCw8im0hVaA/rC2mc2jzbUWbta/OUDclhYgjhItMbW4KPEMjRxiSRMGxDSNQrYx9QNve5GYhkGxtIEzIOt1TOJ7DS5knM4EB2X8J0g/iQFFkg6X4WuLiL9/mgXA7O0TI1Bn5EIp4tgcOwWTO86QeXBOquZcB0AOne2YSBccBxQRvHEeY/RNytOwP1zCe942IvB/XTmmZuKBwpRcAiL2/YpH0QCRJjgeG2ya0AfDHl+SsGoOyZI2sSNO7vQPGKdAaSHARZ3KY0IS/ajMmmNpguGlt5UQf/MT3wfyTnEEElo7wcvn9bIJ62PzasII4OETuT2ZKYzHMIgtfyJuOGgTadzEG47/XzULqXNo75QW62Jw7/e1B1JeJ4eUevfE7W0HmW3gDsj3SIy7G9uBsst1EjYHuKa7Ci8tOk6fmLIL4wUhx7DiCNpPMgb9wG6r4lhDoYx7jYBwdc842voec3tEOQxYk/Wqc6vWAs8/L1CCfG4N3VvkBs5SBl0MmQI1EZhcmbLMqUTBDfc92TAMgTJneT67K1SxlZvxE7kTInezphN/iTm6iRcEFuubXtHfW/NBVpC2VxAOu28zpyQ0w4nXWY1sc3gNVI6vhy7MKIadLOdluCLNAHdMq7Q6TptDgKYIcSXQ68zMXmBy4lBj4gza2o9Im6Si0yDHD1Fz8lptfQJvS0nRxAuI1AudfMplUMJGVwHAPBLbb2Bv4DRAwiYA+G8awIIJJjnNlBQqmDIBAkW1lxMC/JTU2EmLP2MO2PvEeB9EyhgqpOVjbgEEc45bXJB3hAlTNmOUgS6XHMJiSYibxMLSZUJdGYiGxMA8CAOUEeRWXUwzm5pacpMC06k/lvzClGKAuBJuCGxrYzJI4oL2IxLhUqmbtcBO5AfFz9aLR6Pp9bSY6ocxJaCDEaA6RxQhBDTGcXA/zCLCIESstrJkSbVY/uZfX+lvklQgjrCMkACb2/rj5WUmLpjM4cOr7/c4pUIH/AGZpYDy/MnfuVSqwNMDnuZQhBCa5DgNe/wDZdCcE0sBuNbTbTn3BIhBRfSFx67paYjQnhtxH6nzQhAw1D5EgHeys13dueOV3KXAE+F0IQNbVNvripcPiHW3lxb4W/UpUIEaAQbbfKf0CaWzNz58+aEICnSzC5Ppz5clHXphv1+iEIIurB2THUG8AhCAGBYeI3sd1A+nFg51768Nr7WQhBXxNQiTPoOHclbiXCTbshpHK+3BCEGhh8dUGjiJj9raK5huknB57LDIm7Ry4RwQhB//Z",
 		"isfinished": false
 	},
 	{
@@ -42,6 +46,7 @@
 		"latitude": 51.88170262198219,
 		"size": "large",
 		"difficulty": "easy",
+		"imagelink": "https://standbeelden.vanderkrogt.net/extra/zh/ZH58hw-32245.jpg",
 		"isfinished": false
 	},
 	{
@@ -51,6 +56,7 @@
 		"latitude": 51.906025825656386,
 		"size": "large",
 		"difficulty": "easy",
+		"imagelink": "https://weekendsinrotterdam.com/wp-content/uploads/2020/03/Euromast-Het-Park-Rotterdam-1680x630.jpg",
 		"isfinished": false
 	},
 	{
@@ -60,6 +66,7 @@
 		"latitude": 51.92340200404306,
 		"size": "large",
 		"difficulty": "easy",
+		"imagelink": "",
 		"isfinished": false
 	},
 	{
@@ -69,6 +76,7 @@
 		"latitude": 51.90541181359261,
 		"size": "medium",
 		"difficulty": "easy",
+		"imagelink": "",
 		"isfinished": false
 	},
 	{
@@ -78,6 +86,7 @@
 		"latitude": 51.9237225920495,
 		"size": "large",
 		"difficulty": "easy",
+		"imagelink": "",
 		"isfinished": false
 	},
 	{
@@ -87,6 +96,7 @@
 		"latitude": 51.92036439218648,
 		"size": "medium",
 		"difficulty": "easy",
+		"imagelink": "",
 		"isfinished": false
 	},
 	{
@@ -96,6 +106,7 @@
 		"latitude": 51.92458092043162,
 		"size": "small",
 		"difficulty": "easy",
+		"imagelink": "",
 		"isfinished": false
 	},
 	{
@@ -105,6 +116,7 @@
 		"latitude": 51.585395,
 		"size": "small",
 		"difficulty": "hard",
+		"imagelink": "",
 		"isfinished": false
 	},
 	{
@@ -114,6 +126,7 @@
 		"latitude": 51.587695,
 		"size": "medium",
 		"difficulty": "medium",
+		"imagelink": "",
 		"isfinished": false
 	},
 	{
@@ -123,6 +136,7 @@
 		"latitude": 51.594933,
 		"size": "large",
 		"difficulty": "hard",
+		"imagelink": "",
 		"isfinished": false
 	},
 	{
@@ -132,6 +146,7 @@
 		"latitude": 51.592534,
 		"size": "small",
 		"difficulty": "easy",
+		"imagelink": "",
 		"isfinished": false
 	},
 	{
@@ -141,6 +156,7 @@
 		"latitude": 51.590878,
 		"size": "small",
 		"difficulty": "easy",
+		"imagelink": "",
 		"isfinished": false
 	},
 	{
@@ -150,6 +166,7 @@
 		"latitude": 51.589058,
 		"size": "small",
 		"difficulty": "medium",
+		"imagelink": "",
 		"isfinished": false
 	},
 	{
@@ -159,6 +176,7 @@
 		"latitude": 51.580869,
 		"size": "medium",
 		"difficulty": "easy",
+		"imagelink": "",
 		"isfinished": false
 	},
 	{
@@ -168,6 +186,7 @@
 		"latitude": 51.5902084,
 		"size": "large",
 		"difficulty": "hard",
+		"imagelink": "",
 		"isfinished": false
 	},
 	{
@@ -177,6 +196,7 @@
 		"latitude": 51.808114,
 		"size": "small",
 		"difficulty": "hard",
+		"imagelink": "",
 		"isfinished": false
 	},
 	{
@@ -186,6 +206,7 @@
 		"latitude": 51.814028,
 		"size": "large",
 		"difficulty": "easy",
+		"imagelink": "",
 		"isfinished": false
 	},
 	{
@@ -195,6 +216,7 @@
 		"latitude": 51.819696,
 		"size": "medium",
 		"difficulty": "medium",
+		"imagelink": "",
 		"isfinished": false
 	},
 	{
@@ -204,6 +226,7 @@
 		"latitude": 51.814350,
 		"size": "small",
 		"difficulty": "easy",
+		"imagelink": "",
 		"isfinished": false
 	}
 ]

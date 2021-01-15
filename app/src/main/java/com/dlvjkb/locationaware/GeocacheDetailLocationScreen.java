@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+
+import com.bumptech.glide.Glide;
 import com.dlvjkb.locationaware.database.geocache.DB_Geocache;
 
 public class GeocacheDetailLocationScreen extends Dialog {
@@ -19,11 +21,13 @@ public class GeocacheDetailLocationScreen extends Dialog {
     private final ImageView ivFoundGeoPoint;
     private final Button btnFinish;
     private final DB_Geocache geocache;
+    private final Context context;
 
     public GeocacheDetailLocationScreen(@NonNull Context context,DB_Geocache geocache) {
         super(context);
         setContentView(R.layout.dialog_geocachedetaillocation);
         this.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        this.context = context;
         tvFoundGeoPoint = findViewById(R.id.tvGeocacheDetailTitle);
         ivFoundGeoPoint = findViewById(R.id.ivGeocacheDetailImage);
         btnFinish = findViewById(R.id.btnGeocacheDetailOK);
@@ -34,7 +38,8 @@ public class GeocacheDetailLocationScreen extends Dialog {
         setGeocacheAttributes();
     }
 
-    private void setGeocacheAttributes(){
+    public void setGeocacheAttributes(){
         tvFoundGeoPoint.setText(geocache.Name);
+        Glide.with(context).load(geocache.imageLink).placeholder(R.drawable.btn_moreinfo).into(ivFoundGeoPoint);
     }
 }

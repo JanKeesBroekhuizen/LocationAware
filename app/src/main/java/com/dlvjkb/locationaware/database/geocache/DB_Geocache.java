@@ -16,5 +16,6 @@ public class DB_Geocache implements Serializable {
     public double Latitude;
     public String Size;
     public String Difficulty;
+    public String imageLink;
     public boolean IsFound;
 }

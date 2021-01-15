@@ -127,6 +127,7 @@ public class DatabaseManager {
                     geocache.Latitude = jsonObject.getDouble("latitude");
                     geocache.Size = jsonObject.getString("size");
                     geocache.Difficulty = jsonObject.getString("difficulty");
+                    geocache.imageLink = jsonObject.getString("imagelink");
                     geocache.IsFound = jsonObject.getBoolean("isfinished");
                     geocaches.add(geocache);
                 } catch (JSONException e) {

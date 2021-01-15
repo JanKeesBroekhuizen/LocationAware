@@ -1,6 +1,7 @@
 package com.dlvjkb.locationaware;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +25,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
+import com.bumptech.glide.Glide;
 import com.dlvjkb.locationaware.data.RouteMapper;
 import com.dlvjkb.locationaware.data.RouteViewModel;
 import com.dlvjkb.locationaware.data.Route;
@@ -500,7 +503,7 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
 
     private void createGeoCacheCircle(DB_Geocache geocache){
         Polygon oPolygon = new Polygon(mapView);
-        final double radius = calculateGeocacheSize(geocache.Size) + 25;
+        final double radius = calculateGeocacheSize(geocache.Size) + calculateGeocacheDifficulty(geocache.Difficulty);
         ArrayList<GeoPoint> circlePoints = new ArrayList<GeoPoint>();
         for (float f = 0; f < 360; f += 1){
             circlePoints.add(new GeoPoint(geocache.Latitude,geocache.Longitude ).destinationPoint(radius, f));
@@ -529,6 +532,19 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
             case "medium":
                 return 50;
             case "large":
+                return 100;
+        }
+    }
+
+    private int calculateGeocacheDifficulty(String difficulty){
+        switch (difficulty){
+            default:
+                return 0;
+            case "easy":
+                return 25;
+            case "medium":
+                return 50;
+            case "hard":
                 return 100;
         }
     }
