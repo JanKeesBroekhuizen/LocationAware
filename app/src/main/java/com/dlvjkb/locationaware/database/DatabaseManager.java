@@ -121,6 +121,7 @@ public class DatabaseManager {
                 DB_Geocache geocache = new DB_Geocache();
                 try {
                     jsonObject = jsonArrayGeocaches.getJSONObject(i);
+                    geocache.Id = jsonObject.getInt("id");
                     geocache.Name = jsonObject.getString("name");
                     geocache.Longitude = jsonObject.getDouble("longitude");
                     geocache.Latitude = jsonObject.getDouble("latitude");

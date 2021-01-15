@@ -1,5 +1,6 @@
 [
 	{
+		"id": 1,
 		"name": "Historisch monument, Bleskensgraaf",
 		"longitude": 4.782929,
 		"latitude": 51.875151,
@@ -8,6 +9,7 @@
 		"isfinished": false
 	},
 	{
+		"id": 2,
 		"name": "Natuureiland, Bleskensgraaf",
 		"longitude": 4.778945,
 		"latitude": 51.872268,
@@ -16,6 +18,7 @@
 		"isfinished": false
 	},
 	{
+		"id": 3,
 		"name": "Gaatkensbult, Barendrecht",
 		"longitude": 4.500306390804168,
 		"latitude": 51.840178516440474,
@@ -24,6 +27,7 @@
 		"isfinished": false
 	},
 	{
+		"id": 4,
 		"name": "Brug over de oude maas 1969, Barendrecht",
 		"longitude": 4.526875427022221,
 		"latitude": 51.8315021460116,
@@ -32,6 +36,7 @@
 		"isfinished": false
 	},
 	{
+		"id": 5,
 		"name": "De Schouwplaats, Rotterdam",
 		"longitude": 4.478193524808136,
 		"latitude": 51.88170262198219,
@@ -40,6 +45,7 @@
 		"isfinished": false
 	},
 	{
+		"id": 6,
 		"name": "Het park, Rotterdam",
 		"longitude": 4.469982398350973,
 		"latitude": 51.906025825656386,
@@ -48,6 +54,7 @@
 		"isfinished": false
 	},
 	{
+		"id": 7,
 		"name": "Van Nelle fabriek, Rotterdam",
 		"longitude": 4.433733261991274,
 		"latitude": 51.92340200404306,
@@ -56,6 +63,7 @@
 		"isfinished": false
 	},
 	{
+		"id": 8,
 		"name": "De Euromast, Rotterdam",
 		"longitude": 4.466411586116998,
 		"latitude": 51.90541181359261,
@@ -64,6 +72,7 @@
 		"isfinished": false
 	},
 	{
+		"id": 9,
 		"name": "Station Rotterdam, Rotterdam",
 		"longitude": 4.470075129622036,
 		"latitude": 51.9237225920495,
@@ -72,6 +81,7 @@
 		"isfinished": false
 	},
 	{
+		"id": 10,
 		"name": "De kijkkubus, Rotterdam",
 		"longitude": 4.490135045757129,
 		"latitude": 51.92036439218648,
@@ -80,6 +90,7 @@
 		"isfinished": false
 	},
 	{
+		"id": 11,
 		"name": "De nieuw delfste poort, Rotterdam",
 		"longitude": 4.480193483189705,
 		"latitude": 51.92458092043162,
@@ -88,6 +99,7 @@
 		"isfinished": false
 	},
 	{
+		"id": 12,
 		"name": "Avans Hogeschool Breda",
 		"longitude": 4.792603,
 		"latitude": 51.585395,
@@ -96,6 +108,7 @@
 		"isfinished": false
 	},
 	{
+		"id": 13,
 		"name": "Chassé Theater & Cinema Breda",
 		"longitude": 4.782231,
 		"latitude": 51.587695,
@@ -104,6 +117,7 @@
 		"isfinished": false
 	},
 	{
+		"id": 14,
 		"name": "Station Breda",
 		"longitude": 4.781726,
 		"latitude": 51.594933,
@@ -112,6 +126,7 @@
 		"isfinished": false
 	},
 	{
+		"id": 15,
 		"name": "Nassau Baronie monument Breda",
 		"longitude": 4.779794,
 		"latitude": 51.592534,
@@ -120,6 +135,7 @@
 		"isfinished": false
 	},
 	{
+		"id": 16,
 		"name": "Stadhouderspoort Breda",
 		"longitude": 4.776177,
 		"latitude": 51.590878,
@@ -128,6 +144,7 @@
 		"isfinished": false
 	},
 	{
+		"id": 17,
 		"name": "Grote kerk Breda",
 		"longitude": 4.775978,
 		"latitude": 51.589058,
@@ -136,6 +153,7 @@
 		"isfinished": false
 	},
 	{
+		"id": 18,
 		"name": "Bevrijdingsmonument Breda",
 		"longitude": 4.784826,
 		"latitude": 51.580869,
@@ -144,6 +162,7 @@
 		"isfinished": false
 	},
 	{
+		"id": 19,
 		"name": "Begijnhof Breda",
 		"longitude": 4.7786856,
 		"latitude": 51.5902084,
@@ -152,6 +171,7 @@
 		"isfinished": false
 	},
 	{
+		"id": 20,
 		"name": "Biesbosch Dordrecht",
 		"longitude": 4.762667,
 		"latitude": 51.808114,
@@ -160,6 +180,7 @@
 		"isfinished": false
 	},
 	{
+		"id": 21,
 		"name": "Grote Kerk Dordrecht",
 		"longitude": 4.661416,
 		"latitude": 51.814028,
@@ -168,6 +189,7 @@
 		"isfinished": false
 	},
 	{
+		"id": 22,
 		"name": "Groothoofdspoort Dordrecht",
 		"longitude": 4.670264,
 		"latitude": 51.819696,
@@ -176,6 +198,7 @@
 		"isfinished": false
 	},
 	{
+		"id": 23,
 		"name": "Standbeeld gebroeders De Witt Dordrecht",
 		"longitude": 4.665168,
 		"latitude": 51.814350,
