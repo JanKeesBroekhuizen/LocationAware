@@ -1,4 +1,4 @@
-package com.dlvjkb.locationaware;
+package com.dlvjkb.locationaware.unittests;
 
 import org.junit.Test;
 

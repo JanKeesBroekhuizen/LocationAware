@@ -34,8 +34,8 @@ public class DatabaseManager {
         return instance;
     }
 
-    Database database;
-    Context context;
+    private Database database;
+    private Context context;
 
     public DatabaseManager(Context context){
         this.context = context;

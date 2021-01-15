@@ -36,7 +36,8 @@ dependencies {
     implementation 'org.osmdroid:osmdroid-android:6.1.8'
     implementation 'androidx.preference:preference:1.1.1'
     implementation 'org.greenrobot:eventbus:3.2.0'
-    testImplementation 'junit:junit:4.+'
+    testImplementation 'junit:junit:4.13.1'
+    testImplementation 'org.mockito:mockito-core:3.6.28'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
@@ -52,4 +53,5 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-livedata:2.2.0'
     annotationProcessor "android.arch.lifecycle:compiler:2.2.0"
+    testImplementation 'org.json:json:20140107'
 }
