@@ -6,4 +6,5 @@
     <color name="greyish_white">#d1d1d6</color>
     <color name="transparant_grey">#BF474749</color>
     <color name="transparant_dark_grey">#3b3b3d</color>
+    <color name="geocache_radius">#99d60000</color>
 </resources>

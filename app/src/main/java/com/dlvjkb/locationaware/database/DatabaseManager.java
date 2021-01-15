@@ -121,11 +121,13 @@ public class DatabaseManager {
                 DB_Geocache geocache = new DB_Geocache();
                 try {
                     jsonObject = jsonArrayGeocaches.getJSONObject(i);
+                    geocache.Id = jsonObject.getInt("id");
                     geocache.Name = jsonObject.getString("name");
                     geocache.Longitude = jsonObject.getDouble("longitude");
                     geocache.Latitude = jsonObject.getDouble("latitude");
                     geocache.Size = jsonObject.getString("size");
                     geocache.Difficulty = jsonObject.getString("difficulty");
+                    geocache.imageLink = jsonObject.getString("imagelink");
                     geocache.IsFound = jsonObject.getBoolean("isfinished");
                     geocaches.add(geocache);
                 } catch (JSONException e) {
