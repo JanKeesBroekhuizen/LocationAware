@@ -25,6 +25,7 @@ public class OpenRouteServiceConnection {
     private static OpenRouteServiceConnection instance = null;
     private static final String TAG = OpenRouteServiceConnection.class.getName();
     private OkHttpClient client = null;
+    private String url = "";
 
     synchronized public static OpenRouteServiceConnection getInstance(){
         if (instance == null){
@@ -65,7 +66,7 @@ public class OpenRouteServiceConnection {
         return call;
     }
 
-    public Call getRouteMultiplePoints(String key, ArrayList<GeoPoint> geoPoints, TravelType travelType, String language, Callback callback){
+    public Call getRouteMultiplePoints(String key, ArrayList<GeoPoint> geoPoints, String url, String language, Callback callback){
         //create jsonobject to send
         JSONObject jsonObject = new JSONObject();
         JSONArray coordinatesArray = new JSONArray();
@@ -86,12 +87,9 @@ public class OpenRouteServiceConnection {
             e.printStackTrace();
         }
 
-        Log.d("LISTSIZE: ", geoPoints.size() + "");
-        Log.d("JSON: ", jsonObject.toString());
-
         //create request
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), jsonObject.toString());
-        String url = "https://api.openrouteservice.org/v2/directions/" + TravelType.getTravelType(travelType) + "/geojson";
+        //url = "https://api.openrouteservice.org/v2/directions/" + TravelType.getTravelType(travelType) + "/geojson";
         Request request = new Request.Builder().url(url).addHeader("Authorization", key).post(body).build();
         Call call = client.newCall(request);
         call.enqueue(callback);

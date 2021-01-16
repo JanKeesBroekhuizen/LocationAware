@@ -24,8 +24,6 @@ import androidx.core.content.ContextCompat;
 import com.dlvjkb.locationaware.data.RouteMapper;
 import com.dlvjkb.locationaware.data.RouteViewModel;
 import com.dlvjkb.locationaware.data.Route;
-import com.dlvjkb.locationaware.data.Segment;
-import com.dlvjkb.locationaware.data.Step;
 import com.dlvjkb.locationaware.database.geocache.DB_Geocache;
 import com.dlvjkb.locationaware.database.DatabaseManager;
 
@@ -77,6 +75,7 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
     private Boolean focussedOnUser = false;
     private ImageButton imageButton;
     private RouteMapper routeMapper;
+    private OpenRouteServiceCallback openRouteServiceCallback;
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLocationEvent(LocationService.LocationEvent event) {
@@ -142,6 +141,7 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
         viewModel.setStartListener(this);
         geocacheMarkers = new ArrayList<>();
         databaseManager = DatabaseManager.getInstance(this);
+        openRouteServiceCallback = new OpenRouteServiceCallback();
 
         routeMapper = new RouteMapper();
         databaseManager.initTotalDatabase();
@@ -266,34 +266,25 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
     public void onButtonSearchClicked(View view){
 //        Toast.makeText(getApplicationContext(),"SEARCH",Toast.LENGTH_LONG).show();
         getCoordinatesFinished = false;
+        //boolean finishedTest = false;
         new Thread(new Runnable() {
             @Override
             public void run() {
-                OpenRouteServiceConnection.getInstance().getCoordinatesOfAddress(
+                String response = openRouteServiceCallback.getLocationResponse(
                         "5b3ce3597851110001cf62487e88103431e54b0a846066f367b0b015",
                         etSearchStreetName.getText().toString() + " " + etSearchStreetNumber.getText().toString(),
-                        etSearchCityName.getText().toString(),
-                        new Callback() {
-                            @Override
-                            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                                Log.d(MapScreenActivity.class.getName(), e.getLocalizedMessage());
-                            }
-
-                            @Override
-                            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                                JSONObject responseJson = null;
-                                try {
-                                    responseJson = new JSONObject(response.body().string());
-                                    double[] coordinates = jsonArrayToArray(responseJson.getJSONArray("features").getJSONObject(0).getJSONObject("geometry").getJSONArray("coordinates"));
-                                    System.out.println(coordinates[0] + " " + coordinates[1]);
-                                    currentLocationGeoPoint.setLatitude(coordinates[1]);
-                                    currentLocationGeoPoint.setLongitude(coordinates[0]);
-                                }catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                                getCoordinatesFinished = true;
-                            }
-                        });
+                        etSearchCityName.getText().toString()
+                );
+                try {
+                    JSONObject responseJson = new JSONObject(response);
+                    double[] coordinates = jsonArrayToArray(responseJson.getJSONArray("features").getJSONObject(0).getJSONObject("geometry").getJSONArray("coordinates"));
+                    System.out.println(coordinates[0] + " " + coordinates[1]);
+                    currentLocationGeoPoint.setLatitude(coordinates[1]);
+                    currentLocationGeoPoint.setLongitude(coordinates[0]);
+                    getCoordinatesFinished = true;
+                }catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }).start();
 
@@ -318,43 +309,25 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        OpenRouteServiceConnection.getInstance().getRouteMultiplePoints(
+                        String routeResponse = openRouteServiceCallback.getRouteResponse(
                                 APIKEY,
                                 (ArrayList<GeoPoint>) viewModel.getRoute().getValue(),
-                                viewModel.getTravelType().getValue(),
-                                Locale.getDefault().getLanguage(),
-                                new Callback() {
-                                    @Override
-                                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                                        Log.d(MapScreenActivity.class.getName(), e.getLocalizedMessage());
-                                    }
-
-                                    @Override
-                                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                                        JSONObject responseJson = null;
-                                        try {
-                                            responseJson = new JSONObject(response.body().string());
-                                            route = routeMapper.mapRoute(responseJson, viewModel.getBeginEndPoint().getValue());
-
-//                                            route = new Route(responseJson, viewModel.getBeginEndPoint().getValue().get(0), viewModel.getBeginEndPoint().getValue().get(viewModel.getBeginEndPoint().getValue().size() - 1));
-//                                            ArrayList<double[]> coordinates = route.features.get(0).geometry.coordinates;
-
-                                            for (double[] coordinate : route.getCoordinates()) {
-                                                geoPoints.add(new GeoPoint(coordinate[1], coordinate[0]));
-                                            }
-                                            finished = true;
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                }
+                                "https://api.openrouteservice.org/v2/directions/" + TravelType.getTravelType(viewModel.getTravelType().getValue()) + "/geojson",
+                                Locale.getDefault().getLanguage()
                         );
+                        try {
+                            JSONObject responseJson = new JSONObject(routeResponse);
+                            route = routeMapper.mapRoute(responseJson, viewModel.getBeginEndPoint().getValue());
 
+                            for (double[] coordinate : route.getCoordinates()) {
+                                geoPoints.add(new GeoPoint(coordinate[1], coordinate[0]));
+                            }
+                            finished = true;
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }).start();
-
-                //Hier gaat de app stuk na 3 routes starten of bij het roteren!!!!!!!!
-                //TODO Fix the error!!! --> Mayby the error is fixed!!!
 
                 while (!finished) {
                     Log.d(MapScreenActivity.class.getName(), "Waiting for route...");
@@ -413,7 +386,7 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
 
     private void displayGeocachePoints() {
         if (geocacheMode) {
-            List<DB_Geocache> geocaches = DatabaseManager.getInstance(this).getGeocaches();
+            List<DB_Geocache> geocaches = DatabaseManager.getInstance(getApplicationContext()).getGeocaches();
             List<GeoPoint> geoPoints = new ArrayList<>();
             for (DB_Geocache geocache : geocaches) {
                 GeoPoint geoPoint = new GeoPoint(geocache.Latitude, geocache.Longitude);

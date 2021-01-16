@@ -1,4 +1,4 @@
-package com.dlvjkb.locationaware.unittests;
+package com.dlvjkb.locationaware;
 
 import org.json.JSONException;
 import org.json.JSONObject;

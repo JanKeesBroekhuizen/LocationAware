@@ -1,5 +1,6 @@
 package com.dlvjkb.locationaware.unittests;
 
+import com.dlvjkb.locationaware.JsonUnitTest;
 import com.dlvjkb.locationaware.TravelType;
 import com.dlvjkb.locationaware.data.Route;
 import com.dlvjkb.locationaware.data.RouteMapper;
