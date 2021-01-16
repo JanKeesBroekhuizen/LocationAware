@@ -2,6 +2,7 @@ package com.dlvjkb.locationaware.integratietests;
 
 import com.dlvjkb.locationaware.JsonUnitTest;
 import com.dlvjkb.locationaware.OpenRouteServiceCallback;
+import com.dlvjkb.locationaware.TravelType;
 import com.dlvjkb.locationaware.data.Route;
 import com.dlvjkb.locationaware.data.RouteMapper;
 
@@ -24,20 +25,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 
-public class DatabaseManagerIntegratieTest {
+public class OpenRouteServiceRouteTest {
+
+    private Route route;
 
     @Before
-    public void setUp() throws IOException {
-
-    }
-
-    @After
-    public void tearDown() throws IOException {
-
-    }
-
-    @Test
-    public void openRouteService_route_test() throws JSONException {
+    public void setUp() throws JSONException {
         String key = "5b3ce3597851110001cf62487e88103431e54b0a846066f367b0b015";
         ArrayList<GeoPoint> geoPoints = new ArrayList<>();
         geoPoints.add(new GeoPoint(49.41461, 8.681495));
@@ -51,10 +44,42 @@ public class DatabaseManagerIntegratieTest {
 
         String response = openRouteServiceCallback.getRouteResponse(key, geoPoints, "https://api.openrouteservice.org/v2/directions/driving-car/geojson", language);
 
-        Route route = routeMapper.mapRoute(new JSONObject(response), helperClass.getLocationList());
-        double expectedDistance = 1369.0;
-        assertEquals(expectedDistance, route.getDistance(), 0.0);
+        route = routeMapper.mapRoute(new JSONObject(response), helperClass.getLocationList());
     }
 
+    @Test
+    public void openRouteService_route_distance_test() {
+        double expectedDistanceOfRoute = 1369.0;
+        assertEquals(expectedDistanceOfRoute, route.getDistance(), 0.0);
+    }
 
+    @Test
+    public void openRouteService_route_duration_test(){
+        double expectedDurationOfRoute = 292.0;
+        assertEquals(expectedDurationOfRoute, route.getDuration(), 0.0);
+    }
+
+    @Test
+    public void openRouteService_route_segments_test(){
+        int expectedStepAmountOfFirstSegment = 6;
+        assertEquals(expectedStepAmountOfFirstSegment, route.getSegments().get(0).getSteps().size());
+    }
+
+    @Test
+    public void openRouteService_route_coordinates_test(){
+        double expectedLongitudeOfFirstCoordinate = 49.41461;
+        assertEquals(expectedLongitudeOfFirstCoordinate, route.getCoordinates().get(0)[1], 0.0);
+    }
+
+    @Test
+    public void openRouteService_route_locations_test(){
+        String expectedEndAddressOfRoute = "Roonstraße 7\nHeidelberg";
+        assertEquals(expectedEndAddressOfRoute, route.getLocations().get(route.getLocations().size() - 1));
+    }
+
+    @Test
+    public void openRouteService_route_travelType_test(){
+        TravelType expectedTravelTypeOfRoute = TravelType.DRIVING_CAR;
+        assertEquals(expectedTravelTypeOfRoute, route.getTravelType());
+    }
 }
