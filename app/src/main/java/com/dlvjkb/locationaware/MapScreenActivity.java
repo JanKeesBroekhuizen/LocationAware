@@ -1,22 +1,19 @@
 package com.dlvjkb.locationaware;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,7 +22,6 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
-import com.bumptech.glide.Glide;
 import com.dlvjkb.locationaware.data.RouteMapper;
 import com.dlvjkb.locationaware.data.RouteViewModel;
 import com.dlvjkb.locationaware.data.Route;
@@ -47,6 +43,8 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Polygon;
 import org.osmdroid.views.overlay.Polyline;
+import org.osmdroid.views.overlay.compass.CompassOverlay;
+import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
 import org.osmdroid.views.overlay.infowindow.BasicInfoWindow;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
@@ -68,6 +66,8 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
     private MapView mapView = null;
     private boolean finished = false;
     private GeoPoint currentLocationGeoPoint = null;
+    private GeoPoint searchLocationGeoPoint = null;
+    private CompassOverlay compassOverlay;
     private EditText etSearchCityName;
     private EditText etSearchStreetName;
     private EditText etSearchStreetNumber;
@@ -80,9 +80,9 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
     private Route route;
     private Polyline line;
     private RouteViewModel viewModel;
-    private Marker currentLocationMarker;
     private Boolean focussedOnUser = false;
-    private ImageButton imageButton;
+    private ImageButton ibCurrentLocation;
+    private ImageButton ibGeoCacheMode;
     private RouteMapper routeMapper;
     private MyLocationNewOverlay locationNewOverlay;
     private HashMap<Integer,Polygon> circleList;
@@ -92,9 +92,14 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
         currentLocationGeoPoint = event.getGeoPoint();
 //        currentLocationMarker.setPosition(currentLocationGeoPoint);
         Log.d(LocationService.LocationEvent.class.getName(), currentLocationGeoPoint.getLatitude() + "," + currentLocationGeoPoint.getLongitude());
+        locationNewOverlay.disableMyLocation();
+        locationNewOverlay.enableMyLocation();
         if (focussedOnUser){
-            mapController.animateTo(currentLocationGeoPoint);
-            mapController.setZoom(20.0);
+            mapController.animateTo(currentLocationGeoPoint,20.0,100L,locationNewOverlay.getLastFix().getBearing());
+            if (currentLocationGeoPoint.getLongitude() == event.geoPoint.getLongitude() && currentLocationGeoPoint.getLatitude() == event.geoPoint.getLatitude()){
+                mapController.setZoom(20.0);
+            }
+//            mapView.setMapOrientation(locationNewOverlay.getLastFix().getBearing(), true);
         }
         mapView.invalidate();
     }
@@ -105,12 +110,8 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
             Dialog geocacheFoundScreen = new GeocacheDetailLocationScreen(MapScreenActivity.this, event.geocache);
             geocacheFoundScreen.show();
             databaseManager.changeGeocacheFoundState(event.geocache, true);
-            Log.d("TESTHASHMAP",circleList.size() + "");
             mapView.getOverlays().removeAll(circleList.values());
             circleList.remove(event.geocache.Id);
-            Log.d("GEOCACHEIDEVENT",""+event.geocache.Id);
-            Log.d("TESTHASHMAP2",circleList.size() + "");
-            Log.e("HALLO GEOCACHE HIER IN EVENT",event.geocache.Id + "");
             mapView.invalidate();
             displayGeocachePoints();
 
@@ -166,12 +167,18 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
         locationNewOverlay.enableFollowLocation();
         this.mapView.getOverlays().add(locationNewOverlay);
 
+        compassOverlay = new CompassOverlay(this,new InternalCompassOrientationProvider(MapScreenActivity.this),this.mapView);
+        compassOverlay.enableCompass();
+        mapView.getOverlays().add(compassOverlay);
+
+        mapView.setZoomRounding(true);
+
 //        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.icon_user_location);
 //        locationNewOverlay.setDirectionArrow(bitmap,bitmap);
 
         routeMapper = new RouteMapper();
         databaseManager.initTotalDatabase();
-        currentLocationGeoPoint = new GeoPoint(51.92458092043162,4.480193483189705);
+        //currentLocationGeoPoint = new GeoPoint(51.92458092043162,4.480193483189705);
         mapController.setCenter(currentLocationGeoPoint);
         mapController.setZoom(18.0);
 
@@ -181,8 +188,12 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
 //        currentLocationMarker.setAnchor(Marker.ANCHOR_CENTER,Marker.ANCHOR_CENTER);
 //        mapView.getOverlays().add(currentLocationMarker);
 
-        imageButton = findViewById(R.id.ibGPSLocation);
-        imageButton.setOnClickListener(v -> onButtonCurrentLocationClicked(v));
+        ibCurrentLocation = findViewById(R.id.ibGPSLocation);
+        ibCurrentLocation.setOnClickListener(v -> onButtonCurrentLocationClicked(v));
+
+        ibGeoCacheMode = findViewById(R.id.ibGeocache);
+        ibGeoCacheMode.setOnClickListener(v -> onButtonGeocacheClicked(v));
+
 
         createRoute();
 
@@ -222,6 +233,8 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
         super.onStart();
         EventBus.getDefault().register(this);
         locationNewOverlay.onResume();
+        SharedPreferences sharedPreferences = getSharedPreferences("PREFERENCES",MODE_PRIVATE);
+        currentLocationGeoPoint = new GeoPoint(Double.longBitsToDouble(sharedPreferences.getLong("LastLatitude",0)),Double.longBitsToDouble(sharedPreferences.getLong("LastLongitutde",0)));
     }
 
     @Override
@@ -229,6 +242,9 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
         EventBus.getDefault().unregister(this);
         super.onStop();
         locationNewOverlay.onPause();
+        SharedPreferences.Editor spEditor = getSharedPreferences("PREFERENCES",MODE_PRIVATE).edit();
+        spEditor.putLong("LastLatitude",Double.doubleToLongBits(currentLocationGeoPoint.getLatitude()));
+        spEditor.putLong("LastLongitude",Double.doubleToLongBits(currentLocationGeoPoint.getLongitude()));
     }
 
     @Override
@@ -270,15 +286,17 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
     }
 
     public void onButtonCurrentLocationClicked(View view){
-        mapController.animateTo(currentLocationGeoPoint);
         focussedOnUser = !focussedOnUser;
         if (!focussedOnUser){
-            imageButton.setImageResource(R.drawable.icon_user_location);
-            mapController.setZoom(19.0);
+            ibCurrentLocation.setImageResource(R.drawable.icon_user_location);
+            mapView.setMapOrientation(0);
+//            mapController.setZoom(19.0);
             Toast.makeText(this,"Focussed OFF",Toast.LENGTH_SHORT).show();
         } else if (focussedOnUser){
-            mapController.setZoom(20.0);
-            imageButton.setImageResource(R.drawable.icon_user_location_focussed);
+            mapController.animateTo(currentLocationGeoPoint,20.0,100L,locationNewOverlay.getLastFix().getBearing());
+//            mapController.setZoom(20.0);
+            ibCurrentLocation.setImageResource(R.drawable.icon_user_location_focussed);
+//            mapView.setMapOrientation(locationNewOverlay.getLastFix().getBearing() -180);
             Toast.makeText(this,"Focussed ON",Toast.LENGTH_SHORT).show();
         }
     }
@@ -290,8 +308,12 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
     }
 
     public void onButtonGeocacheClicked(View view){
-        Log.d("ONCLICK GEOCACHE",mapView + "");
         geocacheMode = !geocacheMode;
+        if (geocacheMode){
+            ibGeoCacheMode.setImageResource(R.drawable.icon_geocache_selected);
+        }else {
+            ibGeoCacheMode.setImageResource(R.drawable.icon_geocache);
+        }
         displayGeocachePoints();
     }
 
@@ -318,8 +340,9 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
                                     responseJson = new JSONObject(response.body().string());
                                     double[] coordinates = jsonArrayToArray(responseJson.getJSONArray("features").getJSONObject(0).getJSONObject("geometry").getJSONArray("coordinates"));
                                     System.out.println(coordinates[0] + " " + coordinates[1]);
-                                    currentLocationGeoPoint.setLatitude(coordinates[1]);
-                                    currentLocationGeoPoint.setLongitude(coordinates[0]);
+                                    searchLocationGeoPoint = new GeoPoint(coordinates[1],coordinates[0]);
+//                                    currentLocationGeoPoint.setLatitude(coordinates[1]);
+//                                    currentLocationGeoPoint.setLongitude(coordinates[0]);
                                 }catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -333,7 +356,7 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
             Log.d(MapScreenActivity.class.getName(), "Waiting for location...");
         }
 
-        mapController.setCenter(currentLocationGeoPoint);
+        mapController.animateTo(searchLocationGeoPoint);
         mapController.setZoom(18.0);
 
 //        Marker marker = new Marker(mapView);
