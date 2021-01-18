@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">LocationAware</string>
-    <string name="recyclerview_seconds" translatable="false">s</string>
-    <string name="recyclerview_distance" translatable="false">km</string>
     <string name="String_city">city</string>
     <string name="String_Streetname">Streetname</string>
     <string name="String_HouseNumber">no.</string>
@@ -24,4 +22,8 @@
     <string name="String_destination">Destination:</string>
     <string name="String_geocacheName">Name of geocache:</string>
     <string name="String_ok">Ok</string>
+    <string name="String_Minutes">minutes</string>
+    <string name="String_Meters">meters</string>
+    <string name="String_And">and</string>
+    <string name="String_Seconds">seconds</string>
 </resources>

@@ -37,9 +37,8 @@ public class OpenRouteServiceCallback {
             }
         });
 
-        while(!finished){
-            System.out.println("waiting for response...");
-        }
+        while(!finished){ Log.d(OpenRouteServiceCallback.class.getName(), "Waiting for response..."); }
+        Log.d(OpenRouteServiceCallback.class.getName(), jsonResponse);
         return jsonResponse;
     }
 
@@ -59,9 +58,8 @@ public class OpenRouteServiceCallback {
             }
         });
 
-        while(!finished){
-            System.out.println("waiting for response...");
-        }
+        while(!finished){ Log.d(OpenRouteServiceCallback.class.getName(), "Waiting for response..."); }
+        Log.d(OpenRouteServiceCallback.class.getName(), jsonResponse);
         return jsonResponse;
     }
 }

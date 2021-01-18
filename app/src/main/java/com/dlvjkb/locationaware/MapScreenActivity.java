@@ -70,6 +70,7 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
     private DatabaseManager databaseManager;
     private Route route;
     private Polyline line;
+    private ArrayList<Marker> markers;
     private RouteViewModel viewModel;
     private Marker currentLocationMarker;
     private Boolean focussedOnUser = false;
@@ -136,6 +137,7 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
         mapView.setMultiTouchControls(true);
 
         line = new Polyline();
+        markers = new ArrayList<>();
 
         viewModel = RouteViewModel.getInstance();
         viewModel.setStartListener(this);
@@ -175,6 +177,8 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
         mapView.onResume(); //needed for compass, my location overlays, v6.0.0 and up
         if (!viewModel.getIsDrawingRoute().getValue()){
             mapView.getOverlayManager().remove(line);
+            mapView.getOverlayManager().removeAll(markers);
+            mapView.invalidate();
         }
     }
 
@@ -264,33 +268,25 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
     }
 
     public void onButtonSearchClicked(View view){
-//        Toast.makeText(getApplicationContext(),"SEARCH",Toast.LENGTH_LONG).show();
         getCoordinatesFinished = false;
-        //boolean finishedTest = false;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String response = openRouteServiceCallback.getLocationResponse(
-                        "5b3ce3597851110001cf62487e88103431e54b0a846066f367b0b015",
-                        etSearchStreetName.getText().toString() + " " + etSearchStreetNumber.getText().toString(),
-                        etSearchCityName.getText().toString()
-                );
-                try {
-                    JSONObject responseJson = new JSONObject(response);
-                    double[] coordinates = jsonArrayToArray(responseJson.getJSONArray("features").getJSONObject(0).getJSONObject("geometry").getJSONArray("coordinates"));
-                    System.out.println(coordinates[0] + " " + coordinates[1]);
-                    currentLocationGeoPoint.setLatitude(coordinates[1]);
-                    currentLocationGeoPoint.setLongitude(coordinates[0]);
-                    getCoordinatesFinished = true;
-                }catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
 
-        while (!getCoordinatesFinished){
-            Log.d(MapScreenActivity.class.getName(), "Waiting for location...");
+        String response = openRouteServiceCallback.getLocationResponse(
+                "5b3ce3597851110001cf62487e88103431e54b0a846066f367b0b015",
+                etSearchStreetName.getText().toString() + " " + etSearchStreetNumber.getText().toString(),
+                etSearchCityName.getText().toString()
+        );
+        try {
+            JSONObject responseJson = new JSONObject(response);
+            double[] coordinates = jsonArrayToArray(responseJson.getJSONArray("features").getJSONObject(0).getJSONObject("geometry").getJSONArray("coordinates"));
+            System.out.println(coordinates[0] + " " + coordinates[1]);
+            currentLocationGeoPoint.setLatitude(coordinates[1]);
+            currentLocationGeoPoint.setLongitude(coordinates[0]);
+            getCoordinatesFinished = true;
+        }catch (JSONException e) {
+            e.printStackTrace();
         }
+
+        while (!getCoordinatesFinished){ /*waiting for location*/ }
 
         mapController.setCenter(currentLocationGeoPoint);
         mapController.setZoom(18.0);
@@ -306,38 +302,32 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
             if (viewModel.getRoute().getValue().size() != 0) {
                 finished = false;
                 ArrayList<GeoPoint> geoPoints = new ArrayList<>();
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        String routeResponse = openRouteServiceCallback.getRouteResponse(
-                                APIKEY,
-                                (ArrayList<GeoPoint>) viewModel.getRoute().getValue(),
-                                "https://api.openrouteservice.org/v2/directions/" + TravelType.getTravelType(viewModel.getTravelType().getValue()) + "/geojson",
-                                Locale.getDefault().getLanguage()
-                        );
-                        try {
-                            JSONObject responseJson = new JSONObject(routeResponse);
-                            route = routeMapper.mapRoute(responseJson, viewModel.getBeginEndPoint().getValue());
+                String routeResponse = openRouteServiceCallback.getRouteResponse(
+                        APIKEY,
+                        (ArrayList<GeoPoint>) viewModel.getRoute().getValue(),
+                        "https://api.openrouteservice.org/v2/directions/" + TravelType.getTravelType(viewModel.getTravelType().getValue()) + "/geojson",
+                        Locale.getDefault().getLanguage()
+                );
 
-                            for (double[] coordinate : route.getCoordinates()) {
-                                geoPoints.add(new GeoPoint(coordinate[1], coordinate[0]));
-                            }
-                            finished = true;
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                try {
+                    JSONObject responseJson = new JSONObject(routeResponse);
+                    route = routeMapper.mapRoute(responseJson, viewModel.getBeginEndPoint().getValue());
+
+                    for (double[] coordinate : route.getCoordinates()) {
+                        geoPoints.add(new GeoPoint(coordinate[1], coordinate[0]));
                     }
-                }).start();
-
-                while (!finished) {
-                    Log.d(MapScreenActivity.class.getName(), "Waiting for route...");
+                    finished = true;
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
+
+                while (!finished) { /*waiting for route*/ }
                 System.out.println("finished: " + finished + "    Geopoints: " + geoPoints.size());
 
                 mapController.setCenter(geoPoints.get(0));
                 mapController.setZoom(18.0f);
                 drawLine(geoPoints);
-                mapView.getOverlayManager().add(line);
+                drawMarkers();
             }
         }
     }
@@ -360,6 +350,21 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
                 return false;
             }
         });
+        mapView.getOverlayManager().add(line);
+    }
+
+    public void drawMarkers(){
+        markers = new ArrayList<>();
+        for (int i = 0; i < route.getWayPoints().length; i++) {
+            int waypoint = route.getWayPoints()[i];
+            double[] coordinates = route.getCoordinates().get(waypoint);
+            Marker marker = new Marker(mapView);
+            marker.setPosition(new GeoPoint(coordinates[1], coordinates[0]));
+            marker.setTitle(viewModel.getBeginEndPoint().getValue().get(i));
+            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+            markers.add(marker);
+        }
+        mapView.getOverlays().addAll(markers);
     }
 
     @Override

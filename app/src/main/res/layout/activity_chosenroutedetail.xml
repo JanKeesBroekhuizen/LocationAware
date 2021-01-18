@@ -30,7 +30,7 @@
             android:onClick="onButtonStopClick"
             android:backgroundTint="@android:color/holo_orange_light"
             android:textColor="@color/black"
-            android:text="STOP" />
+            android:text="@string/String_stop" />
 
         <Button
             android:id="@+id/btnRouteDetailReturn"
@@ -41,7 +41,7 @@
             android:onClick="onButtonReturnClick"
             android:textColor="@color/black"
             android:backgroundTint="@color/white"
-            android:text="RETURN" />
+            android:text="@string/String_return" />
     </LinearLayout>
 
     <TextView
@@ -50,7 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:text="Starting Point"
+        android:text="@string/String_StartingPoint"
         android:textAlignment="textStart"
         android:textColor="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/vRouteDetailDeviderLine"
@@ -63,7 +63,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:text="Ending Point"
+        android:text="@string/String_EndingPoint"
         android:textAlignment="textEnd"
         android:textColor="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/vRouteDetailDeviderLine"
@@ -116,7 +116,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:text="Directions"
+        android:text="@string/String_directions"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -140,7 +140,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginRight="2dp"
-            android:text="Amount of kilometers"
+            android:text="@string/String_routeDistance"
             android:textAlignment="textStart"
             android:textColor="@color/white"
             android:textSize="18sp" />
@@ -151,7 +151,7 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="2dp"
             android:layout_weight="1"
-            android:text="Duration of trip"
+            android:text="@string/String_routeDuration"
             android:textAlignment="textEnd"
             android:textColor="@color/white"
             android:textSize="18sp" />

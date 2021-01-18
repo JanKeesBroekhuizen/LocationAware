@@ -13,7 +13,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:text="Example geocache"
+        android:text="@string/String_geocacheName"
         android:textAlignment="center"
         android:textColor="@color/greyish_white"
         android:textSize="24sp"
@@ -40,7 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:text="OK"
+        android:text="@string/String_ok"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/ivGeocacheDetailImage"
         app:layout_constraintStart_toStartOf="@+id/ivGeocacheDetailImage" />

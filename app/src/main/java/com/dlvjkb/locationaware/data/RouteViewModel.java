@@ -8,6 +8,7 @@ import com.dlvjkb.locationaware.RouteStartListener;
 import com.dlvjkb.locationaware.TravelType;
 
 import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.overlay.Marker;
 
 import java.util.ArrayList;
 import java.util.List;

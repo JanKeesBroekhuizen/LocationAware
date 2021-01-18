@@ -111,6 +111,9 @@ public class RouteInformationPopup extends AppCompatActivity implements PresetRo
         ArrayList<GeoPoint> routePoints = new ArrayList<>();
         ArrayList<String> routeAddresses = new ArrayList<>();
 
+        Log.d("onButtonSearchRouteClicked Start", "Street: " + etRouteStartStreetName.getText().toString() + " Number: " + etRouteStartStreetNumber.getText().toString() + " City: " + etRouteStartCityName.getText().toString());
+        Log.d("onButtonSearchRouteClicked End", "Street: " + etRouteEndStreetName.getText().toString() + " Number: " + etRouteEndStreetNumber.getText().toString() + " City: " + etRouteEndCityName.getText().toString());
+
         GeoPoint routeStartGeoPoint = AddressToGeoPoint(etRouteStartStreetName.getText().toString() + " " + etRouteStartStreetNumber.getText().toString(), etRouteStartCityName.getText().toString());
         routePoints.add(routeStartGeoPoint);
         routeAddresses.add(etRouteStartStreetName.getText().toString() + " " + etRouteStartStreetNumber.getText().toString() + "\n" + etRouteStartCityName.getText().toString());
@@ -172,27 +175,21 @@ public class RouteInformationPopup extends AppCompatActivity implements PresetRo
 
     public GeoPoint AddressToGeoPoint(String address, String city){
         finished = false;
-        OpenRouteServiceConnection.getInstance().getCoordinatesOfAddress(MapScreenActivity.APIKEY, address, city, new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Log.e(RouteInformationPopup.class.getName(),e.getLocalizedMessage());
-            }
+        OpenRouteServiceCallback openRouteServiceCallback = new OpenRouteServiceCallback();
+        String response = openRouteServiceCallback.getLocationResponse(MapScreenActivity.APIKEY, address, city);
 
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                JSONObject responseJson = null;
-                try {
-                    responseJson = new JSONObject(response.body().string());
-                    double[] coordinates = jsonArrayToArray(responseJson.getJSONArray("features").getJSONObject(0).getJSONObject("geometry").getJSONArray("coordinates"));
-                    System.out.println(coordinates[0] + " " + coordinates[1]);
-                    geoPoint = new GeoPoint(coordinates[1],coordinates[0]);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                finished = true;
-            }
-        });
-        while (!finished){}
+        JSONObject responseJson = null;
+        try {
+            responseJson = new JSONObject(response);
+            double[] coordinates = jsonArrayToArray(responseJson.getJSONArray("features").getJSONObject(0).getJSONObject("geometry").getJSONArray("coordinates"));
+            System.out.println(coordinates[0] + " " + coordinates[1]);
+            geoPoint = new GeoPoint(coordinates[1],coordinates[0]);
+            finished = true;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        while (!finished){/* waiting for location */}
         return geoPoint;
     }
 

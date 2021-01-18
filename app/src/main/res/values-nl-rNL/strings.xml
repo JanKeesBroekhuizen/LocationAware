@@ -23,4 +23,8 @@
     <string name="String_destination">"Bestemming: "</string>
     <string name="String_geocacheName">"Naam van geocache: "</string>
     <string name="String_ok">Ok</string>
+    <string name="String_Minutes">minuten</string>
+    <string name="String_Meters">meter</string>
+    <string name="String_And">en</string>
+    <string name="String_Seconds">seconden</string>
 </resources>
