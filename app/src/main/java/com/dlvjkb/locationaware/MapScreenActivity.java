@@ -67,7 +67,6 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
     private boolean finished = false;
     private GeoPoint currentLocationGeoPoint = null;
     private GeoPoint searchLocationGeoPoint = null;
-    private CompassOverlay compassOverlay;
     private EditText etSearchCityName;
     private EditText etSearchStreetName;
     private EditText etSearchStreetNumber;
@@ -84,6 +83,7 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
     private ImageButton ibCurrentLocation;
     private ImageButton ibGeoCacheMode;
     private RouteMapper routeMapper;
+    private SharedPreferences sharedPreferences;
     private MyLocationNewOverlay locationNewOverlay;
     private HashMap<Integer,Polygon> circleList;
 
@@ -102,6 +102,12 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
 //            mapView.setMapOrientation(locationNewOverlay.getLastFix().getBearing(), true);
         }
         mapView.invalidate();
+        SharedPreferences.Editor spEditor = sharedPreferences.edit();
+        spEditor.putLong("LastLatitude",Double.doubleToLongBits(currentLocationGeoPoint.getLatitude()));
+        spEditor.putLong("LastLongitude",Double.doubleToLongBits(currentLocationGeoPoint.getLongitude()));
+        spEditor.commit();
+//        Log.d("PREFSETTER","" + Double.doubleToLongBits(currentLocationGeoPoint.getLongitude()) + " - " + Double.doubleToLongBits(currentLocationGeoPoint.getLongitude()));
+//        Log.d("PREFSETTER2","" + Double.longBitsToDouble(Double.doubleToLongBits(currentLocationGeoPoint.getLatitude())) + " - " + Double.longBitsToDouble(Double.doubleToLongBits(currentLocationGeoPoint.getLongitude())));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -139,6 +145,10 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
         });
+        sharedPreferences = getSharedPreferences("PREFERENCES",MODE_PRIVATE);
+        currentLocationGeoPoint = new GeoPoint(Double.longBitsToDouble(sharedPreferences.getLong("LastLatitude",0)),Double.longBitsToDouble(sharedPreferences.getLong("LastLongitude",0)));
+//        Log.d("PREFGETTER2","" + Double.longBitsToDouble(sharedPreferences.getLong("LastLatitude",0))+ " - " + Double.longBitsToDouble(sharedPreferences.getLong("LastLongitude",0)));
+//        Log.d("PREFGETTER3","" + sharedPreferences.getLong("LastLatitude",0)+ " - " + sharedPreferences.getLong("LastLongitutde",0));
 
         Configuration.getInstance().setUserAgentValue("com.dlvjkb.locationaware");
         createNotificationChannel();
@@ -166,11 +176,6 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
         locationNewOverlay.enableMyLocation();
         locationNewOverlay.enableFollowLocation();
         this.mapView.getOverlays().add(locationNewOverlay);
-
-        compassOverlay = new CompassOverlay(this,new InternalCompassOrientationProvider(MapScreenActivity.this),this.mapView);
-        compassOverlay.enableCompass();
-        mapView.getOverlays().add(compassOverlay);
-
         mapView.setZoomRounding(true);
 
 //        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.icon_user_location);
@@ -233,8 +238,6 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
         super.onStart();
         EventBus.getDefault().register(this);
         locationNewOverlay.onResume();
-        SharedPreferences sharedPreferences = getSharedPreferences("PREFERENCES",MODE_PRIVATE);
-        currentLocationGeoPoint = new GeoPoint(Double.longBitsToDouble(sharedPreferences.getLong("LastLatitude",0)),Double.longBitsToDouble(sharedPreferences.getLong("LastLongitutde",0)));
     }
 
     @Override
@@ -242,9 +245,6 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
         EventBus.getDefault().unregister(this);
         super.onStop();
         locationNewOverlay.onPause();
-        SharedPreferences.Editor spEditor = getSharedPreferences("PREFERENCES",MODE_PRIVATE).edit();
-        spEditor.putLong("LastLatitude",Double.doubleToLongBits(currentLocationGeoPoint.getLatitude()));
-        spEditor.putLong("LastLongitude",Double.doubleToLongBits(currentLocationGeoPoint.getLongitude()));
     }
 
     @Override
