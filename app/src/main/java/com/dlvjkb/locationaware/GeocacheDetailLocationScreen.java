@@ -38,6 +38,7 @@ public class GeocacheDetailLocationScreen extends Dialog {
         setGeocacheAttributes();
     }
 
+    //Show the user what they found at this spot.
     public void setGeocacheAttributes(){
         tvFoundGeoPoint.setText(geocache.Name);
         Glide.with(context).load(geocache.imageLink).placeholder(R.drawable.btn_moreinfo).into(ivFoundGeoPoint);

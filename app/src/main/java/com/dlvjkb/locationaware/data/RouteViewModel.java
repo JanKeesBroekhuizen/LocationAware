@@ -8,10 +8,8 @@ import com.dlvjkb.locationaware.RouteStartListener;
 import com.dlvjkb.locationaware.TravelType;
 
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.overlay.Marker;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class RouteViewModel extends ViewModel {
     private MutableLiveData<Route> selectedRoute;

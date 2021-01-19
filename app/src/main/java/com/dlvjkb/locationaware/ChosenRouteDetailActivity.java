@@ -66,8 +66,6 @@ public class ChosenRouteDetailActivity extends AppCompatActivity {
     }
 
     public void onButtonStopClick(View view){
-//        RouteInformationPopup.routePoints = null;
-//        RouteInformationPopup.routeAddresses = null;
         viewModel.setRoute(new ArrayList<>());
         viewModel.setBeginEndPoint(new ArrayList<>());
         viewModel.setIsDrawingRoute(false);
@@ -86,16 +84,12 @@ public class ChosenRouteDetailActivity extends AppCompatActivity {
             steps.addAll(segment.getSteps());
         }
 
-//        int stepAmount = chosenRoute.features.get(0).property.segments.size();
-//        for (int i = 0; i < stepAmount; i++) {
-//            steps.addAll(chosenRoute.features.get(0).property.segments.get(i).steps);
-//        }
-
         directionsAdapter = new RouteDirectionsAdapter(this, steps);
         rvDirections.setLayoutManager(new LinearLayoutManager(this));
         rvDirections.setAdapter(directionsAdapter);
     }
 
+    //Converts the time needed for the route.
     private String setRouteTravelTime(){
         int totalSeconds = (int)chosenRoute.getDuration();
         String ss = String.format("%02d",totalSeconds%60);

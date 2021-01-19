@@ -34,12 +34,14 @@ public class LocationService extends Service {
     private DB_Geocache geocache = null;
     private Boolean geoCacheMode = false;
 
+    //Listen if the user has activied the cache mode.
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGeocacheModeMode(LocationService.GeocacheModeEvent event) {
         geoCacheMode = event.mode;
         Log.d("LOCATIONSERVICE-WAYPOINT:", "" + geoCacheMode);
     }
 
+    //Class for sending the location back to the mapscreen.
     public static class LocationEvent{
         GeoPoint geoPoint;
 
@@ -56,6 +58,7 @@ public class LocationService extends Service {
         }
     }
 
+    //Class for sending geocache in vicinity event.
     public static class GeocacheEvent{
         DB_Geocache geocache;
 
@@ -72,6 +75,7 @@ public class LocationService extends Service {
         }
     }
 
+    //Class which is used by the mapscreen to see if the user has started the geocache hunt.
     public static class GeocacheModeEvent{
         Boolean mode;
 
@@ -102,15 +106,12 @@ public class LocationService extends Service {
             mLastLocation.set(location);
             EventBus.getDefault().post(new LocationEvent(new GeoPoint(location.getLatitude(),location.getLongitude())));
             if (geoCacheMode){
+                //Check for geocache in the vicinity if so then send event.
                 for (DB_Geocache geocache : DatabaseManager.getInstance(getApplicationContext()).getGeocaches()) {
                     double distance = (new GeoPoint(geocache.Latitude, geocache.Longitude).distanceToAsDouble(new GeoPoint(location.getLatitude(), location.getLongitude())));
                     if (distance <= calculateGeocacheSize(geocache.Size)) {
                         Log.e("DISTANCE", "" + distance);
-    //                    Intent intent = new Intent(getApplicationContext(), BuildingDetailScreenActivity.class);
-    //                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-    //                    intent.putExtra("waypoint",wp);
-    //                    PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
-
+                        //Send the event to the mapscreen which will then start a new screen.
                         EventBus.getDefault().post(new GeocacheEvent(geocache));
                     }
                 }
@@ -154,6 +155,7 @@ public class LocationService extends Service {
 
     @Override
     public void onCreate() {
+        //Show a foreground notification which stays while the service is active.
         Notification notification = new NotificationCompat.Builder(getApplicationContext(), "notifychannelid")
                 .setSmallIcon(R.mipmap.cachemapsicon)
                 .setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),
@@ -206,6 +208,7 @@ public class LocationService extends Service {
         }
     }
 
+    //Size calculation is necessary to check if the cache is in the vicinity.
     private int calculateGeocacheSize(String size){
         switch (size){
             default:

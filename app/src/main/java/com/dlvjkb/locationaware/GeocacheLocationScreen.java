@@ -50,9 +50,6 @@ public class GeocacheLocationScreen extends Dialog {
         this.geoPoint = currentGeopoint;
         this.geocache = geocache;
         this.listener = listener;
-//        geoPoints = new ArrayList<>();
-//        addresses = new ArrayList<>();
-
         viewModel = RouteViewModel.getInstance();
 
         btnCar.setOnClickListener(v -> onButtonCarClicked(v));
@@ -63,12 +60,14 @@ public class GeocacheLocationScreen extends Dialog {
         changeDialogText();
     }
 
+    //Change text according to the values of the geocache.
     public void changeDialogText(){
         tvCurrentGeopoint.setText(geoPoint.getLatitude() + ",\n " + geoPoint.getLongitude());
         tvDestinationGeopoint.setText(geocache.Latitude + ",\n " + geocache.Longitude);
         tvGeocacheName.setText(geocache.Name);
     }
 
+    //Start a route to the geocache.
     public void onButtonGeocacheStartClick(View view){
         ArrayList<GeoPoint> routePoints = new ArrayList<>();
         ArrayList<String> routeAddresses = new ArrayList<>();
@@ -86,18 +85,23 @@ public class GeocacheLocationScreen extends Dialog {
         this.dismiss();
     }
 
+    //Sets the traveltype.
     public void onButtonCarClicked(View view){
         this.btnCar.setBackgroundResource(R.drawable.rounded_block_selected);
         this.btnWalk.setBackgroundResource(R.drawable.rounded_block);
         this.btnBike.setBackgroundResource(R.drawable.rounded_block);
         viewModel.setTravelType(TravelType.DRIVING_CAR);
     }
+
+    //Sets the traveltype.
     public void onButtonWalkClicked(View view){
         this.btnWalk.setBackgroundResource(R.drawable.rounded_block_selected);
         this.btnCar.setBackgroundResource(R.drawable.rounded_block);
         this.btnBike.setBackgroundResource(R.drawable.rounded_block);
         viewModel.setTravelType(TravelType.FOOT_WALKING);
     }
+
+    //Sets the traveltype.
     public void onButtonBikeClicked(View view){
         this.btnBike.setBackgroundResource(R.drawable.rounded_block_selected);
         this.btnWalk.setBackgroundResource(R.drawable.rounded_block);
