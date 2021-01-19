@@ -15,6 +15,8 @@ import com.dlvjkb.locationaware.data.Segment;
 import com.dlvjkb.locationaware.data.Step;
 import com.dlvjkb.locationaware.recyclerview.routedetail.RouteDirectionsAdapter;
 
+import org.osmdroid.views.overlay.Marker;
+
 import java.util.ArrayList;
 
 public class ChosenRouteDetailActivity extends AppCompatActivity {

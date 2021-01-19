@@ -1,6 +1,7 @@
 package com.dlvjkb.locationaware.recyclerview.routedetail;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,10 +36,24 @@ public class RouteDirectionsAdapter extends RecyclerView.Adapter<RouteDirections
     @Override
     public void onBindViewHolder(@NonNull RouteDirectionsViewHolder holder, int position) {
         Step step = steps.get(position);
+
         holder.tvDescription.setText(step.getInstruction());
-        holder.tvDistanceValue.setText(String.format("%.2f",step.getDistance()/1000) + " " + context.getResources().getString(R.string.recyclerview_distance));
-        holder.tvDurationValue.setText(String.format("%.2f",step.getDuration()/60) + " "  + context.getResources().getString(R.string.recyclerview_seconds));
+        holder.tvDistanceValue.setText(step.getDistance() + " " + context.getResources().getString(R.string.String_Meters));
+        holder.tvDurationValue.setText(getDuration(step.getDuration()));
         holder.ivDirections.setImageResource(getDirectionTypeIcon(step.getType()));
+    }
+
+    private String getDuration(double duration){
+        int totalSeconds = (int)duration;
+        String ss = String.format("%2d",totalSeconds % 60);
+        int hh = totalSeconds / 3600;
+        String mm = String.format("%2d", ((totalSeconds % 3600) / 60) + hh * 60);
+
+        if ((((totalSeconds % 3600) / 60) + (hh * 60)) == 0){
+            return ss + " " + context.getResources().getString(R.string.String_Seconds);
+        } else {
+            return mm + " " + context.getResources().getString(R.string.String_Minutes) + " " + context.getResources().getString(R.string.String_And) + " " + ss + " " + context.getResources().getString(R.string.String_Seconds);
+        }
     }
 
 

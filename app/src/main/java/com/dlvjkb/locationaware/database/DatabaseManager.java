@@ -10,7 +10,6 @@ import com.dlvjkb.locationaware.database.geocache.DB_Geocache;
 import com.dlvjkb.locationaware.database.preset.Preset_Location;
 import com.dlvjkb.locationaware.database.preset.Preset_Location_Route;
 import com.dlvjkb.locationaware.database.preset.Preset_Route;
-import com.dlvjkb.locationaware.database.saved.SavedRouteDao;
 import com.dlvjkb.locationaware.database.saved.Saved_Location;
 import com.dlvjkb.locationaware.database.saved.Saved_Location_Route;
 import com.dlvjkb.locationaware.database.saved.Saved_Route;
@@ -34,8 +33,8 @@ public class DatabaseManager {
         return instance;
     }
 
-    Database database;
-    Context context;
+    private Database database;
+    private Context context;
 
     public DatabaseManager(Context context){
         this.context = context;

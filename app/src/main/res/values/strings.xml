@@ -1,5 +1,29 @@
 <resources>
     <string name="app_name">LocationAware</string>
-    <string name="recyclerview_seconds">s</string>
-    <string name="recyclerview_distance">km</string>
+    <string name="String_city">city</string>
+    <string name="String_Streetname">Streetname</string>
+    <string name="String_HouseNumber">no.</string>
+    <string name="String_Walk">Walk</string>
+    <string name="String_Cycle">Cycle</string>
+    <string name="String_Car">Car</string>
+    <string name="String_StartingPoint">Starting point:</string>
+    <string name="String_EndingPoint">Ending point:</string>
+    <string name="String_Start">Start</string>
+    <string name="String_SaveStart">Save and start</string>
+    <string name="String_PresetRoutes">Preset routes:</string>
+    <string name="String_SavedRoutes">Saved routes:</string>
+    <string name="String_routeDistance">Amount of kilometers:</string>
+    <string name="String_routeDuration">Duration of trip:</string>
+    <string name="String_directions">Directions:</string>
+    <string name="String_stop">Stop</string>
+    <string name="String_return">Return</string>
+    <string name="String_startExpedition">Start expedition?</string>
+    <string name="String_current">Current:</string>
+    <string name="String_destination">Destination:</string>
+    <string name="String_geocacheName">Name of geocache:</string>
+    <string name="String_ok">Ok</string>
+    <string name="String_Minutes">minutes</string>
+    <string name="String_Meters">meters</string>
+    <string name="String_And">and</string>
+    <string name="String_Seconds">seconds</string>
 </resources>
