@@ -4,10 +4,13 @@ import android.Manifest;
 import android.app.Dialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,10 +20,12 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.dlvjkb.locationaware.data.RouteMapper;
 import com.dlvjkb.locationaware.data.RouteViewModel;
@@ -85,6 +90,7 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
     private ImageButton ibGeoCacheMode;
     private RouteMapper routeMapper;
     private SharedPreferences sharedPreferences;
+    private LocationManager locationManager;
     private MyLocationNewOverlay locationNewOverlay;
     private HashMap<Integer,Polygon> circleList;
     private OpenRouteServiceCallback openRouteServiceCallback;
@@ -126,7 +132,7 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
             NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "notifychannelid")
                     .setContentTitle(getString(R.string.app_name))
                     .setContentText("Geocache " + event.geocache.Name + " reached!")
-                    .setSmallIcon(R.drawable.icon_geocache)
+                    .setSmallIcon(R.mipmap.cachemapsicon)
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT);
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
             // notificationId is a unique int for each notification that you must define
@@ -181,6 +187,10 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
         locationNewOverlay.enableFollowLocation();
         this.mapView.getOverlays().add(locationNewOverlay);
         mapView.setZoomRounding(true);
+
+        if (locationManager == null) {
+            locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        }
 
 //        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.icon_user_location);
 //        locationNewOverlay.setDirectionArrow(bitmap,bitmap);
@@ -292,18 +302,23 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
     }
 
     public void onButtonCurrentLocationClicked(View view){
-        focussedOnUser = !focussedOnUser;
-        if (!focussedOnUser){
-            ibCurrentLocation.setImageResource(R.drawable.icon_user_location);
-            mapView.setMapOrientation(0);
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED){
+            focussedOnUser = !focussedOnUser;
+            if (!focussedOnUser){
+                ibCurrentLocation.setImageResource(R.drawable.icon_user_location);
+                mapView.setMapOrientation(0);
 //            mapController.setZoom(19.0);
-            Toast.makeText(this,"Focussed OFF",Toast.LENGTH_SHORT).show();
-        } else if (focussedOnUser){
-            mapController.animateTo(currentLocationGeoPoint,20.0,100L,locationNewOverlay.getLastFix().getBearing());
+                Toast.makeText(this,"Focussed OFF",Toast.LENGTH_SHORT).show();
+            } else if (focussedOnUser){
+                mapController.animateTo(currentLocationGeoPoint,20.0,100L,locationNewOverlay.getLastFix().getBearing());
 //            mapController.setZoom(20.0);
-            ibCurrentLocation.setImageResource(R.drawable.icon_user_location_focussed);
+                ibCurrentLocation.setImageResource(R.drawable.icon_user_location_focussed);
 //            mapView.setMapOrientation(locationNewOverlay.getLastFix().getBearing() -180);
-            Toast.makeText(this,"Focussed ON",Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,"Focussed ON",Toast.LENGTH_SHORT).show();
+            }
+        }else {
+            Toast.makeText(this, R.string.String_NoLocation, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -333,10 +348,13 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
         );
         try {
             JSONObject responseJson = new JSONObject(response);
+            if (jsonArrayToArray(responseJson.getJSONArray("features")).length == 0){
+                Toast.makeText(this, "Can't find location", Toast.LENGTH_SHORT).show();
+                return;
+            }
             double[] coordinates = jsonArrayToArray(responseJson.getJSONArray("features").getJSONObject(0).getJSONObject("geometry").getJSONArray("coordinates"));
             System.out.println(coordinates[0] + " " + coordinates[1]);
-            currentLocationGeoPoint.setLatitude(coordinates[1]);
-            currentLocationGeoPoint.setLongitude(coordinates[0]);
+            searchLocationGeoPoint = new GeoPoint(coordinates[1],coordinates[0]);
             getCoordinatesFinished = true;
         }catch (JSONException e) {
             e.printStackTrace();
@@ -418,7 +436,19 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
             double[] coordinates = route.getCoordinates().get(waypoint);
             Marker marker = new Marker(mapView);
             marker.setPosition(new GeoPoint(coordinates[1], coordinates[0]));
-            marker.setTitle(viewModel.getBeginEndPoint().getValue().get(i));
+            if (i == 0  || i == route.getWayPoints().length -1){
+                marker.setTitle("Begin/Eindpunt: \n" + viewModel.getBeginEndPoint().getValue().get(i));
+                Drawable unwrappedDrawable = AppCompatResources.getDrawable(MapScreenActivity.this, R.drawable.icon_location);
+                Drawable wrappedDrawable = DrawableCompat.wrap(unwrappedDrawable);
+                DrawableCompat.setTint(wrappedDrawable, getColor(R.color.waypoint_finished));
+                marker.setIcon(wrappedDrawable);
+            }else {
+                marker.setTitle((i + 1) +". " + viewModel.getBeginEndPoint().getValue().get(i));
+                Drawable unwrappedDrawable = AppCompatResources.getDrawable(MapScreenActivity.this, R.drawable.icon_location);
+                Drawable wrappedDrawable = DrawableCompat.wrap(unwrappedDrawable);
+                DrawableCompat.setTint(wrappedDrawable, getColor(R.color.waypoint_unfinished));
+                marker.setIcon(wrappedDrawable);
+            }
             marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
             markers.add(marker);
         }
@@ -459,6 +489,10 @@ public class MapScreenActivity extends AppCompatActivity implements RouteStartLi
                     if (geocache.IsFound) {
                         Marker marker = new Marker(mapView);
                         marker.setPosition(geoPoint);
+                        Drawable unwrappedDrawable = AppCompatResources.getDrawable(MapScreenActivity.this, R.drawable.icon_location);
+                        Drawable wrappedDrawable = DrawableCompat.wrap(unwrappedDrawable);
+                        DrawableCompat.setTint(wrappedDrawable, getColor(R.color.waypoint_finished));
+                        marker.setIcon(wrappedDrawable);
                         marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
                         marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
                             @Override

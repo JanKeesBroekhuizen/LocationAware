@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">LocationAware</string>
+    <string name="app_name">CacheMaps</string>
     <string name="String_city">city</string>
     <string name="String_Streetname">Streetname</string>
     <string name="String_HouseNumber">no.</string>
@@ -26,4 +26,6 @@
     <string name="String_Meters">meters</string>
     <string name="String_And">and</string>
     <string name="String_Seconds">seconds</string>
+    <string name="String_NoLocation">Cannot locate current position</string>
+    <string name="String_Location_Service">service is still running.</string>
 </resources>

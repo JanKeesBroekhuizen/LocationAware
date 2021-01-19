@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">LocationAware</string>
+    <string name="app_name">CacheMaps</string>
     <string name="String_city">Stad</string>
     <string name="String_Streetname">Straatnaam</string>
     <string name="String_HouseNumber">nr.</string>
@@ -27,4 +27,6 @@
     <string name="String_Meters">meter</string>
     <string name="String_And">en</string>
     <string name="String_Seconds">seconden</string>
+    <string name="String_NoLocation">Kan de huidige locatie niet achterhalen.</string>
+    <string name="String_Location_Service">service draait nog.</string>
 </resources>

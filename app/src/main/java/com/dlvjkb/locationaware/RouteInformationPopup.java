@@ -115,9 +115,12 @@ public class RouteInformationPopup extends AppCompatActivity implements PresetRo
         Log.d("onButtonSearchRouteClicked End", "Street: " + etRouteEndStreetName.getText().toString() + " Number: " + etRouteEndStreetNumber.getText().toString() + " City: " + etRouteEndCityName.getText().toString());
 
         GeoPoint routeStartGeoPoint = AddressToGeoPoint(etRouteStartStreetName.getText().toString() + " " + etRouteStartStreetNumber.getText().toString(), etRouteStartCityName.getText().toString());
+        GeoPoint routeEndGeoPoint = AddressToGeoPoint(etRouteEndStreetName.getText().toString() + " " + etRouteEndStreetNumber.getText().toString(), etRouteEndCityName.getText().toString());
+        if (routeStartGeoPoint == null || routeEndGeoPoint == null){
+            return;
+        }
         routePoints.add(routeStartGeoPoint);
         routeAddresses.add(etRouteStartStreetName.getText().toString() + " " + etRouteStartStreetNumber.getText().toString() + "\n" + etRouteStartCityName.getText().toString());
-        GeoPoint routeEndGeoPoint = AddressToGeoPoint(etRouteEndStreetName.getText().toString() + " " + etRouteEndStreetNumber.getText().toString(), etRouteEndCityName.getText().toString());
         routePoints.add(routeEndGeoPoint);
         routeAddresses.add(etRouteEndStreetName.getText().toString() + " " + etRouteEndStreetNumber.getText().toString() + "\n" + etRouteEndCityName.getText().toString());
 
@@ -181,10 +184,15 @@ public class RouteInformationPopup extends AppCompatActivity implements PresetRo
         JSONObject responseJson = null;
         try {
             responseJson = new JSONObject(response);
+            if (responseJson.getJSONArray("features").length() == 0){
+                Toast.makeText(this, "Can't find " + address + ", " + city , Toast.LENGTH_SHORT).show();
+                return null;
+            }
             double[] coordinates = jsonArrayToArray(responseJson.getJSONArray("features").getJSONObject(0).getJSONObject("geometry").getJSONArray("coordinates"));
             System.out.println(coordinates[0] + " " + coordinates[1]);
             geoPoint = new GeoPoint(coordinates[1],coordinates[0]);
             finished = true;
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

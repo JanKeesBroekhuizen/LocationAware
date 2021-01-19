@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -154,9 +155,11 @@ public class LocationService extends Service {
     @Override
     public void onCreate() {
         Notification notification = new NotificationCompat.Builder(getApplicationContext(), "notifychannelid")
-                .setSmallIcon(R.drawable.icon_geocache)
+                .setSmallIcon(R.mipmap.cachemapsicon)
+                .setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),
+                        R.mipmap.cachemapsicon))
                 .setContentTitle(getString(R.string.app_name))
-                .setContentText("LocationAware Service Running ")
+                .setContentText(getResources().getString(R.string.app_name) + " " + getResources().getString(R.string.String_Location_Service))
                 .setPriority(NotificationCompat.PRIORITY_MIN).build();
         startForeground(1,notification);
         Log.e(TAG, "onCreate");
