@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="200dp"
     android:layout_height="150dp"
-    android:background="@drawable/rounded_transparant_block">
+    android:background="@drawable/rounded_block_selected"
+    android:layout_marginRight="8dp">
 
     <TextView
         android:id="@+id/tvSavedRouteBegin"
