@@ -34,5 +34,65 @@
 		"city": "Bleskensgraaf",
 		"street": "Fluitekruidstraat",
 		"housenumber": 9
+	},
+	{
+		"id": 7,
+		"city": "Breda",
+		"street": "Lovensdijkstraat",
+		"housenumber": 61
+	},
+	{
+		"id": 8,
+		"city": "Breda",
+		"street": "Wilhelminasingel",
+		"housenumber": 32
+	},
+	{
+		"id": 9,
+		"city": "Breda",
+		"street": "Generaal Maczekstraat",
+		"housenumber": 25
+	},
+	{
+		"id": 10,
+		"city": "Breda",
+		"street": "Olympiastraat",
+		"housenumber": 72
+	},
+	{
+		"id": 11,
+		"city": "Breda",
+		"street": "De la Reijweg",
+		"housenumber": 45
+	},
+	{
+		"id": 12,
+		"city": "Rotterdam",
+		"street": "Pascalweg",
+		"housenumber": 147
+	},
+	{
+		"id": 13,
+		"city": "Rotterdam",
+		"street": "Catullusweg",
+		"housenumber": 29
+	},
+	{
+		"id": 14,
+		"city": "Rotterdam",
+		"street": "Molièreweg",
+		"housenumber": 530
+	},
+	{
+		"id": 15,
+		"city": "Rotterdam",
+		"street": "Maeterlinckweg",
+		"housenumber": 85
+	},
+	{
+		"id": 16,
+		"city": "Rotterdam",
+		"street": "Maeterlinckweg",
+		"housenumber": 67
 	}
 ]

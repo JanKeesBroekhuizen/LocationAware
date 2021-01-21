@@ -1,7 +1,17 @@
 [
 	{
 		"id": 1,
-		"name": "Rondje dorp",
+		"name": "Bleskensgraaf",
+		"traveltype": "foot-walking"
+	},
+	{
+		"id": 2,
+		"name": "Breda",
+		"traveltype": "foot-walking"
+	},
+	{
+		"id": 3,
+		"name": "Rotterdam",
 		"traveltype": "foot-walking"
 	}
 ]
