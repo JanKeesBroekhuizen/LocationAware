@@ -278,6 +278,7 @@ public class RouteInformationPopup extends AppCompatActivity implements PresetRo
         });
     }
 
+    //Start a route from the presets.
     @Override
     public void onPresetRouteClicked(int position) {
         ArrayList<GeoPoint> routePoints = new ArrayList<>();
@@ -295,6 +296,7 @@ public class RouteInformationPopup extends AppCompatActivity implements PresetRo
         startRoute(routePoints,routeAddresses,TravelType.getTravelTypeEnum(databaseManager.getPresetRoute(position + 1).Traveltype));
     }
 
+    //Save the route in the list and show in the recyclerview and start the route.
     @Override
     public void onSavedRouteClicked(int position) {
         Toast.makeText(getApplicationContext(), "SavedRoute clicked " + position, Toast.LENGTH_SHORT).show();
@@ -310,6 +312,7 @@ public class RouteInformationPopup extends AppCompatActivity implements PresetRo
         startRoute(routePoints,routeAddresses,TravelType.getTravelTypeEnum(databaseManager.getSavedRoute(position + 1).Traveltype));
     }
 
+    //Start a route by setting the route in the viewmodel. The mapscreen will on resume show the route.
     private void startRoute(ArrayList<GeoPoint> routePoints, ArrayList<String> routeAddresses,TravelType travelType){
         if (viewModel.getRoute().getValue().size() == 0){
             viewModel.setRoute(routePoints);

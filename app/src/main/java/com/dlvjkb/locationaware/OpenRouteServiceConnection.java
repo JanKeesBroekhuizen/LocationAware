@@ -54,6 +54,7 @@ public class OpenRouteServiceConnection {
 //        return call;
 //    }
 
+    //Return the coordinates belonging to the filled in address.
     public Call getCoordinatesOfAddress(String key, String address, String city, Callback callback){
         final String url = "https://api.openrouteservice.org/geocode/search/structured?" +
                 "api_key=" + key +
@@ -66,6 +67,7 @@ public class OpenRouteServiceConnection {
         return call;
     }
 
+    //Return a route which has multiple points.
     public Call getRouteMultiplePoints(String key, ArrayList<GeoPoint> geoPoints, String url, String language, Callback callback){
         //create jsonobject to send
         JSONObject jsonObject = new JSONObject();
