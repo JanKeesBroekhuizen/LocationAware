@@ -46,6 +46,7 @@ public class ChosenRouteDetailActivity extends AppCompatActivity {
 
         tvStartingPoint.setText(chosenRoute.getLocations().get(0));
         tvEndingPoint.setText(chosenRoute.getLocations().get(chosenRoute.getLocations().size() - 1));
+        //Format the text so it is more human friendly.
         tvRouteDistance.setText(String.format("%.2f", chosenRoute.getDistance()/1000) + " KM");
         tvRouteDuration.setText(setRouteTravelTime());
 
@@ -53,6 +54,7 @@ public class ChosenRouteDetailActivity extends AppCompatActivity {
         initializeRecyclerView();
     }
 
+    //Set icons for the image buttons. according to the traveltype of it.
     private void setTravelTypeIcon(){
         if (chosenRoute.getTravelType().equals(TravelType.DRIVING_CAR)){
             ivTravelType.setImageResource(R.drawable.icon_traveltype_car);
@@ -65,6 +67,7 @@ public class ChosenRouteDetailActivity extends AppCompatActivity {
         }
     }
 
+    //Stops a route.
     public void onButtonStopClick(View view){
         viewModel.setRoute(new ArrayList<>());
         viewModel.setBeginEndPoint(new ArrayList<>());
@@ -72,10 +75,12 @@ public class ChosenRouteDetailActivity extends AppCompatActivity {
         finish();
     }
 
+    //Returns the user to the mapscreen. Without doing anything else.
     public void onButtonReturnClick(View view){
         finish();
     }
 
+    //Setup recyclerviews. and fill them within the adapter.
     private void initializeRecyclerView(){
         rvDirections = findViewById(R.id.rvRouteDetailDirections);
 
