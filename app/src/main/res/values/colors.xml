@@ -9,4 +9,5 @@
     <color name="geocache_radius">#99d60000</color>
     <color name="waypoint_unfinished">#474749</color>
     <color name="waypoint_finished">#E50027</color>
+    <color name="geocache_finished">#ffffbb33</color>
 </resources>

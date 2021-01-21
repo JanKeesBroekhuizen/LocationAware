@@ -41,13 +41,6 @@ import okhttp3.Response;
 
 public class RouteInformationPopup extends AppCompatActivity implements PresetRouteClickListener, SavedRouteClickListener {
 
-//    public static ArrayList<GeoPoint> routePoints;
-//    public static ArrayList<String> routeAddresses;
-//    public static GeoPoint routeStartGeoPoint = null;
-//    public static GeoPoint routeEndGeoPoint = null;
-//    public static String routeStartAddress;
-//    public static String routeEndAddress;
-//    public static TravelType travelType;
     private RecyclerView rvPresetRoutes;
     private RecyclerView rvSavedRoutes;
     private EditText etRouteStartCityName;
@@ -59,7 +52,6 @@ public class RouteInformationPopup extends AppCompatActivity implements PresetRo
     private ImageButton btnCar;
     private ImageButton btnWalk;
     private ImageButton btnBike;
-//    private ImageButton btnSelected;
     private GeoPoint geoPoint;
     private Boolean finished;
     private DatabaseManager databaseManager;
@@ -96,11 +88,8 @@ public class RouteInformationPopup extends AppCompatActivity implements PresetRo
         databaseManager.initTotalDatabase();
 
         viewModel = RouteViewModel.getInstance();
+        //Set starting value to walking.
         onButtonWalkClicked(null);
-        //initialize new Arraylists
-//        routePoints = new ArrayList<>();
-//        routeAddresses = new ArrayList<>();
-
         initRefreshViews();
         initRecyclerViews();
         testQueries();
@@ -229,21 +218,18 @@ public class RouteInformationPopup extends AppCompatActivity implements PresetRo
     }
 
     public void onButtonCarClicked(View view){
-//        this.btnSelected = btnCar;
         this.btnCar.setBackgroundResource(R.drawable.rounded_block_selected);
         this.btnWalk.setBackgroundResource(R.drawable.rounded_block);
         this.btnBike.setBackgroundResource(R.drawable.rounded_block);
         viewModel.setTravelType(TravelType.DRIVING_CAR);
     }
     public void onButtonWalkClicked(View view){
-//        this.btnSelected = btnWalk;
         this.btnWalk.setBackgroundResource(R.drawable.rounded_block_selected);
         this.btnCar.setBackgroundResource(R.drawable.rounded_block);
         this.btnBike.setBackgroundResource(R.drawable.rounded_block);
         viewModel.setTravelType(TravelType.FOOT_WALKING);
     }
     public void onButtonBikeClicked(View view){
-//        this.btnSelected = btnBike;
         this.btnBike.setBackgroundResource(R.drawable.rounded_block_selected);
         this.btnWalk.setBackgroundResource(R.drawable.rounded_block);
         this.btnCar.setBackgroundResource(R.drawable.rounded_block);
